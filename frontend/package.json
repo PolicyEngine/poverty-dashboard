@@ -1,0 +1,29 @@
+{
+  "name": "poverty-dashboard-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/sync-baseline.mjs",
+    "prebuild": "node scripts/sync-baseline.mjs",
+    "dev": "next dev -p 3010",
+    "build": "next build",
+    "start": "next start -p 3010",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@policyengine/design-system": "^0.3.0",
+    "@tabler/icons-react": "^3.39.0",
+    "@tanstack/react-query": "^5.17.9",
+    "next": "^16",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5.3.3"
+  }
+}

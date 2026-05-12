@@ -1,0 +1,14 @@
+[project]
+name = "poverty-dashboard"
+version = "0.1.0"
+description = "Internal PolicyEngine dashboard for federal and per-state baseline poverty / child poverty checks"
+requires-python = ">=3.11"
+dependencies = [
+    "modal>=0.66.0",
+    "policyengine[us]",
+    "fastapi>=0.115.0",
+    "pydantic>=2.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["scripts*"]

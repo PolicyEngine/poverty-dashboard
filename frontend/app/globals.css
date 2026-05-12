@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@import "../node_modules/@policyengine/design-system/dist/tokens.css";
+
+@theme {
+  --color-primary-50: var(--pe-color-primary-50);
+  --color-primary-100: var(--pe-color-primary-100);
+  --color-primary-200: var(--pe-color-primary-200);
+  --color-primary-300: var(--pe-color-primary-300);
+  --color-primary-400: var(--pe-color-primary-400);
+  --color-primary-500: var(--pe-color-primary-500);
+  --color-primary-600: var(--pe-color-primary-600);
+  --color-primary-700: var(--pe-color-primary-700);
+  --color-primary-800: var(--pe-color-primary-800);
+  --color-primary-900: var(--pe-color-primary-900);
+
+  --color-secondary-100: var(--pe-color-gray-100);
+  --color-secondary-200: var(--pe-color-gray-200);
+  --color-secondary-300: var(--pe-color-gray-300);
+  --color-secondary-500: var(--pe-color-gray-500);
+  --color-secondary-700: var(--pe-color-gray-700);
+  --color-secondary-900: var(--pe-color-gray-900);
+
+  --color-success: var(--pe-color-success);
+  --color-warning: var(--pe-color-warning);
+  --color-error: var(--pe-color-error);
+
+  --font-sans: var(--pe-font-family-primary);
+  --font-mono: var(--pe-font-family-mono);
+}
+
+body {
+  font-family: var(--pe-font-family-primary);
+  color: var(--pe-color-text-primary);
+  background-color: var(--pe-color-bg-secondary);
+}
