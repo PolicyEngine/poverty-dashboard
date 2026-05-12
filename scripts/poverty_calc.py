@@ -21,24 +21,52 @@ from typing import Any
 
 YEAR = 2026
 
+US_DATA_ROOT = "hf://policyengine/policyengine-us-data"
+
+
+def _resolve_dataset(region_code: str) -> str:
+    """Mirror policyengine.countries.us.regions dataset routing.
+
+    Tries the registry first; on import failure (e.g. an editable
+    policyengine.py with a mismatched policyengine-us manifest), falls back to
+    the documented HuggingFace URL convention.
+    """
+    try:
+        from policyengine.countries.us.regions import us_region_registry  # type: ignore
+        region = us_region_registry.get(region_code)
+        if region is None:
+            raise ValueError(f"Unknown region: {region_code}")
+        return region.dataset_path
+    except Exception:
+        pass
+
+    if region_code == "us":
+        return f"{US_DATA_ROOT}/enhanced_cps_2024.h5"
+    if region_code.startswith("state/"):
+        abbrev = region_code.split("/", 1)[1].upper()
+        return f"{US_DATA_ROOT}/states/{abbrev}.h5"
+    raise ValueError(f"Unsupported region: {region_code}")
+
 
 def compute_region(region_code: str, year: int = YEAR) -> dict[str, Any]:
     """Compute baseline poverty rates for one region, returning a JSON-safe dict."""
     from microdf import MicroSeries
-    from policyengine.countries.us.regions import us_region_registry
     from policyengine_us import Microsimulation
 
-    region = us_region_registry.get(region_code)
-    if region is None:
-        raise ValueError(f"Unknown region: {region_code}")
-
-    dataset_path = region.dataset_path
+    dataset_path = _resolve_dataset(region_code)
     sim = Microsimulation(dataset=dataset_path)
 
     age = sim.calculate("age", period=year).values
     weights = sim.calculate("person_weight", period=year).values
-    in_poverty = sim.calculate("person_in_poverty", period=year).values
-    in_deep_poverty = sim.calculate("person_in_deep_poverty", period=year).values
+    # Canonical policyengine.py variable names (see policyengine/outputs/poverty.py
+    # USPovertyType.SPM / SPM_DEEP). Mapped from spm_unit to person to match
+    # the API methodology of person-level weighted poverty rates.
+    in_poverty = sim.calculate(
+        "spm_unit_is_in_spm_poverty", period=year, map_to="person"
+    ).values
+    in_deep_poverty = sim.calculate(
+        "spm_unit_is_in_deep_spm_poverty", period=year, map_to="person"
+    ).values
 
     poverty = MicroSeries(in_poverty, weights=weights)
     deep_poverty = MicroSeries(in_deep_poverty, weights=weights)

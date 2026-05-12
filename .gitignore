@@ -13,6 +13,7 @@ out/
 .DS_Store
 .vscode/
 .idea/
+.claude/
 
 frontend/.next
 frontend/node_modules
