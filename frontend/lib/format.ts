@@ -13,16 +13,18 @@ export function shortDataset(path: string | null | undefined): string {
   return path.replace("hf://policyengine/policyengine-us-data/", "");
 }
 
-export function relativeTime(iso: string | null): string {
+export function formatTimestamp(iso: string | null): string {
   if (!iso) return "never";
-  const then = new Date(iso).getTime();
-  const now = Date.now();
-  const seconds = Math.floor((now - then) / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
+  const d = new Date(iso);
+  const date = d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const time = d.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  return `${date} at ${time}`;
 }
