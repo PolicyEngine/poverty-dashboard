@@ -1,7 +1,7 @@
 "use client";
 
 import type { Versions } from "@/lib/types";
-import { relativeTime } from "@/lib/format";
+import { formatTimestamp } from "@/lib/format";
 
 type Props = {
   committed: Versions;
@@ -33,7 +33,7 @@ export function VersionBar(props: Props) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1">
           <div className="text-xs uppercase tracking-wider text-secondary-500">
-            Baseline generated {relativeTime(generatedAt)}
+            Baseline generated {formatTimestamp(generatedAt)}
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
             {KEY_PACKAGES.map((pkg) => {
