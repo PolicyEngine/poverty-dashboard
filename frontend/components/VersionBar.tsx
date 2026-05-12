@@ -15,7 +15,7 @@ type Props = {
   recomputing: boolean;
 };
 
-const KEY_PACKAGES = ["policyengine-us", "policyengine-us-data", "policyengine"];
+const KEY_PACKAGES = ["policyengine-us", "policyengine"];
 
 function isStale(committed: string | null | undefined, live: string | null | undefined) {
   if (!live || !committed) return false;

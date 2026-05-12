@@ -5,7 +5,7 @@ from __future__ import annotations
 from importlib.metadata import PackageNotFoundError, version
 
 
-PACKAGES = ["policyengine", "policyengine-us", "policyengine-us-data"]
+PACKAGES = ["policyengine", "policyengine-us"]
 
 
 def installed_versions() -> dict[str, str | None]:
