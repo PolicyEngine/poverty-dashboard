@@ -13,16 +13,20 @@ type SortKey =
   | "people"
   | "rates.all"
   | "rates.child"
+  | "rates.senior"
   | "deep_rates.all"
-  | "deep_rates.child";
+  | "deep_rates.child"
+  | "deep_rates.senior";
 
 const COLUMNS: { key: SortKey; label: string; numeric: boolean }[] = [
   { key: "label", label: "State", numeric: false },
   { key: "people", label: "People", numeric: true },
   { key: "rates.all", label: "Poverty", numeric: true },
   { key: "rates.child", label: "Child poverty", numeric: true },
+  { key: "rates.senior", label: "Senior poverty", numeric: true },
   { key: "deep_rates.all", label: "Deep poverty", numeric: true },
   { key: "deep_rates.child", label: "Deep child", numeric: true },
+  { key: "deep_rates.senior", label: "Deep senior", numeric: true },
 ];
 
 function pluck(r: RegionResult, key: SortKey): number | string {
@@ -31,8 +35,10 @@ function pluck(r: RegionResult, key: SortKey): number | string {
     case "people": return r.people;
     case "rates.all": return r.rates.all;
     case "rates.child": return r.rates.child;
+    case "rates.senior": return r.rates.senior;
     case "deep_rates.all": return r.deep_rates.all;
     case "deep_rates.child": return r.deep_rates.child;
+    case "deep_rates.senior": return r.deep_rates.senior;
   }
 }
 
@@ -107,8 +113,10 @@ export function StateTable({ regions }: Props) {
               <td className="px-4 py-2 text-right tabular-nums">{num(r.people)}</td>
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.rates.all)}</td>
               <td className="px-4 py-2 text-right tabular-nums font-medium">{pct(r.rates.child)}</td>
+              <td className="px-4 py-2 text-right tabular-nums font-medium">{pct(r.rates.senior)}</td>
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.deep_rates.all)}</td>
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.deep_rates.child)}</td>
+              <td className="px-4 py-2 text-right tabular-nums">{pct(r.deep_rates.senior)}</td>
               <td className="px-4 py-2 font-mono text-xs text-secondary-500">
                 {shortDataset(r.dataset_path)}
               </td>
