@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from typing import Any
 
@@ -11,11 +12,14 @@ from poverty_dashboard.regions import region_state_code
 YEAR = 2026
 SUPPORTED_YEARS = [2024, 2025, 2026]
 US_DATA_ROOT = "hf://policyengine/policyengine-us-data"
+US_DATASET_ENV = "POVERTY_DASHBOARD_US_DATASET"
 
 
 def fallback_dataset(region_code: str) -> str:
     """Return the documented Hugging Face dataset path for a region."""
     if region_code == "us":
+        if configured := os.environ.get(US_DATASET_ENV):
+            return configured
         return f"{US_DATA_ROOT}/enhanced_cps_2024.h5"
 
     abbrev = region_state_code(region_code)
@@ -26,6 +30,9 @@ def fallback_dataset(region_code: str) -> str:
 
 def resolve_dataset(region_code: str) -> str:
     """Resolve the dataset path using PolicyEngine's US region registry."""
+    if region_code == "us" and (configured := os.environ.get(US_DATASET_ENV)):
+        return configured
+
     try:
         from policyengine.countries.us.regions import us_region_registry  # type: ignore
     except Exception:

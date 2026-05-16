@@ -55,6 +55,13 @@ uv run python -m poverty_dashboard.precompute_baseline --upgrade
 git add data/baseline.json && git commit -m "Refresh baseline"
 ```
 
+To test a locally built national dataset, point the computation at the H5 file:
+
+```bash
+POVERTY_DASHBOARD_US_DATASET=/tmp/enhanced_cps_2024_post_989_cps_half_only.h5 \
+  uv run python -m poverty_dashboard.compute_local --year 2024 us
+```
+
 ## SPM element effects
 
 The package can calculate Census Table B-6-style poverty impacts by

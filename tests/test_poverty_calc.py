@@ -4,8 +4,10 @@ import pytest
 from microdf import MicroSeries
 
 from poverty_dashboard.poverty_calc import (
+    US_DATASET_ENV,
     compute_region,
     fallback_dataset,
+    resolve_dataset,
     summarize_poverty,
 )
 from poverty_dashboard.spm_diagnostics import threshold_ratio_distribution
@@ -25,6 +27,13 @@ def test_fallback_dataset_uses_policyengine_us_data_paths() -> None:
         fallback_dataset("state/ca")
         == "hf://policyengine/policyengine-us-data/states/CA.h5"
     )
+
+
+def test_us_dataset_env_overrides_national_dataset(monkeypatch) -> None:
+    monkeypatch.setenv(US_DATASET_ENV, "/tmp/local-enhanced-cps.h5")
+
+    assert fallback_dataset("us") == "/tmp/local-enhanced-cps.h5"
+    assert resolve_dataset("us") == "/tmp/local-enhanced-cps.h5"
 
 
 def test_fallback_dataset_rejects_unknown_regions() -> None:
