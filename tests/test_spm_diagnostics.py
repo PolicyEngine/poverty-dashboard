@@ -6,6 +6,7 @@ from microdf import MicroSeries
 from poverty_dashboard.spm_diagnostics import (
     compute_negative_income_diagnostics,
     compute_source_replication_diagnostics,
+    compute_total_income_leaf_diagnostics,
 )
 
 
@@ -55,6 +56,23 @@ class FakeSimulation:
         if map_to == "spm_unit":
             return MicroSeries(self.spm_unit_income, weights=self.spm_unit_weights)
         return MicroSeries(self.person_income, weights=self.person_weights)
+
+
+class FlexibleSimulation:
+    def calculate(
+        self,
+        variable: str,
+        period: int,
+        map_to: str | None = None,
+    ) -> MicroSeries:
+        assert period == 2024
+        assert map_to == "person"
+        values = {
+            "employment_income": [10, 20],
+            "pension_income": [3, 0],
+            "tanf": [0, 2],
+        }.get(variable, [0, 0])
+        return MicroSeries(values, weights=[1, 1])
 
 
 def test__given_ecps_and_raw_cps_load__then_negative_income_metrics_are_compared():
@@ -202,3 +220,62 @@ def test__given_raw_cps_not_loadable__then_availability_limitation_is_recorded()
     assert "raw CPS enum mismatch" in raw["error"]
     assert not comparison["available"]
     assert comparison["negative_income_abs_mass_difference"] is None
+
+
+def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
+    # Given
+    import pandas as pd
+
+    raw = pd.DataFrame(
+        {
+            "SPM_ID": [1, 1, 2],
+            "A_FNLWGT": [1, 2, 3],
+            "SPM_WEIGHT": [3, 3, 3],
+            "SPM_TOTVAL": [30, 30, 7],
+            "PTOTVAL": [10, 20, 7],
+            "WSAL_VAL": [10, 20, 0],
+            "PNSN_VAL": [0, 0, 3],
+            "ANN_VAL": [0, 0, 4],
+        }
+    )
+    for column in [
+        "CSP_VAL",
+        "DBTN_VAL",
+        "DIV_VAL",
+        "DSAB_VAL",
+        "ED_VAL",
+        "FIN_VAL",
+        "FRSE_VAL",
+        "INT_VAL",
+        "OI_VAL",
+        "PAW_VAL",
+        "RNT_VAL",
+        "SEMP_VAL",
+        "SRVS_VAL",
+        "SSI_VAL",
+        "SS_VAL",
+        "UC_VAL",
+        "VET_VAL",
+        "WC_VAL",
+    ]:
+        raw[column] = 0
+
+    monkeypatch.setattr(
+        "poverty_dashboard.spm_diagnostics._raw_asec_person_frame",
+        lambda _path=None: raw,
+    )
+
+    # When
+    result = compute_total_income_leaf_diagnostics(
+        year=2024,
+        enhanced_sim=FlexibleSimulation(),
+    )
+
+    # Then
+    assert result["spm_totval_from_person_leaves"]["exact_share"] == pytest.approx(1)
+    assert result["ptotval_from_person_leaves"]["max_abs_error"] == pytest.approx(0)
+    pension = next(
+        row for row in result["component_mean_gaps"] if row["key"] == "pension_income"
+    )
+    assert pension["raw_mean"] == 4
+    assert pension["enhanced_mean"] == 2

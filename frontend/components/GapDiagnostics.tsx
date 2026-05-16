@@ -41,6 +41,7 @@ export function GapDiagnostics({ diagnostics }: Props) {
     check.label.startsWith("modeled"),
   );
   const sourceReplication = diagnostics.source_replication_diagnostics;
+  const totalIncome = diagnostics.total_income_leaf_diagnostics;
   const rawReplication = sourceReplication?.sources.raw_cps_asec;
   const pe2026 = diagnostics.benchmarks.policyengine_2026_committed;
   const thresholds = diagnostics.bls_2024_reference_thresholds.two_adults_two_children;
@@ -346,6 +347,91 @@ export function GapDiagnostics({ diagnostics }: Props) {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      ) : null}
+
+      {totalIncome ? (
+        <div className="overflow-hidden rounded-lg border border-secondary-200 bg-white shadow-sm">
+          <div className="border-b border-secondary-200 bg-secondary-100 px-4 py-3">
+            <div className="text-sm font-semibold text-secondary-900">
+              SPM total income leaves
+            </div>
+            <div className="text-xs text-secondary-600">
+              Raw ASEC SPM_TOTVAL reconstructed from person-level money-income leaves.
+            </div>
+          </div>
+          <div className="grid gap-px bg-secondary-200 text-sm md:grid-cols-3">
+            {[
+              ["PTOTVAL from leaves", totalIncome.ptotval_from_person_leaves],
+              ["SPM_TOTVAL from PTOTVAL", totalIncome.spm_totval_from_ptotval],
+              ["SPM_TOTVAL from leaves", totalIncome.spm_totval_from_person_leaves],
+            ].map(([label, metrics]) => (
+              <div key={label as string} className="bg-white p-4">
+                <div className="text-xs uppercase tracking-wider text-secondary-500">
+                  {label as string}
+                </div>
+                <div className="mt-1 text-lg font-semibold text-secondary-900">
+                  {pct((metrics as typeof totalIncome.ptotval_from_person_leaves).exact_share)}
+                </div>
+                <div className="text-xs text-secondary-500">
+                  Mean abs error{" "}
+                  {dollars(
+                    (metrics as typeof totalIncome.ptotval_from_person_leaves)
+                      .weighted_mean_abs_error,
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="bg-white">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    Raw CPS leaf
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    Raw
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    ECPS
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    Diff
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-secondary-200">
+                {totalIncome.component_mean_gaps.map((row) => (
+                  <tr key={row.key}>
+                    <td className="px-4 py-2">
+                      <div className="font-medium text-secondary-900">
+                        {row.label}
+                      </div>
+                      <div className="font-mono text-xs text-secondary-500">
+                        {row.raw_columns.join(" + ")}
+                        {row.enhanced_variables.length
+                          ? ` -> ${row.enhanced_variables.join(" + ")}`
+                          : " -> no ECPS equivalent"}
+                      </div>
+                    </td>
+                    <td className="px-4 py-2 text-right tabular-nums">
+                      {dollars(row.raw_mean)}
+                    </td>
+                    <td className="px-4 py-2 text-right tabular-nums">
+                      {dollars(row.enhanced_mean)}
+                    </td>
+                    <td className="px-4 py-2 text-right tabular-nums">
+                      {dollars(row.difference)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="border-t border-secondary-200 px-4 py-3 text-xs text-secondary-600">
+            {totalIncome.note}
           </div>
         </div>
       ) : null}

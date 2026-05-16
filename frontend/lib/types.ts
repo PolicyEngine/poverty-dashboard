@@ -171,6 +171,37 @@ export type SourceReplicationDiagnostics = {
   note: string;
 };
 
+export type TotalIncomeLeafDiagnostics = {
+  title: string;
+  year: number;
+  source_url: string;
+  raw_person_file: string;
+  leaf_columns: string[];
+  ptotval_from_person_leaves: ReconstructionMetrics;
+  spm_totval_from_ptotval: ReconstructionMetrics;
+  spm_totval_from_person_leaves: ReconstructionMetrics;
+  component_mean_gaps: {
+    key: string;
+    label: string;
+    raw_columns: string[];
+    enhanced_variables: string[];
+    raw_mean: number;
+    enhanced_mean: number | null;
+    difference: number | null;
+    enhanced_available: boolean;
+    note: string | null;
+  }[];
+  note: string;
+};
+
+export type ReconstructionMetrics = {
+  mean_abs_error: number;
+  max_abs_error: number;
+  exact_share: number;
+  weighted_mean_abs_error: number;
+  weighted_mean_error: number;
+};
+
 export type SpmGapDiagnostics = {
   generated_at: string;
   title: string;
@@ -200,6 +231,7 @@ export type SpmGapDiagnostics = {
     policyengine_2024_modeled_plus_omitted_resources: ThresholdRatioDistribution;
   };
   source_replication_diagnostics?: SourceReplicationDiagnostics;
+  total_income_leaf_diagnostics?: TotalIncomeLeafDiagnostics;
   negative_income_diagnostics?: NegativeIncomeDiagnostics;
   policyengine_2024_resource_means: Record<string, number | string>;
   bls_2024_reference_thresholds: {

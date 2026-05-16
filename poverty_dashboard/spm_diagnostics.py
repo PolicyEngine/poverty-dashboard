@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import tempfile
+import urllib.request
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from zipfile import ZipFile
 
+import pandas as pd
 from microdf import MicroSeries
 
 from poverty_dashboard.paths import DATA_DIR
@@ -50,6 +55,10 @@ NCCI_2025_SOTL = "https://www.ncci.com/Articles/Pages/Insights-AIS2025-SOTL.aspx
 DATA_CENSUS_SPM_2024 = DATA_DIR / "census_spm_2024.json"
 DEFAULT_DIAGNOSTICS = DATA_DIR / "spm_gap_diagnostics.json"
 RAW_CPS_ASEC_2024 = f"{US_DATA_ROOT}/cps_2024.h5"
+CENSUS_ASEC_2024_ZIP = (
+    "https://www2.census.gov/programs-surveys/cps/datasets/2025/march/asecpub25csv.zip"
+)
+CENSUS_ASEC_2024_PERSON_FILE = "pppub25.csv"
 
 RatioBin = tuple[str, str, float | None, float | None]
 
@@ -99,6 +108,129 @@ SOURCE_REPLICATION_COMPONENTS: tuple[tuple[str, str], ...] = (
     ("workers_compensation", "Workers' compensation"),
     ("spm_unit_energy_subsidy", "Energy assistance"),
     ("spm_unit_capped_housing_subsidy", "Housing subsidy"),
+)
+
+CPS_TOTAL_INCOME_LEAF_COMPONENTS: tuple[dict[str, Any], ...] = (
+    {
+        "key": "employment_income",
+        "label": "Wage and salary income",
+        "raw_columns": ("WSAL_VAL",),
+        "enhanced_variables": ("employment_income",),
+    },
+    {
+        "key": "self_employment_income",
+        "label": "Non-farm self-employment income",
+        "raw_columns": ("SEMP_VAL",),
+        "enhanced_variables": ("self_employment_income",),
+    },
+    {
+        "key": "farm_operations_income",
+        "label": "Farm self-employment income",
+        "raw_columns": ("FRSE_VAL",),
+        "enhanced_variables": ("farm_operations_income",),
+    },
+    {
+        "key": "interest_income",
+        "label": "Interest income",
+        "raw_columns": ("INT_VAL",),
+        "enhanced_variables": ("interest_income",),
+    },
+    {
+        "key": "dividend_income",
+        "label": "Dividend income",
+        "raw_columns": ("DIV_VAL",),
+        "enhanced_variables": ("dividend_income",),
+    },
+    {
+        "key": "rental_income",
+        "label": "Rental income",
+        "raw_columns": ("RNT_VAL",),
+        "enhanced_variables": ("rental_income",),
+    },
+    {
+        "key": "social_security",
+        "label": "Social Security",
+        "raw_columns": ("SS_VAL",),
+        "enhanced_variables": ("social_security",),
+    },
+    {
+        "key": "unemployment_compensation",
+        "label": "Unemployment compensation",
+        "raw_columns": ("UC_VAL",),
+        "enhanced_variables": ("unemployment_compensation",),
+    },
+    {
+        "key": "pension_income",
+        "label": "Pensions and annuities",
+        "raw_columns": ("PNSN_VAL", "ANN_VAL"),
+        "enhanced_variables": ("pension_income",),
+    },
+    {
+        "key": "other_income",
+        "label": "Other catch-all income",
+        "raw_columns": ("OI_VAL",),
+        "enhanced_variables": None,
+    },
+    {
+        "key": "child_support_received",
+        "label": "Child support received",
+        "raw_columns": ("CSP_VAL",),
+        "enhanced_variables": ("child_support_received",),
+    },
+    {
+        "key": "public_assistance",
+        "label": "Public assistance/welfare",
+        "raw_columns": ("PAW_VAL",),
+        "enhanced_variables": ("tanf",),
+    },
+    {
+        "key": "ssi",
+        "label": "SSI",
+        "raw_columns": ("SSI_VAL",),
+        "enhanced_variables": ("ssi",),
+    },
+    {
+        "key": "retirement_distributions",
+        "label": "Retirement distributions",
+        "raw_columns": ("DBTN_VAL",),
+        "enhanced_variables": ("retirement_distributions",),
+    },
+    {
+        "key": "disability_benefits",
+        "label": "Disability benefits",
+        "raw_columns": ("DSAB_VAL",),
+        "enhanced_variables": ("disability_benefits",),
+    },
+    {
+        "key": "education_assistance",
+        "label": "Educational assistance",
+        "raw_columns": ("ED_VAL",),
+        "enhanced_variables": None,
+    },
+    {
+        "key": "financial_assistance",
+        "label": "Financial assistance",
+        "raw_columns": ("FIN_VAL",),
+        "enhanced_variables": None,
+    },
+    {
+        "key": "survivor_benefits",
+        "label": "Survivor benefits",
+        "raw_columns": ("SRVS_VAL",),
+        "enhanced_variables": None,
+    },
+    {
+        "key": "veterans_benefits",
+        "label": "Veterans benefits",
+        "raw_columns": ("VET_VAL",),
+        "enhanced_variables": ("veterans_benefits",),
+    },
+    {
+        "key": "workers_compensation",
+        "label": "Workers' compensation",
+        "raw_columns": ("WC_VAL",),
+        "enhanced_variables": ("workers_compensation",),
+    },
 )
 
 ADMIN_CALIBRATION_TARGETS: tuple[dict[str, Any], ...] = (
@@ -560,6 +692,177 @@ def _component_mean_gaps(
     )
 
 
+def _raw_asec_zip_path() -> Path:
+    configured = os.environ.get("POVERTY_DASHBOARD_ASEC_ZIP")
+    if configured:
+        return Path(configured)
+
+    path = Path(tempfile.gettempdir()) / "asecpub25csv.zip"
+    if not path.exists():
+        urllib.request.urlretrieve(CENSUS_ASEC_2024_ZIP, path)
+    return path
+
+
+def _raw_asec_person_frame(zip_path: str | Path | None = None) -> pd.DataFrame:
+    leaf_columns = {
+        column
+        for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS
+        for column in component["raw_columns"]
+    }
+    usecols = [
+        "SPM_ID",
+        "A_FNLWGT",
+        "PTOTVAL",
+        "SPM_TOTVAL",
+        "SPM_WEIGHT",
+        *sorted(leaf_columns),
+    ]
+    path = Path(zip_path) if zip_path is not None else _raw_asec_zip_path()
+    with ZipFile(path) as archive:
+        with archive.open(CENSUS_ASEC_2024_PERSON_FILE) as file:
+            return pd.read_csv(file, usecols=usecols).fillna(0)
+
+
+def _weighted_mean(values: Any, weights: Any) -> float:
+    return float(MicroSeries(values, weights=weights).mean())
+
+
+def _reconstruction_metrics(values: Any, target: Any, weights: Any) -> dict[str, Any]:
+    residual = pd.Series(values).to_numpy(dtype=float) - pd.Series(target).to_numpy(
+        dtype=float
+    )
+    abs_residual = abs(residual)
+    return {
+        "mean_abs_error": float(abs_residual.mean()),
+        "max_abs_error": float(abs_residual.max()),
+        "exact_share": float((abs_residual < 0.5).mean()),
+        "weighted_mean_abs_error": _weighted_mean(abs_residual, weights),
+        "weighted_mean_error": _weighted_mean(residual, weights),
+    }
+
+
+def _enhanced_total_income_leaf_mean(
+    sim: Any,
+    variables: tuple[str, ...] | None,
+    year: int,
+) -> tuple[float | None, str | None]:
+    if variables is None:
+        return None, "No one-to-one PolicyEngine variable for this CPS leaf."
+
+    total = None
+    try:
+        for variable in variables:
+            values = sim.calculate(variable, period=year, map_to="person")
+            total = values if total is None else total + values
+    except Exception as error:
+        return None, f"{type(error).__name__}: {error}"
+
+    if total is None:
+        return None, "No PolicyEngine variables configured."
+    return round(float(total.mean())), None
+
+
+def compute_total_income_leaf_diagnostics(
+    *,
+    year: int,
+    enhanced_sim: Any,
+    raw_asec_zip_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Reconstruct Census SPM_TOTVAL from raw ASEC income leaves."""
+    if year != 2024:
+        raise ValueError("Raw ASEC total-income diagnostics are pinned to 2024.")
+
+    person = _raw_asec_person_frame(raw_asec_zip_path)
+    leaf_columns = [
+        column
+        for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS
+        for column in component["raw_columns"]
+    ]
+    leaf_sum = person[leaf_columns].sum(axis=1)
+    unit = (
+        pd.DataFrame(
+            {
+                "leaf_income": leaf_sum,
+                "ptotval": person["PTOTVAL"],
+                "spm_totval": person["SPM_TOTVAL"],
+                "spm_weight": person["SPM_WEIGHT"],
+                "spm_id": person["SPM_ID"],
+            }
+        )
+        .groupby("spm_id", sort=False)
+        .agg(
+            leaf_income=("leaf_income", "sum"),
+            ptotval=("ptotval", "sum"),
+            spm_totval=("spm_totval", "first"),
+            spm_weight=("spm_weight", "first"),
+        )
+    )
+
+    components: list[dict[str, Any]] = []
+    for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS:
+        raw_values = person[list(component["raw_columns"])].sum(axis=1)
+        raw_mean = round(_weighted_mean(raw_values, person["A_FNLWGT"]))
+        enhanced_mean, error = _enhanced_total_income_leaf_mean(
+            enhanced_sim,
+            component["enhanced_variables"],
+            year,
+        )
+        components.append(
+            {
+                "key": component["key"],
+                "label": component["label"],
+                "raw_columns": list(component["raw_columns"]),
+                "enhanced_variables": (
+                    list(component["enhanced_variables"])
+                    if component["enhanced_variables"] is not None
+                    else []
+                ),
+                "raw_mean": raw_mean,
+                "enhanced_mean": enhanced_mean,
+                "difference": (
+                    enhanced_mean - raw_mean if enhanced_mean is not None else None
+                ),
+                "enhanced_available": enhanced_mean is not None,
+                "note": error,
+            }
+        )
+
+    components.sort(
+        key=lambda row: abs(row["difference"] or row["raw_mean"] or 0),
+        reverse=True,
+    )
+
+    return {
+        "title": "Raw ASEC SPM total-income reconstruction",
+        "year": year,
+        "source_url": CENSUS_ASEC_2024_ZIP,
+        "raw_person_file": CENSUS_ASEC_2024_PERSON_FILE,
+        "leaf_columns": leaf_columns,
+        "ptotval_from_person_leaves": _reconstruction_metrics(
+            leaf_sum,
+            person["PTOTVAL"],
+            person["A_FNLWGT"],
+        ),
+        "spm_totval_from_ptotval": _reconstruction_metrics(
+            unit["ptotval"],
+            unit["spm_totval"],
+            unit["spm_weight"],
+        ),
+        "spm_totval_from_person_leaves": _reconstruction_metrics(
+            unit["leaf_income"],
+            unit["spm_totval"],
+            unit["spm_weight"],
+        ),
+        "component_mean_gaps": components,
+        "note": (
+            "Census SPM_TOTVAL is the SPM-unit sum of person PTOTVAL. "
+            "PTOTVAL is reconstructed from public-use person income leaves; "
+            "capital gains, noncash benefits, refundable credits, taxes, and "
+            "SPM expenses are not part of SPM_TOTVAL."
+        ),
+    }
+
+
 def compute_source_replication_diagnostics(
     *,
     year: int,
@@ -781,6 +1084,10 @@ def compute_spm_gap_diagnostics(
             ),
         },
         "source_replication_diagnostics": source_replication,
+        "total_income_leaf_diagnostics": compute_total_income_leaf_diagnostics(
+            year=year,
+            enhanced_sim=sim,
+        ),
         "negative_income_diagnostics": compute_negative_income_diagnostics(
             year=year,
             enhanced_sim=sim,

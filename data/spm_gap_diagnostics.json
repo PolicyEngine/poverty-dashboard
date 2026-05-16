@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-16T15:53:30.993934+00:00",
+  "generated_at": "2026-05-16T16:31:30.058724+00:00",
   "title": "Why is PolicyEngine higher than Census SPM?",
   "summary": [
     "PolicyEngine's 2024 SPM-like rate is much higher than Census's 2024 SPM rate.",
@@ -837,6 +837,352 @@
       }
     ],
     "note": "If raw CPS ASEC with reported SPM resources is close to Census but ECPS modeled resources are not, the gap is more likely in the enhanced CPS income distribution, calibration, or imputation than in individual SPM program rows."
+  },
+  "total_income_leaf_diagnostics": {
+    "title": "Raw ASEC SPM total-income reconstruction",
+    "year": 2024,
+    "source_url": "https://www2.census.gov/programs-surveys/cps/datasets/2025/march/asecpub25csv.zip",
+    "raw_person_file": "pppub25.csv",
+    "leaf_columns": [
+      "WSAL_VAL",
+      "SEMP_VAL",
+      "FRSE_VAL",
+      "INT_VAL",
+      "DIV_VAL",
+      "RNT_VAL",
+      "SS_VAL",
+      "UC_VAL",
+      "PNSN_VAL",
+      "ANN_VAL",
+      "OI_VAL",
+      "CSP_VAL",
+      "PAW_VAL",
+      "SSI_VAL",
+      "DBTN_VAL",
+      "DSAB_VAL",
+      "ED_VAL",
+      "FIN_VAL",
+      "SRVS_VAL",
+      "VET_VAL",
+      "WC_VAL"
+    ],
+    "ptotval_from_person_leaves": {
+      "mean_abs_error": 2.1108179419525066e-05,
+      "max_abs_error": 1.0,
+      "exact_share": 0.9999788918205805,
+      "weighted_mean_abs_error": 2.3842313808194992e-05,
+      "weighted_mean_error": -2.3842313808194992e-05
+    },
+    "spm_totval_from_ptotval": {
+      "mean_abs_error": 0.0,
+      "max_abs_error": 0.0,
+      "exact_share": 1.0,
+      "weighted_mean_abs_error": 0.0,
+      "weighted_mean_error": 0.0
+    },
+    "spm_totval_from_person_leaves": {
+      "mean_abs_error": 5.159337541059728e-05,
+      "max_abs_error": 1.0,
+      "exact_share": 0.9999484066245894,
+      "weighted_mean_abs_error": 5.384879574787691e-05,
+      "weighted_mean_error": -5.384879574787691e-05
+    },
+    "component_mean_gaps": [
+      {
+        "key": "employment_income",
+        "label": "Wage and salary income",
+        "raw_columns": [
+          "WSAL_VAL"
+        ],
+        "enhanced_variables": [
+          "employment_income"
+        ],
+        "raw_mean": 36383,
+        "enhanced_mean": 31242,
+        "difference": -5141,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "pension_income",
+        "label": "Pensions and annuities",
+        "raw_columns": [
+          "PNSN_VAL",
+          "ANN_VAL"
+        ],
+        "enhanced_variables": [
+          "pension_income"
+        ],
+        "raw_mean": 1738,
+        "enhanced_mean": 0,
+        "difference": -1738,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "farm_operations_income",
+        "label": "Farm self-employment income",
+        "raw_columns": [
+          "FRSE_VAL"
+        ],
+        "enhanced_variables": [
+          "farm_operations_income"
+        ],
+        "raw_mean": 90,
+        "enhanced_mean": 1554,
+        "difference": 1464,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "interest_income",
+        "label": "Interest income",
+        "raw_columns": [
+          "INT_VAL"
+        ],
+        "enhanced_variables": [
+          "interest_income"
+        ],
+        "raw_mean": 2456,
+        "enhanced_mean": 1092,
+        "difference": -1364,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "retirement_distributions",
+        "label": "Retirement distributions",
+        "raw_columns": [
+          "DBTN_VAL"
+        ],
+        "enhanced_variables": [
+          "retirement_distributions"
+        ],
+        "raw_mean": 887,
+        "enhanced_mean": 1949,
+        "difference": 1062,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "dividend_income",
+        "label": "Dividend income",
+        "raw_columns": [
+          "DIV_VAL"
+        ],
+        "enhanced_variables": [
+          "dividend_income"
+        ],
+        "raw_mean": 662,
+        "enhanced_mean": 1706,
+        "difference": 1044,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "social_security",
+        "label": "Social Security",
+        "raw_columns": [
+          "SS_VAL"
+        ],
+        "enhanced_variables": [
+          "social_security"
+        ],
+        "raw_mean": 3651,
+        "enhanced_mean": 4635,
+        "difference": 984,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "rental_income",
+        "label": "Rental income",
+        "raw_columns": [
+          "RNT_VAL"
+        ],
+        "enhanced_variables": [
+          "rental_income"
+        ],
+        "raw_mean": 707,
+        "enhanced_mean": 412,
+        "difference": -295,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "education_assistance",
+        "label": "Educational assistance",
+        "raw_columns": [
+          "ED_VAL"
+        ],
+        "enhanced_variables": [],
+        "raw_mean": 247,
+        "enhanced_mean": null,
+        "difference": null,
+        "enhanced_available": false,
+        "note": "No one-to-one PolicyEngine variable for this CPS leaf."
+      },
+      {
+        "key": "survivor_benefits",
+        "label": "Survivor benefits",
+        "raw_columns": [
+          "SRVS_VAL"
+        ],
+        "enhanced_variables": [],
+        "raw_mean": 197,
+        "enhanced_mean": null,
+        "difference": null,
+        "enhanced_available": false,
+        "note": "No one-to-one PolicyEngine variable for this CPS leaf."
+      },
+      {
+        "key": "self_employment_income",
+        "label": "Non-farm self-employment income",
+        "raw_columns": [
+          "SEMP_VAL"
+        ],
+        "enhanced_variables": [
+          "self_employment_income"
+        ],
+        "raw_mean": 1646,
+        "enhanced_mean": 1489,
+        "difference": -157,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "financial_assistance",
+        "label": "Financial assistance",
+        "raw_columns": [
+          "FIN_VAL"
+        ],
+        "enhanced_variables": [],
+        "raw_mean": 121,
+        "enhanced_mean": null,
+        "difference": null,
+        "enhanced_available": false,
+        "note": "No one-to-one PolicyEngine variable for this CPS leaf."
+      },
+      {
+        "key": "other_income",
+        "label": "Other catch-all income",
+        "raw_columns": [
+          "OI_VAL"
+        ],
+        "enhanced_variables": [],
+        "raw_mean": 69,
+        "enhanced_mean": null,
+        "difference": null,
+        "enhanced_available": false,
+        "note": "No one-to-one PolicyEngine variable for this CPS leaf."
+      },
+      {
+        "key": "child_support_received",
+        "label": "Child support received",
+        "raw_columns": [
+          "CSP_VAL"
+        ],
+        "enhanced_variables": [
+          "child_support_received"
+        ],
+        "raw_mean": 74,
+        "enhanced_mean": 30,
+        "difference": -44,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "public_assistance",
+        "label": "Public assistance/welfare",
+        "raw_columns": [
+          "PAW_VAL"
+        ],
+        "enhanced_variables": [
+          "tanf"
+        ],
+        "raw_mean": 23,
+        "enhanced_mean": 64,
+        "difference": 41,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "unemployment_compensation",
+        "label": "Unemployment compensation",
+        "raw_columns": [
+          "UC_VAL"
+        ],
+        "enhanced_variables": [
+          "unemployment_compensation"
+        ],
+        "raw_mean": 74,
+        "enhanced_mean": 108,
+        "difference": 34,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "workers_compensation",
+        "label": "Workers' compensation",
+        "raw_columns": [
+          "WC_VAL"
+        ],
+        "enhanced_variables": [
+          "workers_compensation"
+        ],
+        "raw_mean": 27,
+        "enhanced_mean": 21,
+        "difference": -6,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "veterans_benefits",
+        "label": "Veterans benefits",
+        "raw_columns": [
+          "VET_VAL"
+        ],
+        "enhanced_variables": [
+          "veterans_benefits"
+        ],
+        "raw_mean": 389,
+        "enhanced_mean": 384,
+        "difference": -5,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "ssi",
+        "label": "SSI",
+        "raw_columns": [
+          "SSI_VAL"
+        ],
+        "enhanced_variables": [
+          "ssi"
+        ],
+        "raw_mean": 167,
+        "enhanced_mean": 171,
+        "difference": 4,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "disability_benefits",
+        "label": "Disability benefits",
+        "raw_columns": [
+          "DSAB_VAL"
+        ],
+        "enhanced_variables": [
+          "disability_benefits"
+        ],
+        "raw_mean": 130,
+        "enhanced_mean": 126,
+        "difference": -4,
+        "enhanced_available": true,
+        "note": null
+      }
+    ],
+    "note": "Census SPM_TOTVAL is the SPM-unit sum of person PTOTVAL. PTOTVAL is reconstructed from public-use person income leaves; capital gains, noncash benefits, refundable credits, taxes, and SPM expenses are not part of SPM_TOTVAL."
   },
   "negative_income_diagnostics": {
     "title": "Negative income tail diagnostic",
