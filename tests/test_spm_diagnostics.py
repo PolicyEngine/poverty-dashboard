@@ -70,6 +70,12 @@ class FlexibleSimulation:
         values = {
             "employment_income": [10, 20],
             "pension_income": [3, 0],
+            "miscellaneous_income": [4, 0],
+            "alimony_income": [1, 1],
+            "strike_benefits": [0, 2],
+            "educational_assistance": [1, 3],
+            "financial_assistance": [2, 4],
+            "survivor_benefits": [3, 5],
             "tanf": [0, 2],
         }.get(variable, [0, 0])
         return MicroSeries(values, weights=[1, 1])
@@ -231,11 +237,15 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
             "SPM_ID": [1, 1, 2],
             "A_FNLWGT": [1, 2, 3],
             "SPM_WEIGHT": [3, 3, 3],
-            "SPM_TOTVAL": [30, 30, 7],
-            "PTOTVAL": [10, 20, 7],
+            "SPM_TOTVAL": [30, 30, 43],
+            "PTOTVAL": [10, 20, 43],
             "WSAL_VAL": [10, 20, 0],
             "PNSN_VAL": [0, 0, 3],
             "ANN_VAL": [0, 0, 4],
+            "OI_VAL": [0, 0, 6],
+            "ED_VAL": [0, 0, 8],
+            "FIN_VAL": [0, 0, 10],
+            "SRVS_VAL": [0, 0, 12],
         }
     )
     for column in [
@@ -243,15 +253,11 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
         "DBTN_VAL",
         "DIV_VAL",
         "DSAB_VAL",
-        "ED_VAL",
-        "FIN_VAL",
         "FRSE_VAL",
         "INT_VAL",
-        "OI_VAL",
         "PAW_VAL",
         "RNT_VAL",
         "SEMP_VAL",
-        "SRVS_VAL",
         "SSI_VAL",
         "SS_VAL",
         "UC_VAL",
@@ -279,3 +285,21 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
     )
     assert pension["raw_mean"] == 4
     assert pension["enhanced_mean"] == 2
+    other = next(
+        row for row in result["component_mean_gaps"] if row["key"] == "other_income"
+    )
+    assert other["enhanced_variables"] == [
+        "miscellaneous_income",
+        "alimony_income",
+        "strike_benefits",
+    ]
+    assert other["raw_mean"] == 3
+    assert other["enhanced_mean"] == 4
+    education = next(
+        row
+        for row in result["component_mean_gaps"]
+        if row["key"] == "education_assistance"
+    )
+    assert education["enhanced_variables"] == ["educational_assistance"]
+    assert education["raw_mean"] == 4
+    assert education["enhanced_mean"] == 2

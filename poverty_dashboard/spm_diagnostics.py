@@ -81,6 +81,12 @@ RESOURCE_MEAN_VARIABLES: tuple[str, ...] = (
     "spm_unit_medical_out_of_pocket_expenses",
     "child_support_received",
     "workers_compensation",
+    "miscellaneous_income",
+    "alimony_income",
+    "strike_benefits",
+    "educational_assistance",
+    "financial_assistance",
+    "survivor_benefits",
     "spm_unit_energy_subsidy",
 )
 
@@ -106,6 +112,12 @@ SOURCE_REPLICATION_COMPONENTS: tuple[tuple[str, str], ...] = (
     ("spm_unit_capped_work_childcare_expenses", "Work and childcare expenses"),
     ("child_support_received", "Child support received"),
     ("workers_compensation", "Workers' compensation"),
+    ("miscellaneous_income", "Other catch-all income"),
+    ("alimony_income", "Alimony income"),
+    ("strike_benefits", "Strike benefits"),
+    ("educational_assistance", "Educational assistance"),
+    ("financial_assistance", "Financial assistance"),
+    ("survivor_benefits", "Survivor benefits"),
     ("spm_unit_energy_subsidy", "Energy assistance"),
     ("spm_unit_capped_housing_subsidy", "Housing subsidy"),
 )
@@ -169,7 +181,11 @@ CPS_TOTAL_INCOME_LEAF_COMPONENTS: tuple[dict[str, Any], ...] = (
         "key": "other_income",
         "label": "Other catch-all income",
         "raw_columns": ("OI_VAL",),
-        "enhanced_variables": None,
+        "enhanced_variables": (
+            "miscellaneous_income",
+            "alimony_income",
+            "strike_benefits",
+        ),
     },
     {
         "key": "child_support_received",
@@ -205,19 +221,19 @@ CPS_TOTAL_INCOME_LEAF_COMPONENTS: tuple[dict[str, Any], ...] = (
         "key": "education_assistance",
         "label": "Educational assistance",
         "raw_columns": ("ED_VAL",),
-        "enhanced_variables": None,
+        "enhanced_variables": ("educational_assistance",),
     },
     {
         "key": "financial_assistance",
         "label": "Financial assistance",
         "raw_columns": ("FIN_VAL",),
-        "enhanced_variables": None,
+        "enhanced_variables": ("financial_assistance",),
     },
     {
         "key": "survivor_benefits",
         "label": "Survivor benefits",
         "raw_columns": ("SRVS_VAL",),
-        "enhanced_variables": None,
+        "enhanced_variables": ("survivor_benefits",),
     },
     {
         "key": "veterans_benefits",
@@ -347,7 +363,11 @@ def _rate_check(label: str, poverty_status: Any, age: MicroSeries, note: str) ->
 def _resource_means(sim: Any, year: int) -> dict[str, int | str]:
     means: dict[str, int | str] = {}
     for variable in RESOURCE_MEAN_VARIABLES:
-        value = sim.calculate(variable, period=year, map_to="person")
+        try:
+            value = sim.calculate(variable, period=year, map_to="person")
+        except Exception as error:
+            means[variable] = f"{type(error).__name__}: {error}"
+            continue
         means[variable] = round(float(value.mean()))
     means["note"] = "Weighted person-average values after mapping variables to people."
     return means
