@@ -13,10 +13,10 @@ import json
 import os
 import subprocess
 import sys
+from datetime import UTC
 from pathlib import Path
 
 import modal
-
 
 APP_NAME = os.environ.get("MODAL_APP_NAME", "poverty-dashboard")
 
@@ -26,7 +26,7 @@ app = modal.App(APP_NAME)
 # the in-function ``pip install -U`` (when upgrade=true) tops it off without
 # rebuilding the image.
 image = (
-    modal.Image.debian_slim(python_version="3.11")
+    modal.Image.debian_slim(python_version="3.14")
     .apt_install("git")
     .pip_install(
         "fastapi>=0.115.0",
@@ -34,7 +34,7 @@ image = (
         "tables>=3.10.2",
         "policyengine[us]",
     )
-    .add_local_python_source("scripts", copy=True)
+    .add_local_python_source("poverty_dashboard", copy=True)
 )
 
 
@@ -43,27 +43,44 @@ def _maybe_upgrade(upgrade: bool) -> None:
         return
     subprocess.run(
         [
-            sys.executable, "-m", "pip", "install", "--upgrade", "--quiet",
-            "policyengine", "policyengine-us", "policyengine-us-data",
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "--quiet",
+            "policyengine",
+            "policyengine-us",
+            "policyengine-us-data",
         ],
         check=True,
     )
 
 
 @app.function(image=image, cpu=2.0, memory=8192, timeout=1200)
-def compute_region_remote(region_code: str, upgrade: bool = False) -> dict:
+def compute_region_remote(
+    region_code: str,
+    year: int = 2026,
+    upgrade: bool = False,
+) -> dict:
     """Run a single-region poverty calc inside its own subprocess.
 
     Subprocess isolation matters: when ``upgrade=True`` we just pip-installed
     new wheels into this container, and an already-imported policyengine_us
     would still hold the old code. A fresh interpreter sidesteps that.
     """
-    from scripts.versions import installed_versions
+    from poverty_dashboard.versions import installed_versions
 
     _maybe_upgrade(upgrade)
 
     proc = subprocess.run(
-        [sys.executable, "-m", "scripts.poverty_calc", region_code],
+        [
+            sys.executable,
+            "-m",
+            "poverty_dashboard.poverty_calc",
+            region_code,
+            str(year),
+        ],
         capture_output=True,
         text=True,
         check=False,
@@ -81,7 +98,8 @@ def compute_region_remote(region_code: str, upgrade: bool = False) -> dict:
 
 @app.function(image=image, cpu=1.0, memory=2048, timeout=60)
 def get_versions_remote(upgrade: bool = False) -> dict:
-    from scripts.versions import installed_versions
+    from poverty_dashboard.versions import installed_versions
+
     _maybe_upgrade(upgrade)
     return installed_versions()
 
@@ -89,12 +107,13 @@ def get_versions_remote(upgrade: bool = False) -> dict:
 @app.function(image=image, cpu=1.0, memory=2048, timeout=2400)
 @modal.asgi_app()
 def web_app():
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     from fastapi import FastAPI, HTTPException
     from fastapi.middleware.cors import CORSMiddleware
 
-    from scripts.regions import all_region_codes
+    from poverty_dashboard.poverty_calc import SUPPORTED_YEARS, YEAR
+    from poverty_dashboard.regions import all_region_codes
 
     api = FastAPI(title="PolicyEngine Poverty Dashboard", version="0.1.0")
     api.add_middleware(
@@ -122,11 +141,14 @@ def web_app():
         return get_versions_remote.remote(upgrade=upgrade)
 
     @api.post("/recompute")
-    def recompute(upgrade: bool = False):
+    def recompute(upgrade: bool = False, year: int = YEAR):
+        if year not in SUPPORTED_YEARS:
+            raise HTTPException(400, f"Unsupported year: {year}")
+
         codes = all_region_codes()
 
         # Fan out: each container runs one region in parallel.
-        args = [(code, upgrade) for code in codes]
+        args = [(code, year, upgrade) for code in codes]
         results = list(compute_region_remote.starmap(args))
 
         regions: dict[str, dict] = {}
@@ -150,8 +172,8 @@ def web_app():
             }
 
         payload = {
-            "generated_at": datetime.now(timezone.utc).isoformat(),
-            "year": 2026,
+            "generated_at": datetime.now(UTC).isoformat(),
+            "year": year,
             "versions": last_versions or {},
             "regions": regions,
             "errors": errors,

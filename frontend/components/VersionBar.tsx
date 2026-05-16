@@ -6,9 +6,12 @@ import { formatTimestamp } from "@/lib/format";
 type Props = {
   committed: Versions;
   generatedAt: string | null;
+  selectedYear: number;
+  availableYears: number[];
   live: Versions | null;
   liveLoading: boolean;
   liveError: string | null;
+  onYearChange: (year: number) => void;
   onRefreshVersions: () => void;
   onRecompute: () => void;
   onRecomputeUpgrade: () => void;
@@ -24,8 +27,9 @@ function isStale(committed: string | null | undefined, live: string | null | und
 
 export function VersionBar(props: Props) {
   const {
-    committed, generatedAt, live, liveLoading, liveError,
-    onRefreshVersions, onRecompute, onRecomputeUpgrade, recomputing,
+    committed, generatedAt, selectedYear, availableYears, live, liveLoading,
+    liveError, onYearChange, onRefreshVersions, onRecompute,
+    onRecomputeUpgrade, recomputing,
   } = props;
 
   return (
@@ -62,6 +66,17 @@ export function VersionBar(props: Props) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <select
+            value={selectedYear}
+            onChange={(event) => onYearChange(Number(event.target.value))}
+            className="rounded-md border border-secondary-300 bg-white px-3 py-1.5 text-sm font-medium text-secondary-700"
+          >
+            {availableYears.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
           <button
             onClick={onRefreshVersions}
             disabled={liveLoading}
@@ -74,7 +89,7 @@ export function VersionBar(props: Props) {
             disabled={recomputing}
             className="rounded-md border border-primary-600 bg-white px-3 py-1.5 text-sm font-medium text-primary-700 hover:bg-primary-50 disabled:opacity-50"
           >
-            {recomputing ? "Recomputing…" : "Recompute (current)"}
+            {recomputing ? "Recomputing…" : `Recompute ${selectedYear}`}
           </button>
           <button
             onClick={onRecomputeUpgrade}

@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+*.egg-info/
 .venv/
 .env
 .env.local
@@ -18,4 +19,6 @@ out/
 frontend/.next
 frontend/node_modules
 frontend/public/baseline.json
+frontend/public/census_spm_2024.json
+frontend/public/spm_gap_diagnostics.json
 .vercel

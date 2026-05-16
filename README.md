@@ -9,25 +9,38 @@ calculation methodology used by `policyengine-api`'s `economy_service` /
   `policyengine.countries.us.regions.us_region_registry` (national →
   `enhanced_cps_2024.h5`, state → `states/{XX}.h5`).
 - Run `policyengine_us.Microsimulation` against that dataset.
-- Compute weighted means of `person_in_poverty` and `person_in_deep_poverty`,
-  filtering `age < 18` for the child-poverty rate.
+- Map SPM-unit poverty variables to people, then use MicroSeries weighted
+  operations for all, child, working-age, and senior poverty rates.
 
 ## Layout
 
 ```
 modal_app.py              Modal FastAPI deployment with parallel_map fan-out
-scripts/poverty_calc.py   Single-region calculation (the methodology)
-scripts/regions.py        51 state region codes + national
-scripts/precompute_baseline.py   CLI: hit /recompute, write data/baseline.json
+poverty_dashboard/        Python package for calculations and CLI tools
+scripts/                  Compatibility wrappers for old module entry points
+tests/                    Python unit tests
+.github/workflows/ci.yml  Python and frontend CI
 data/baseline.json        Committed baseline — frontend reads this on load
+data/census_spm_2024.json Census/BLS SPM report benchmarks for comparison
+data/spm_gap_diagnostics.json
+                          PolicyEngine/Census diagnostic comparisons
 frontend/                 Next.js + PE design system dashboard
 ```
+
+## Install
+
+```bash
+make install
+```
+
+This creates a local Python 3.14 `.venv` with `uv`, installs the package in
+editable mode with development tooling, and installs frontend dependencies.
 
 ## Deploy
 
 ```bash
-pip install -e .
-modal deploy modal_app.py
+make install-python
+uv run modal deploy modal_app.py
 # copy the printed web_app URL into your env
 export MODAL_BASE_URL=https://<...>.modal.run
 export NEXT_PUBLIC_MODAL_BASE_URL=$MODAL_BASE_URL
@@ -36,10 +49,44 @@ export NEXT_PUBLIC_MODAL_BASE_URL=$MODAL_BASE_URL
 ## Recompute baseline (writes data/baseline.json)
 
 ```bash
-python -m scripts.precompute_baseline                # use installed versions
-python -m scripts.precompute_baseline --upgrade      # pip install -U first
+uv run python -m poverty_dashboard.precompute_baseline
+uv run python -m poverty_dashboard.precompute_baseline --year 2024
+uv run python -m poverty_dashboard.precompute_baseline --upgrade
 git add data/baseline.json && git commit -m "Refresh baseline"
 ```
+
+## SPM element effects
+
+The package can calculate Census Table B-6-style poverty impacts by
+arithmetically removing each SPM resource or expense from baseline
+`spm_unit_net_income`. This does not rerun a neutralized microsimulation, so it
+does not include tax-benefit interactions.
+
+```bash
+uv run python -m poverty_dashboard.spm_elements --year 2024
+poverty-dashboard-spm-elements --year 2024
+uv run python -m poverty_dashboard.spm_diagnostics --year 2024
+```
+
+Federal refundable tax credits are mapped to federal EITC plus refundable CTC.
+Federal income tax is mapped before refundable credits, because Census reports
+refundable credits separately. State taxes are split into PE-only diagnostics
+for state income tax before refundable credits and state refundable tax credits,
+because Census Table B-6 does not publish those rows.
+
+Child support received and workers' compensation are currently shown as upstream
+SPM resource formula gaps: PolicyEngine has the inputs, but its SPM net income
+does not yet include them. Utility assistance maps to PolicyEngine energy plus
+broadband components (`spm_unit_energy_subsidy`, `acp`, and `ebb`), matching the
+Census Table B-6 footnote that defines utility assistance as ACP plus other
+noncash energy benefits.
+
+The diagnostics also include candidate administrative calibration targets. For
+child support, received and paid amounts should share the same gross-flow target,
+with net child support retained as received minus paid. For workers'
+compensation, NASI's latest state summaries currently end in 2022; the first
+2024 target should use cash benefits and an indemnity-severity uprating rather
+than total benefits including medical payments.
 
 ## Frontend
 
@@ -49,15 +96,29 @@ npm install
 npm run dev    # http://localhost:3010
 ```
 
+## Checks
+
+```bash
+make check
+```
+
+GitHub Actions runs the same Python checks (`ruff format --check`,
+`ruff check`, `pytest`) and frontend checks (`npm run typecheck`,
+`npm run build`) on pushes to `main` and pull requests.
+
 The dashboard:
 
 1. Loads the committed `data/baseline.json` instantly.
 2. Shows the package versions that produced those numbers.
-3. "Check latest" calls `/versions` on the Modal app and flags any package that
+3. Shows Census 2024 SPM report benchmarks next to PolicyEngine results.
+4. Compares Census Table B-6 element effects with PolicyEngine arithmetic
+   element effects.
+5. Lets you select 2024, 2025, or 2026 before recomputing.
+6. "Check latest" calls `/versions` on the Modal app and flags any package that
    has a newer version on PyPI than the committed baseline used.
-4. "Recompute" / "Upgrade & recompute" runs `compute_region_remote.starmap` over
-   the 51 regions; the result is shown in-app and offered as a JSON download
-   for you to commit.
+7. "Recompute" / "Upgrade & recompute" runs `compute_region_remote.starmap` over
+   the national and 51 state regions; the result is shown in-app and offered as
+   a JSON download for you to commit.
 
 ## Cost notes
 

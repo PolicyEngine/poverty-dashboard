@@ -1,946 +1,945 @@
 {
-  "generated_at": "2026-05-12T07:02:23.789731+00:00",
+  "generated_at": "2026-05-16T11:49:41.115149+00:00",
   "year": 2026,
   "versions": {
-    "policyengine": "4.3.0",
-    "policyengine-us": "1.690.7",
-    "policyengine-us-data": "1.17.0"
+    "policyengine": "4.5.1",
+    "policyengine-us": "1.691.10"
   },
   "regions": {
     "us": {
       "region_code": "us",
-      "dataset_path": "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5",
-      "people": 343407424.0,
-      "child_count": 73551472.0,
+      "dataset_path": "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 341815362.3148309,
+      "child_count": 73463008.82788831,
       "rates": {
-        "all": 0.28976502440377677,
-        "child": 0.1902432928706988,
-        "working_age": 0.2677930844213274,
-        "senior": 0.481221996885206
+        "all": 0.21903239157830484,
+        "child": 0.21751115956910017,
+        "working_age": 0.2388378199508652,
+        "senior": 0.1543611070024721
       },
       "deep_rates": {
-        "all": 0.13447066190997659,
-        "child": 0.04328678344993725,
-        "working_age": 0.11006616725335595,
-        "senior": 0.3241906231442443
+        "all": 0.07862131650456361,
+        "child": 0.05454291800770483,
+        "working_age": 0.09274262328230191,
+        "senior": 0.05993611513150072
       }
     },
     "state/al": {
       "region_code": "state/al",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/AL.h5",
-      "people": 2187889.0,
-      "child_count": 693147.375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/AL.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2230670.8665952506,
+      "child_count": 700197.2122482958,
       "rates": {
-        "all": 0.1831962994863149,
-        "child": 0.11975240789684656,
-        "working_age": 0.14489076603508536,
-        "senior": 0.4562894197647139
+        "all": 0.15232085791685535,
+        "child": 0.12371438895408832,
+        "working_age": 0.1522235268702242,
+        "senior": 0.20981400232904257
       },
       "deep_rates": {
-        "all": 0.08504359346597556,
-        "child": 0.03632258919605081,
-        "working_age": 0.06461562910763394,
-        "senior": 0.2624230146585027
+        "all": 0.06753029090597379,
+        "child": 0.04151651443998381,
+        "working_age": 0.07129223448058641,
+        "senior": 0.10684466090896623
       }
     },
     "state/ak": {
       "region_code": "state/ak",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/AK.h5",
-      "people": 455365.21875,
-      "child_count": 144823.28125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/AK.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 459929.9516249846,
+      "child_count": 146556.49211669594,
       "rates": {
-        "all": 0.15340602103026532,
-        "child": 0.09152551477731526,
-        "working_age": 0.14298776519076936,
-        "senior": 0.3437081096013303
+        "all": 0.13319210617453053,
+        "child": 0.08637248491841154,
+        "working_age": 0.14895331574130405,
+        "senior": 0.17856464963222904
       },
       "deep_rates": {
-        "all": 0.060105189272648636,
-        "child": 0.01910628628238461,
-        "working_age": 0.05579457201623477,
-        "senior": 0.1755355582674038
+        "all": 0.048693012059340936,
+        "child": 0.0195540737687143,
+        "working_age": 0.05505283739169482,
+        "senior": 0.09013070292663755
       }
     },
     "state/az": {
       "region_code": "state/az",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/AZ.h5",
-      "people": 2755994.75,
-      "child_count": 848681.25,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/AZ.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2832665.175112729,
+      "child_count": 868751.4568258394,
       "rates": {
-        "all": 0.21925175077888515,
-        "child": 0.15265962277765252,
-        "working_age": 0.17770843606854722,
-        "senior": 0.49149336925190523
+        "all": 0.18444832977976702,
+        "child": 0.15361849796780322,
+        "working_age": 0.18582866650015414,
+        "senior": 0.23848827021406172
       },
       "deep_rates": {
-        "all": 0.09217293877568997,
-        "child": 0.033107026347283304,
-        "working_age": 0.06631326653480889,
-        "senior": 0.2961898000987678
+        "all": 0.06817631551938916,
+        "child": 0.03710096736949639,
+        "working_age": 0.0696130515218571,
+        "senior": 0.12249694157278797
       }
     },
     "state/ar": {
       "region_code": "state/ar",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/AR.h5",
-      "people": 1342073.625,
-      "child_count": 429750.53125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/AR.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1385829.6081920716,
+      "child_count": 437937.32165738754,
       "rates": {
-        "all": 0.16790013151258285,
-        "child": 0.09373661946579268,
-        "working_age": 0.13647846011133855,
-        "senior": 0.4497998470372351
+        "all": 0.14323012063850035,
+        "child": 0.10385890553687127,
+        "working_age": 0.1478591558807474,
+        "senior": 0.20924560056957253
       },
       "deep_rates": {
-        "all": 0.07971310188529608,
-        "child": 0.026431870876201878,
-        "working_age": 0.05947018094844578,
-        "senior": 0.27356137587549006
+        "all": 0.05818073416171138,
+        "child": 0.030176725331128595,
+        "working_age": 0.06068801927427124,
+        "senior": 0.10790570184973367
       }
     },
     "state/ca": {
       "region_code": "state/ca",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/CA.h5",
-      "people": 15647559.0,
-      "child_count": 4735848.5,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/CA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 16106984.62261825,
+      "child_count": 4807939.183461143,
       "rates": {
-        "all": 0.2920340808698093,
-        "child": 0.2571557076703495,
-        "working_age": 0.2463662464506579,
-        "senior": 0.5128347755334749
+        "all": 0.256367380379737,
+        "child": 0.25436143110799075,
+        "working_age": 0.24747346891898583,
+        "senior": 0.2887072991574867
       },
       "deep_rates": {
-        "all": 0.10677873592128212,
-        "child": 0.05108696276361259,
-        "working_age": 0.08082148742168656,
-        "senior": 0.30049904783940967
+        "all": 0.07594079254494739,
+        "child": 0.04288367449102053,
+        "working_age": 0.07723894249436272,
+        "senior": 0.13125115557024966
       }
     },
     "state/co": {
       "region_code": "state/co",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/CO.h5",
-      "people": 2534744.75,
-      "child_count": 790344.875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/CO.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2614594.591727089,
+      "child_count": 802053.7601532929,
       "rates": {
-        "all": 0.18665436395632448,
-        "child": 0.11806078908634134,
-        "working_age": 0.16334285523323794,
-        "senior": 0.4114084259650269
+        "all": 0.1639135730511012,
+        "child": 0.1255264708115735,
+        "working_age": 0.16910094889734356,
+        "senior": 0.2207776768469977
       },
       "deep_rates": {
-        "all": 0.06652778943623468,
-        "child": 0.02706435591174796,
-        "working_age": 0.057853791157880016,
-        "senior": 0.17896360755650248
+        "all": 0.0593176010716088,
+        "child": 0.032550212042677835,
+        "working_age": 0.06215368049856013,
+        "senior": 0.10160891020836267
       }
     },
     "state/ct": {
       "region_code": "state/ct",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/CT.h5",
-      "people": 1688850.25,
-      "child_count": 532680.0,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/CT.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1739171.9304751656,
+      "child_count": 537983.4574477518,
       "rates": {
-        "all": 0.21298250164673302,
-        "child": 0.15193367201291275,
-        "working_age": 0.18378357550664665,
-        "senior": 0.4565920574158182
+        "all": 0.1874057167854112,
+        "child": 0.15731011211637028,
+        "working_age": 0.1918000111155141,
+        "senior": 0.23213804912769528
       },
       "deep_rates": {
-        "all": 0.08324781791832607,
-        "child": 0.03766303332081549,
-        "working_age": 0.06839564398759318,
-        "senior": 0.2390233253523621
+        "all": 0.06596513792743153,
+        "child": 0.037083229974273296,
+        "working_age": 0.07077465276276784,
+        "senior": 0.10685543245836315
       }
     },
     "state/de": {
       "region_code": "state/de",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/DE.h5",
-      "people": 524688.3125,
-      "child_count": 172292.390625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/DE.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 534321.3725584054,
+      "child_count": 175890.63138778362,
       "rates": {
-        "all": 0.21857908644748247,
-        "child": 0.16614332096055545,
-        "working_age": 0.19135222363411708,
-        "senior": 0.4719168613892616
+        "all": 0.1974311871776872,
+        "child": 0.17245823830981327,
+        "working_age": 0.19992570553129194,
+        "senior": 0.25240750431920067
       },
       "deep_rates": {
-        "all": 0.08267629670770153,
-        "child": 0.03546709671613741,
-        "working_age": 0.06656121992906698,
-        "senior": 0.2745898116733757
+        "all": 0.06981923348812977,
+        "child": 0.04082746812849253,
+        "working_age": 0.07362352006599904,
+        "senior": 0.1296668813935593
       }
     },
     "state/dc": {
       "region_code": "state/dc",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/DC.h5",
-      "people": 423288.53125,
-      "child_count": 121391.40625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/DC.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 420015.49145178567,
+      "child_count": 121756.80937586456,
       "rates": {
-        "all": 0.21277507118646752,
-        "child": 0.12586516068854747,
-        "working_age": 0.1655597103679834,
-        "senior": 0.5076915427175123
+        "all": 0.17308487042022422,
+        "child": 0.13013698134186008,
+        "working_age": 0.17342973128293265,
+        "senior": 0.24914054242357245
       },
       "deep_rates": {
-        "all": 0.09980247510468931,
-        "child": 0.041676886713998655,
-        "working_age": 0.07090536243739964,
-        "senior": 0.28856146584316056
+        "all": 0.07273598908743642,
+        "child": 0.04188913228229095,
+        "working_age": 0.07280166716198166,
+        "senior": 0.1279819079654063
       }
     },
     "state/fl": {
       "region_code": "state/fl",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/FL.h5",
-      "people": 8323697.5,
-      "child_count": 2531392.0,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/FL.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 8523670.887723729,
+      "child_count": 2549771.0677097263,
       "rates": {
-        "all": 0.22624432009655793,
-        "child": 0.17257289599204853,
-        "working_age": 0.18311401452250814,
-        "senior": 0.49114814917567673
+        "all": 0.19401418216591365,
+        "child": 0.17466217513776644,
+        "working_age": 0.18887637368826296,
+        "senior": 0.2472232177246595
       },
       "deep_rates": {
-        "all": 0.09796796272561353,
-        "child": 0.04247149384024821,
-        "working_age": 0.07170720043632861,
-        "senior": 0.30539090356023474
+        "all": 0.07607081929307043,
+        "child": 0.048171897122167524,
+        "working_age": 0.07571932845530227,
+        "senior": 0.12910869539425773
       }
     },
     "state/ga": {
       "region_code": "state/ga",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/GA.h5",
-      "people": 4227865.0,
-      "child_count": 1295661.25,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/GA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 4327761.2297380185,
+      "child_count": 1308910.511488042,
       "rates": {
-        "all": 0.20004400958483995,
-        "child": 0.1420572031088433,
-        "working_age": 0.160964213946018,
-        "senior": 0.4622911638577651
+        "all": 0.16878115524755527,
+        "child": 0.14308945914598373,
+        "working_age": 0.1683387254141606,
+        "senior": 0.21860366715897955
       },
       "deep_rates": {
-        "all": 0.09147827774243673,
-        "child": 0.03932420050285063,
-        "working_age": 0.06863792131927461,
-        "senior": 0.28233317366704214
+        "all": 0.06892121639007201,
+        "child": 0.04064296413092374,
+        "working_age": 0.07064377352169078,
+        "senior": 0.11637989135422025
       }
     },
     "state/hi": {
       "region_code": "state/hi",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/HI.h5",
-      "people": 748914.0625,
-      "child_count": 240931.84375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/HI.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 772373.3901961967,
+      "child_count": 245526.63466628455,
       "rates": {
-        "all": 0.23545390957420317,
-        "child": 0.16037341512242162,
-        "working_age": 0.20918092305511643,
-        "senior": 0.49436768861148184
+        "all": 0.21092089588068244,
+        "child": 0.16711941271347946,
+        "working_age": 0.22008053299614938,
+        "senior": 0.26974841786758513
       },
       "deep_rates": {
-        "all": 0.08860862514269072,
-        "child": 0.035239461991105336,
-        "working_age": 0.0699672288992512,
-        "senior": 0.2725281196586545
+        "all": 0.06965817412871579,
+        "child": 0.03352226825545477,
+        "working_age": 0.07673641153493475,
+        "senior": 0.11982354283213281
       }
     },
     "state/id": {
       "region_code": "state/id",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/ID.h5",
-      "people": 819326.9375,
-      "child_count": 277831.9375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/ID.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 857715.6762612481,
+      "child_count": 282654.19287425396,
       "rates": {
-        "all": 0.1705381403033955,
-        "child": 0.11543274298602864,
-        "working_age": 0.148147755816682,
-        "senior": 0.4289307355922713
+        "all": 0.15121089900392554,
+        "child": 0.1165898686753764,
+        "working_age": 0.15673913974595582,
+        "senior": 0.21421422913173807
       },
       "deep_rates": {
-        "all": 0.07106598603750887,
-        "child": 0.026110635191719276,
-        "working_age": 0.05988027369077606,
-        "senior": 0.2497042907659155
+        "all": 0.057208889674377865,
+        "child": 0.028808144157100486,
+        "working_age": 0.06044783888820441,
+        "senior": 0.11408029893056855
       }
     },
     "state/il": {
       "region_code": "state/il",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/IL.h5",
-      "people": 4995916.0,
-      "child_count": 1540936.75,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/IL.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 5154762.830675105,
+      "child_count": 1569535.9770818963,
       "rates": {
-        "all": 0.2029872329457092,
-        "child": 0.12998213717038082,
-        "working_age": 0.16316178785134197,
-        "senior": 0.48014691566303214
+        "all": 0.1689431998797675,
+        "child": 0.1338400800793333,
+        "working_age": 0.17147942037689934,
+        "senior": 0.22546900055108232
       },
       "deep_rates": {
-        "all": 0.08862425594811181,
-        "child": 0.030769674295135004,
-        "working_age": 0.062517453662601,
-        "senior": 0.2898370083382245
+        "all": 0.06552901313451268,
+        "child": 0.03518540374492982,
+        "working_age": 0.06724568488558191,
+        "senior": 0.11591648124510577
       }
     },
     "state/in": {
       "region_code": "state/in",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/IN.h5",
-      "people": 2773233.5,
-      "child_count": 868350.6875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/IN.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2837485.3468399933,
+      "child_count": 873271.08979507,
       "rates": {
-        "all": 0.17982496424962396,
-        "child": 0.11134424256403895,
-        "working_age": 0.14334262462172537,
-        "senior": 0.45648354009296294
+        "all": 0.14969306051498021,
+        "child": 0.11316901445826161,
+        "working_age": 0.15545090603200862,
+        "senior": 0.20159337319215495
       },
       "deep_rates": {
-        "all": 0.07984593807928043,
-        "child": 0.02899439071429261,
-        "working_age": 0.058436114882549725,
-        "senior": 0.26468823979068823
+        "all": 0.05615642203260924,
+        "child": 0.030750836277693396,
+        "working_age": 0.05908726196607677,
+        "senior": 0.09591284303749359
       }
     },
     "state/ia": {
       "region_code": "state/ia",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/IA.h5",
-      "people": 1414833.375,
-      "child_count": 452973.5625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/IA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1464518.0135314579,
+      "child_count": 463905.3936889504,
       "rates": {
-        "all": 0.16397379163493198,
-        "child": 0.09886170150353953,
-        "working_age": 0.13227912209225015,
-        "senior": 0.4357415283337819
+        "all": 0.14178578130557584,
+        "child": 0.10459768803720637,
+        "working_age": 0.1438516190263156,
+        "senior": 0.21403573956314742
       },
       "deep_rates": {
-        "all": 0.07579586108440485,
-        "child": 0.029191632574153668,
-        "working_age": 0.057086632209519476,
-        "senior": 0.2549403475795573
+        "all": 0.05902099560783702,
+        "child": 0.031051679923668175,
+        "working_age": 0.06015357315237546,
+        "senior": 0.11488708842951532
       }
     },
     "state/ks": {
       "region_code": "state/ks",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/KS.h5",
-      "people": 1371537.125,
-      "child_count": 445346.40625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/KS.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1412129.9364200514,
+      "child_count": 452206.38419729343,
       "rates": {
-        "all": 0.18085932481608405,
-        "child": 0.12822295404838605,
-        "working_age": 0.14583762621467938,
-        "senior": 0.4391739621558303
+        "all": 0.15956285057753966,
+        "child": 0.13591976560866495,
+        "working_age": 0.1588523168380815,
+        "senior": 0.21294846566191922
       },
       "deep_rates": {
-        "all": 0.08429028209838879,
-        "child": 0.03695557918125381,
-        "working_age": 0.06535386616571236,
-        "senior": 0.26808729573421974
+        "all": 0.06876582750202062,
+        "child": 0.04484670104468716,
+        "working_age": 0.07166953336108846,
+        "senior": 0.10985797063263193
       }
     },
     "state/ky": {
       "region_code": "state/ky",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/KY.h5",
-      "people": 1846109.75,
-      "child_count": 598912.8125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/KY.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1907362.4364296882,
+      "child_count": 612113.4304674107,
       "rates": {
-        "all": 0.1910546273664575,
-        "child": 0.11851721552396571,
-        "working_age": 0.15076781985317536,
-        "senior": 0.4744469449736061
+        "all": 0.15755077563304995,
+        "child": 0.1244538424150742,
+        "working_age": 0.16164568262622125,
+        "senior": 0.21048077009157312
       },
       "deep_rates": {
-        "all": 0.08965344534727973,
-        "child": 0.03615620257800732,
-        "working_age": 0.06404578329770381,
-        "senior": 0.2850781346837462
+        "all": 0.06464498470400261,
+        "child": 0.03614266234245325,
+        "working_age": 0.06815165895357995,
+        "senior": 0.1102909215580087
       }
     },
     "state/la": {
       "region_code": "state/la",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/LA.h5",
-      "people": 1922920.5,
-      "child_count": 606543.0625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/LA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1951625.3300452405,
+      "child_count": 613126.284702797,
       "rates": {
-        "all": 0.1840753957459266,
-        "child": 0.11166476303943647,
-        "working_age": 0.14753210700072295,
-        "senior": 0.4667544855746533
+        "all": 0.14725763860174823,
+        "child": 0.1093629233118403,
+        "working_age": 0.14986634511692035,
+        "senior": 0.21478608585414388
       },
       "deep_rates": {
-        "all": 0.08292947512505805,
-        "child": 0.0293512118525263,
-        "working_age": 0.06247284719183417,
-        "senior": 0.26861441206716047
+        "all": 0.059449061085250096,
+        "child": 0.02920443772509401,
+        "working_age": 0.061698932478795626,
+        "senior": 0.11277425914283572
       }
     },
     "state/me": {
       "region_code": "state/me",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/ME.h5",
-      "people": 749724.375,
-      "child_count": 229756.96875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/ME.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 770165.0903229297,
+      "child_count": 233128.31053522645,
       "rates": {
-        "all": 0.1598824851825539,
-        "child": 0.10041236777517498,
-        "working_age": 0.1347033455958599,
-        "senior": 0.38548450700849635
+        "all": 0.14820076212128164,
+        "child": 0.12145863880883762,
+        "working_age": 0.1506519366325266,
+        "senior": 0.1921110839074217
       },
       "deep_rates": {
-        "all": 0.06887407459017723,
-        "child": 0.029378150415632517,
-        "working_age": 0.055362489147602764,
-        "senior": 0.20626650266480384
+        "all": 0.05351995396934053,
+        "child": 0.02728354372106844,
+        "working_age": 0.05776193195073424,
+        "senior": 0.09011971891828152
       }
     },
     "state/md": {
       "region_code": "state/md",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MD.h5",
-      "people": 2635003.5,
-      "child_count": 836323.0625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MD.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2712184.5654672063,
+      "child_count": 857675.4759074758,
       "rates": {
-        "all": 0.24050505310527184,
-        "child": 0.18655199558468924,
-        "working_age": 0.20456612240694322,
-        "senior": 0.4904442638003232
+        "all": 0.20736685960339266,
+        "child": 0.18810417032173396,
+        "working_age": 0.20823583560224274,
+        "senior": 0.24493200019817254
       },
       "deep_rates": {
-        "all": 0.09607643511255388,
-        "child": 0.04311708844331881,
-        "working_age": 0.07236199694890975,
-        "senior": 0.298808914268137
+        "all": 0.0705362000400706,
+        "child": 0.04227747454991189,
+        "working_age": 0.07218958562998479,
+        "senior": 0.12429554951500858
       }
     },
     "state/ma": {
       "region_code": "state/ma",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MA.h5",
-      "people": 2848936.75,
-      "child_count": 885812.0625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2909385.973864221,
+      "child_count": 885665.4516279562,
       "rates": {
-        "all": 0.2544206046040749,
-        "child": 0.21104684953287742,
-        "working_age": 0.2190562728461551,
-        "senior": 0.46721641282254056
+        "all": 0.22605917656708013,
+        "child": 0.2147915022868838,
+        "working_age": 0.2279698346413389,
+        "senior": 0.24100346606905396
       },
       "deep_rates": {
-        "all": 0.08898832654411906,
-        "child": 0.044576934926131954,
-        "working_age": 0.07222144158547049,
-        "senior": 0.23848663387740457
+        "all": 0.07208786562191692,
+        "child": 0.04513060896959921,
+        "working_age": 0.07808451741576666,
+        "senior": 0.10311565692060626
       }
     },
     "state/mi": {
       "region_code": "state/mi",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MI.h5",
-      "people": 3972604.75,
-      "child_count": 1216726.375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MI.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 4104577.213329773,
+      "child_count": 1247094.052327286,
       "rates": {
-        "all": 0.15971564877732342,
-        "child": 0.09213423890439018,
-        "working_age": 0.1254300729174946,
-        "senior": 0.41559526093639454
+        "all": 0.13100520754851672,
+        "child": 0.09634220070253764,
+        "working_age": 0.13399962408753396,
+        "senior": 0.18647577379884153
       },
       "deep_rates": {
-        "all": 0.07417156503255197,
-        "child": 0.025986538497407383,
-        "working_age": 0.05308483590180318,
-        "senior": 0.2447721460182103
+        "all": 0.053220848270675636,
+        "child": 0.02821965125467634,
+        "working_age": 0.05429631353045431,
+        "senior": 0.09683495479586794
       }
     },
     "state/mn": {
       "region_code": "state/mn",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MN.h5",
-      "people": 2547516.0,
-      "child_count": 800291.6875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MN.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2639245.9270346337,
+      "child_count": 819796.2540162733,
       "rates": {
-        "all": 0.17778516539539072,
-        "child": 0.1082021715622059,
-        "working_age": 0.14654923107127896,
-        "senior": 0.4430064708312843
+        "all": 0.14808175444701283,
+        "child": 0.10757456253192528,
+        "working_age": 0.15124727729553977,
+        "senior": 0.21841021779642528
       },
       "deep_rates": {
-        "all": 0.07952744454007973,
-        "child": 0.0318741547482081,
-        "working_age": 0.05935510339442076,
-        "senior": 0.2566532930297537
+        "all": 0.057942191139046806,
+        "child": 0.028490600363785402,
+        "working_age": 0.05975549716540676,
+        "senior": 0.11076141075863327
       }
     },
     "state/ms": {
       "region_code": "state/ms",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MS.h5",
-      "people": 1335871.25,
-      "child_count": 429355.25,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MS.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1368834.5006594942,
+      "child_count": 433094.0018536176,
       "rates": {
-        "all": 0.17145393083592322,
-        "child": 0.11274411621201649,
-        "working_age": 0.13954697172548872,
-        "senior": 0.4339526061924418
+        "all": 0.14503955836993987,
+        "child": 0.11841742276137951,
+        "working_age": 0.1471629671638576,
+        "senior": 0.19400535360378024
       },
       "deep_rates": {
-        "all": 0.07781457307924311,
-        "child": 0.03165923567384753,
-        "working_age": 0.06281807737942241,
-        "senior": 0.24453402083417247
+        "all": 0.06258795019557332,
+        "child": 0.03750948094879426,
+        "working_age": 0.06744013038157178,
+        "senior": 0.09846714208639884
       }
     },
     "state/mo": {
       "region_code": "state/mo",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MO.h5",
-      "people": 2580364.5,
-      "child_count": 799804.375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MO.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2632937.256740565,
+      "child_count": 803438.4360861521,
       "rates": {
-        "all": 0.17110793613266242,
-        "child": 0.10772150585773871,
-        "working_age": 0.13726981503921135,
-        "senior": 0.4341419390797086
+        "all": 0.13997346131527633,
+        "child": 0.10654808129247485,
+        "working_age": 0.1427828717889181,
+        "senior": 0.19626181406019932
       },
       "deep_rates": {
-        "all": 0.08075113834830464,
-        "child": 0.03314053646279228,
-        "working_age": 0.0610079725344561,
-        "senior": 0.2569641154948464
+        "all": 0.056099754697633133,
+        "child": 0.030518761828408913,
+        "working_age": 0.05792703511470726,
+        "senior": 0.10030977085703165
       }
     },
     "state/mt": {
       "region_code": "state/mt",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/MT.h5",
-      "people": 682625.9375,
-      "child_count": 209616.5625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/MT.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 712931.3912070699,
+      "child_count": 213606.20863057743,
       "rates": {
-        "all": 0.1415826770699783,
-        "child": 0.09755391738925183,
-        "working_age": 0.12964748511110355,
-        "senior": 0.3103953970384458
+        "all": 0.13222920417993791,
+        "child": 0.09787309072579375,
+        "working_age": 0.14075276819924362,
+        "senior": 0.17061557985034437
       },
       "deep_rates": {
-        "all": 0.06115644627978785,
-        "child": 0.028065888430245572,
-        "working_age": 0.05732022923276605,
-        "senior": 0.1636561633679167
+        "all": 0.053949976822239384,
+        "child": 0.02779725119852866,
+        "working_age": 0.058226297040876944,
+        "senior": 0.09165853482761525
       }
     },
     "state/ne": {
       "region_code": "state/ne",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NE.h5",
-      "people": 1090429.625,
-      "child_count": 344692.75,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NE.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1122735.9362334781,
+      "child_count": 354926.79038443614,
       "rates": {
-        "all": 0.15592325261042272,
-        "child": 0.09171632107177584,
-        "working_age": 0.12651987422031968,
-        "senior": 0.4280613570907421
+        "all": 0.1318994628659777,
+        "child": 0.09711653325619099,
+        "working_age": 0.13275238242297824,
+        "senior": 0.2053741882803831
       },
       "deep_rates": {
-        "all": 0.0731080351623811,
-        "child": 0.02636948326586672,
-        "working_age": 0.05472906897034855,
-        "senior": 0.25879376182672525
+        "all": 0.05234055065527634,
+        "child": 0.02684560880183403,
+        "working_age": 0.05388604549029045,
+        "senior": 0.10272621058425925
       }
     },
     "state/nv": {
       "region_code": "state/nv",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NV.h5",
-      "people": 1375622.0,
-      "child_count": 444851.0,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NV.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1408085.43804974,
+      "child_count": 450039.7556236589,
       "rates": {
-        "all": 0.2327135765828803,
-        "child": 0.17270464083767595,
-        "working_age": 0.19212081734099773,
-        "senior": 0.5045384585334516
+        "all": 0.2043232335853081,
+        "child": 0.17661248413562317,
+        "working_age": 0.20507273866377862,
+        "senior": 0.25932815064171466
       },
       "deep_rates": {
-        "all": 0.09616175423543417,
-        "child": 0.03919297644113015,
-        "working_age": 0.06983421365076972,
-        "senior": 0.31136379391048685
+        "all": 0.07467170330249208,
+        "child": 0.04072565758854393,
+        "working_age": 0.07563314543417614,
+        "senior": 0.1419053148682853
       }
     },
     "state/nh": {
       "region_code": "state/nh",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NH.h5",
-      "people": 698976.4375,
-      "child_count": 215798.125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NH.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 728164.6257611834,
+      "child_count": 219267.68712079115,
       "rates": {
-        "all": 0.1779241054688973,
-        "child": 0.13067779092596765,
-        "working_age": 0.15431703065823538,
-        "senior": 0.3973116345840577
+        "all": 0.1670159113135439,
+        "child": 0.1404758583866486,
+        "working_age": 0.16733329941203912,
+        "senior": 0.22098353501755652
       },
       "deep_rates": {
-        "all": 0.06634170305413506,
-        "child": 0.025108767476531926,
-        "working_age": 0.0521975285804976,
-        "senior": 0.2291631231240648
+        "all": 0.05659560078158386,
+        "child": 0.028325081733309422,
+        "working_age": 0.05760673897439646,
+        "senior": 0.11150719694894104
       }
     },
     "state/nj": {
       "region_code": "state/nj",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NJ.h5",
-      "people": 3766146.5,
-      "child_count": 1167930.25,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NJ.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 3898990.835148135,
+      "child_count": 1186115.7587380852,
       "rates": {
-        "all": 0.2348426811328462,
-        "child": 0.1869748028948554,
-        "working_age": 0.19954493556268624,
-        "senior": 0.4724480425725837
+        "all": 0.20724341869806506,
+        "child": 0.18799163302154623,
+        "working_age": 0.20688120227432827,
+        "senior": 0.24659559075234266
       },
       "deep_rates": {
-        "all": 0.09172970997923223,
-        "child": 0.040845738032842235,
-        "working_age": 0.06904701105136385,
-        "senior": 0.28786767666027824
+        "all": 0.07311203975307569,
+        "child": 0.04486633481550902,
+        "working_age": 0.07406442237497536,
+        "senior": 0.1256201567810628
       }
     },
     "state/nm": {
       "region_code": "state/nm",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NM.h5",
-      "people": 1045815.375,
-      "child_count": 340991.34375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NM.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1060814.2397542177,
+      "child_count": 343150.20904304134,
       "rates": {
-        "all": 0.18182248716058375,
-        "child": 0.1039763033272011,
-        "working_age": 0.14798312481727738,
-        "senior": 0.4637971129317445
+        "all": 0.15147573766739061,
+        "child": 0.11321638606063648,
+        "working_age": 0.15806645350309903,
+        "senior": 0.20955712320539627
       },
       "deep_rates": {
-        "all": 0.0819646859430144,
-        "child": 0.03194568231693378,
-        "working_age": 0.06267552025928311,
-        "senior": 0.2547590266384913
+        "all": 0.061626261100123085,
+        "child": 0.033180227937182886,
+        "working_age": 0.06606791485972402,
+        "senior": 0.10636916063746826
       }
     },
     "state/ny": {
       "region_code": "state/ny",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NY.h5",
-      "people": 7379419.5,
-      "child_count": 2250086.5,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NY.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 7581413.73073147,
+      "child_count": 2268418.5916546076,
       "rates": {
-        "all": 0.25003375676589307,
-        "child": 0.19277903933048138,
-        "working_age": 0.20959947653825284,
-        "senior": 0.4860143862276747
+        "all": 0.20880083107596753,
+        "child": 0.18613909763399827,
+        "working_age": 0.210574627326685,
+        "senior": 0.24296668249518089
       },
       "deep_rates": {
-        "all": 0.10167680704903616,
-        "child": 0.047798799294837144,
-        "working_age": 0.07831059610210822,
-        "senior": 0.27650591551147535
+        "all": 0.07205930690502085,
+        "child": 0.040151948926015375,
+        "working_age": 0.07429392125958144,
+        "senior": 0.1209789776248694
       }
     },
     "state/nc": {
       "region_code": "state/nc",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/NC.h5",
-      "people": 4475599.5,
-      "child_count": 1359478.875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/NC.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 4575040.931305002,
+      "child_count": 1378843.842774808,
       "rates": {
-        "all": 0.17805309626411603,
-        "child": 0.10912258885345803,
-        "working_age": 0.1407240773722862,
-        "senior": 0.45901358633615763
+        "all": 0.14281449707761087,
+        "child": 0.1086421237143473,
+        "working_age": 0.14404436140127294,
+        "senior": 0.2051276984076413
       },
       "deep_rates": {
-        "all": 0.08264975973583777,
-        "child": 0.03181427116016275,
-        "working_age": 0.059346306949599005,
-        "senior": 0.27412355867020755
+        "all": 0.05726447133970248,
+        "child": 0.03154487257032815,
+        "working_age": 0.05842261147779433,
+        "senior": 0.10334555353400043
       }
     },
     "state/nd": {
       "region_code": "state/nd",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/ND.h5",
-      "people": 441666.0,
-      "child_count": 142063.765625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/ND.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 456831.4559629101,
+      "child_count": 145967.54109619927,
       "rates": {
-        "all": 0.16436205552524036,
-        "child": 0.1076679672477327,
-        "working_age": 0.14021119775586016,
-        "senior": 0.4215821653766212
+        "all": 0.15613447330134397,
+        "child": 0.12367405015402706,
+        "working_age": 0.15550519000601468,
+        "senior": 0.23489149497535336
       },
       "deep_rates": {
-        "all": 0.06461626263639017,
-        "child": 0.022028491953183956,
-        "working_age": 0.04971110639150128,
-        "senior": 0.2432280173035897
+        "all": 0.05739191657189395,
+        "child": 0.027253585802561462,
+        "working_age": 0.05773636580858212,
+        "senior": 0.12679833568970944
       }
     },
     "state/oh": {
       "region_code": "state/oh",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/OH.h5",
-      "people": 4481043.0,
-      "child_count": 1396097.5,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/OH.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 4602898.323003726,
+      "child_count": 1412789.3416032796,
       "rates": {
-        "all": 0.17774741164107197,
-        "child": 0.11308480537737964,
-        "working_age": 0.13769001176070592,
-        "senior": 0.44906387760206834
+        "all": 0.1461383642021051,
+        "child": 0.11680751635427346,
+        "working_age": 0.1466599461690112,
+        "senior": 0.199863151622974
       },
       "deep_rates": {
-        "all": 0.08293957319291757,
-        "child": 0.03309505574466641,
-        "working_age": 0.05916301479264041,
-        "senior": 0.2672849010621824
+        "all": 0.05961000012292832,
+        "child": 0.035250524908010776,
+        "working_age": 0.060586635612649625,
+        "senior": 0.10245324561495163
       }
     },
     "state/ok": {
       "region_code": "state/ok",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/OK.h5",
-      "people": 1798604.5,
-      "child_count": 559957.5,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/OK.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1820921.2565457537,
+      "child_count": 568186.3382177008,
       "rates": {
-        "all": 0.17560114651001119,
-        "child": 0.10109332934286373,
-        "working_age": 0.13424923465022562,
-        "senior": 0.48001833525964693
+        "all": 0.138263693254693,
+        "child": 0.09992777676002065,
+        "working_age": 0.13841916465079898,
+        "senior": 0.218118471349014
       },
       "deep_rates": {
-        "all": 0.08613963554147187,
-        "child": 0.030477365339056876,
-        "working_age": 0.06013446140685217,
-        "senior": 0.29592496627298104
+        "all": 0.05698366094190248,
+        "child": 0.027368753604136917,
+        "working_age": 0.05718258022292279,
+        "senior": 0.11838662195279118
       }
     },
     "state/or": {
       "region_code": "state/or",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/OR.h5",
-      "people": 2011300.625,
-      "child_count": 618429.0,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/OR.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2051330.627198521,
+      "child_count": 624202.3882147508,
       "rates": {
-        "all": 0.23054726781539855,
-        "child": 0.16978058338196003,
-        "working_age": 0.19386573932908768,
-        "senior": 0.4810706975530971
+        "all": 0.1963306932636523,
+        "child": 0.17255580841473314,
+        "working_age": 0.19966993826787802,
+        "senior": 0.23096803429238327
       },
       "deep_rates": {
-        "all": 0.09442593071843,
-        "child": 0.04362965464789751,
-        "working_age": 0.07357304640285446,
-        "senior": 0.2693969738522471
+        "all": 0.06876306085597725,
+        "child": 0.03910690079225961,
+        "working_age": 0.07293983078830162,
+        "senior": 0.11192932901015681
       }
     },
     "state/pa": {
       "region_code": "state/pa",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/PA.h5",
-      "people": 5076472.0,
-      "child_count": 1547917.25,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/PA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 5211163.330117166,
+      "child_count": 1561461.2144873738,
       "rates": {
-        "all": 0.19442545582070594,
-        "child": 0.12863178327311597,
-        "working_age": 0.15647261018497371,
-        "senior": 0.4548867709697099
+        "all": 0.1588464748163926,
+        "child": 0.12739763269211335,
+        "working_age": 0.1617060979568208,
+        "senior": 0.2069560634795956
       },
       "deep_rates": {
-        "all": 0.08709716227753961,
-        "child": 0.036074893355054406,
-        "working_age": 0.0630045380739289,
-        "senior": 0.2705744050251103
+        "all": 0.061528911417544005,
+        "child": 0.033889903207245616,
+        "working_age": 0.06399329843853832,
+        "senior": 0.10396996769684239
       }
     },
     "state/ri": {
       "region_code": "state/ri",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/RI.h5",
-      "people": 699144.0625,
-      "child_count": 206524.265625,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/RI.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 711946.5589562012,
+      "child_count": 208184.24898486154,
       "rates": {
-        "all": 0.20956380477357434,
-        "child": 0.14202193918636852,
-        "working_age": 0.1717092850264917,
-        "senior": 0.46455647221339325
+        "all": 0.18023792570995772,
+        "child": 0.14240670486493998,
+        "working_age": 0.1857865644078835,
+        "senior": 0.2289372268629514
       },
       "deep_rates": {
-        "all": 0.08770122623512323,
-        "child": 0.037263200602047096,
-        "working_age": 0.06388627509097722,
-        "senior": 0.26286502736550393
+        "all": 0.06554004391282663,
+        "child": 0.03751465732358578,
+        "working_age": 0.06853618721774712,
+        "senior": 0.10526971982427995
       }
     },
     "state/sc": {
       "region_code": "state/sc",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/SC.h5",
-      "people": 2353805.25,
-      "child_count": 737598.375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/SC.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2402176.436845151,
+      "child_count": 746561.9501441114,
       "rates": {
-        "all": 0.17946987777325438,
-        "child": 0.11564855374446902,
-        "working_age": 0.14046689748025318,
-        "senior": 0.4646047400798841
+        "all": 0.1535581926720825,
+        "child": 0.12287615627867086,
+        "working_age": 0.1515871449323732,
+        "senior": 0.22228203242206312
       },
       "deep_rates": {
-        "all": 0.08589452265263928,
-        "child": 0.03547343616331455,
-        "working_age": 0.06230526477129954,
-        "senior": 0.28401390522630454
+        "all": 0.06530324706640415,
+        "child": 0.03764985954523696,
+        "working_age": 0.06651582102097331,
+        "senior": 0.1168636682979272
       }
     },
     "state/sd": {
       "region_code": "state/sd",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/SD.h5",
-      "people": 493869.09375,
-      "child_count": 163408.3125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/SD.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 504031.27343819325,
+      "child_count": 164400.92628599753,
       "rates": {
-        "all": 0.18944267264484338,
-        "child": 0.1477362475877185,
-        "working_age": 0.1577110983957551,
-        "senior": 0.452960744044966
+        "all": 0.17309583247768764,
+        "child": 0.14916405560847346,
+        "working_age": 0.17221805962978606,
+        "senior": 0.2383719299852828
       },
       "deep_rates": {
-        "all": 0.07228058178516339,
-        "child": 0.029226836945666062,
-        "working_age": 0.055776693259771894,
-        "senior": 0.268908520643814
+        "all": 0.06122496783542029,
+        "child": 0.034642362013178364,
+        "working_age": 0.06247788026768573,
+        "senior": 0.12413274079170407
       }
     },
     "state/tn": {
       "region_code": "state/tn",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/TN.h5",
-      "people": 2829221.75,
-      "child_count": 903754.4375,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/TN.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2884682.493751014,
+      "child_count": 904734.4255295864,
       "rates": {
-        "all": 0.17943001280971418,
-        "child": 0.12146055223821124,
-        "working_age": 0.14358822952753705,
-        "senior": 0.4504808202826751
+        "all": 0.1554264141665145,
+        "child": 0.12972868922875444,
+        "working_age": 0.15591137902510055,
+        "senior": 0.20656223232861323
       },
       "deep_rates": {
-        "all": 0.08279955763935132,
-        "child": 0.03386374672333497,
-        "working_age": 0.0635368593513058,
-        "senior": 0.26909443779531195
+        "all": 0.06279317863540204,
+        "child": 0.036953426565345185,
+        "working_age": 0.0662555378523817,
+        "senior": 0.10380229118320915
       }
     },
     "state/tx": {
       "region_code": "state/tx",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/TX.h5",
-      "people": 10700329.0,
-      "child_count": 3223552.25,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/TX.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 10997170.560139889,
+      "child_count": 3254042.6536221234,
       "rates": {
-        "all": 0.19844936495868043,
-        "child": 0.13943900025226025,
-        "working_age": 0.1582505516197771,
-        "senior": 0.45793594943559635
+        "all": 0.16849851780915587,
+        "child": 0.1438461348482517,
+        "working_age": 0.1670947567587152,
+        "senior": 0.2174102631246779
       },
       "deep_rates": {
-        "all": 0.0886532171890588,
-        "child": 0.035162846375854276,
-        "working_age": 0.06542211142849892,
-        "senior": 0.27677512439711593
+        "all": 0.06880928460510308,
+        "child": 0.041295949103817196,
+        "working_age": 0.0707407286917569,
+        "senior": 0.11193362009117905
       }
     },
     "state/ut": {
       "region_code": "state/ut",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/UT.h5",
-      "people": 1463355.25,
-      "child_count": 465107.75,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/UT.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 1500598.6814359133,
+      "child_count": 470531.10637397086,
       "rates": {
-        "all": 0.1768586956470101,
-        "child": 0.13294814832166438,
-        "working_age": 0.1490861037281322,
-        "senior": 0.41554512001423544
+        "all": 0.15954322807537502,
+        "child": 0.1347791119295478,
+        "working_age": 0.15925592965919325,
+        "senior": 0.21634142311358923
       },
       "deep_rates": {
-        "all": 0.0753781017057248,
-        "child": 0.034149062397342986,
-        "working_age": 0.058586809815007856,
-        "senior": 0.257476513773326
+        "all": 0.05602448241608656,
+        "child": 0.030658049291790557,
+        "working_age": 0.05724290265795078,
+        "senior": 0.1082722150565939
       }
     },
     "state/vt": {
       "region_code": "state/vt",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/VT.h5",
-      "people": 394483.84375,
-      "child_count": 115565.03125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/VT.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 407611.61247898545,
+      "child_count": 117773.2147307061,
       "rates": {
-        "all": 0.17660804644596242,
-        "child": 0.11188245586930277,
-        "working_age": 0.15748509179657608,
-        "senior": 0.3881389761931416
+        "all": 0.16924809864481932,
+        "child": 0.1330941763178166,
+        "working_age": 0.17496864811139023,
+        "senior": 0.21511133858365847
       },
       "deep_rates": {
-        "all": 0.07119430485793907,
-        "child": 0.028790476127744487,
-        "working_age": 0.061423809347129904,
-        "senior": 0.19868777687778524
+        "all": 0.06395053940691064,
+        "child": 0.03445218731270315,
+        "working_age": 0.06955741522180359,
+        "senior": 0.0981062561527686
       }
     },
     "state/va": {
       "region_code": "state/va",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/VA.h5",
-      "people": 3390565.0,
-      "child_count": 1064530.125,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/VA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 3495369.383968991,
+      "child_count": 1081174.99756432,
       "rates": {
-        "all": 0.2273938419596265,
-        "child": 0.17768728739080578,
-        "working_age": 0.19186672229620685,
-        "senior": 0.469117038856221
+        "all": 0.1978531296609164,
+        "child": 0.1842405559013235,
+        "working_age": 0.197394177398679,
+        "senior": 0.22699764506528905
       },
       "deep_rates": {
-        "all": 0.09167573077023894,
-        "child": 0.04144258489280756,
-        "working_age": 0.06948304960328146,
-        "senior": 0.28444056159413933
+        "all": 0.06848677460976031,
+        "child": 0.04284864426823899,
+        "working_age": 0.07017336157060583,
+        "senior": 0.11440870270823214
       }
     },
     "state/wa": {
       "region_code": "state/wa",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/WA.h5",
-      "people": 3148490.0,
-      "child_count": 979620.6875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/WA.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 3235477.043117458,
+      "child_count": 996009.0968888724,
       "rates": {
-        "all": 0.24429516198051454,
-        "child": 0.19263570887975434,
-        "working_age": 0.2042036360817582,
-        "senior": 0.49025600832965877
+        "all": 0.21502703174120236,
+        "child": 0.19559244864794395,
+        "working_age": 0.21446408208535342,
+        "senior": 0.25472091220909304
       },
       "deep_rates": {
-        "all": 0.09303303370553494,
-        "child": 0.037836096371282234,
-        "working_age": 0.06967173760117638,
-        "senior": 0.2874751716093369
+        "all": 0.07291443654692618,
+        "child": 0.04361673665612079,
+        "working_age": 0.07509541202890747,
+        "senior": 0.1225352687973988
       }
     },
     "state/wv": {
       "region_code": "state/wv",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/WV.h5",
-      "people": 781087.6875,
-      "child_count": 255823.96875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/WV.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 787795.1820437016,
+      "child_count": 259289.7087518433,
       "rates": {
-        "all": 0.18927846227353803,
-        "child": 0.11649888059312805,
-        "working_age": 0.15089501874163821,
-        "senior": 0.4821786841411136
+        "all": 0.14645344278742747,
+        "child": 0.10683395761026954,
+        "working_age": 0.15149253148831357,
+        "senior": 0.2179124175631407
       },
       "deep_rates": {
-        "all": 0.08655952156177091,
-        "child": 0.03464126743757597,
-        "working_age": 0.06276717200344166,
-        "senior": 0.2829884960869322
+        "all": 0.06103573829718396,
+        "child": 0.03334529768298373,
+        "working_age": 0.06466686040994955,
+        "senior": 0.11058437593070772
       }
     },
     "state/wi": {
       "region_code": "state/wi",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/WI.h5",
-      "people": 2557722.25,
-      "child_count": 783259.5,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/WI.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 2615689.6825633314,
+      "child_count": 792919.0527063468,
       "rates": {
-        "all": 0.17312293095759979,
-        "child": 0.0984032416160213,
-        "working_age": 0.13617100369727486,
-        "senior": 0.4587043454126877
+        "all": 0.14245549344709332,
+        "child": 0.10321505087844401,
+        "working_age": 0.14575083771448444,
+        "senior": 0.20649406242384957
       },
       "deep_rates": {
-        "all": 0.07865209668698822,
-        "child": 0.026531874161234422,
-        "working_age": 0.056402217373453634,
-        "senior": 0.2651227565787751
+        "all": 0.058249955592322655,
+        "child": 0.03136512537003701,
+        "working_age": 0.05977704091682868,
+        "senior": 0.10461614580764034
       }
     },
     "state/wy": {
       "region_code": "state/wy",
-      "dataset_path": "hf://policyengine/policyengine-us-data/states/WY.h5",
-      "people": 373041.03125,
-      "child_count": 118103.8046875,
+      "dataset_path": "hf://policyengine/policyengine-us-data/states/WY.h5@69fc39a7fece4c49ba87291e598e76b40568cc5d",
+      "people": 385222.1384797229,
+      "child_count": 119746.53003914078,
       "rates": {
-        "all": 0.1930614141343746,
-        "child": 0.14756887629683363,
-        "working_age": 0.17054891192220314,
-        "senior": 0.4073697213506332
+        "all": 0.17888643598661805,
+        "child": 0.15034045840581486,
+        "working_age": 0.1862381295670131,
+        "senior": 0.21233904593407563
       },
       "deep_rates": {
-        "all": 0.07931482600249783,
-        "child": 0.027599115821828963,
-        "working_age": 0.06894912575772688,
-        "senior": 0.2554376940952536
+        "all": 0.07464574915399748,
+        "child": 0.042504487642772745,
+        "working_age": 0.08181430140465322,
+        "senior": 0.11644253918232612
       }
     }
   },
