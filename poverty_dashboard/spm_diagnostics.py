@@ -249,6 +249,110 @@ CPS_TOTAL_INCOME_LEAF_COMPONENTS: tuple[dict[str, Any], ...] = (
     },
 )
 
+CENSUS_SPM_RESOURCE_FORMULA_COMPONENTS: tuple[dict[str, Any], ...] = (
+    {
+        "key": "refundable_tax_credits",
+        "label": "Refundable federal tax credits",
+        "section": "addition",
+        "raw_columns": ("SPM_EITC", "SPM_ACTC"),
+        "enhanced_variables": ("eitc", "refundable_ctc"),
+        "note": (
+            "Census formula uses refundable credits with federal tax before credits."
+        ),
+    },
+    {
+        "key": "snap",
+        "label": "SNAP",
+        "section": "addition",
+        "raw_columns": ("SPM_SNAPSUB",),
+        "enhanced_variables": ("snap",),
+    },
+    {
+        "key": "school_lunch",
+        "label": "School lunch",
+        "section": "addition",
+        "raw_columns": ("SPM_SCHLUNCH",),
+        "enhanced_variables": ("free_school_meals", "reduced_price_school_meals"),
+    },
+    {
+        "key": "wic",
+        "label": "WIC",
+        "section": "addition",
+        "raw_columns": ("SPM_WICVAL",),
+        "enhanced_variables": ("wic",),
+    },
+    {
+        "key": "energy_assistance",
+        "label": "Energy assistance",
+        "section": "addition",
+        "raw_columns": ("SPM_ENGVAL",),
+        "enhanced_variables": ("spm_unit_energy_subsidy",),
+    },
+    {
+        "key": "broadband_assistance",
+        "label": "Broadband assistance",
+        "section": "addition",
+        "raw_columns": ("SPM_BBSUBVAL",),
+        "enhanced_variables": ("acp", "ebb"),
+    },
+    {
+        "key": "housing_subsidy",
+        "label": "Housing subsidy",
+        "section": "addition",
+        "raw_columns": ("SPM_CAPHOUSESUB",),
+        "enhanced_variables": ("spm_unit_capped_housing_subsidy",),
+    },
+    {
+        "key": "federal_income_tax_before_refundable_credits",
+        "label": "Federal income tax before refundable credits",
+        "section": "subtraction",
+        "raw_columns": ("SPM_FEDTAXBC",),
+        "enhanced_variables": ("income_tax_before_refundable_credits",),
+        "note": (
+            "Equivalent to Census SPM_FEDTAX if refundable credits are not "
+            "added separately."
+        ),
+    },
+    {
+        "key": "state_income_tax",
+        "label": "State income tax",
+        "section": "subtraction",
+        "raw_columns": ("SPM_STTAX",),
+        "enhanced_variables": ("state_income_tax_before_refundable_credits",),
+        "note": (
+            "Census public ASEC does not separately publish state refundable credits."
+        ),
+    },
+    {
+        "key": "fica",
+        "label": "FICA",
+        "section": "subtraction",
+        "raw_columns": ("SPM_FICA",),
+        "enhanced_variables": ("spm_unit_payroll_tax",),
+    },
+    {
+        "key": "work_childcare_expenses",
+        "label": "Capped work and childcare expenses",
+        "section": "subtraction",
+        "raw_columns": ("SPM_CAPWKCCXPNS",),
+        "enhanced_variables": ("spm_unit_capped_work_childcare_expenses",),
+    },
+    {
+        "key": "medical_expenses",
+        "label": "Medical out-of-pocket expenses",
+        "section": "subtraction",
+        "raw_columns": ("SPM_MEDXPNS",),
+        "enhanced_variables": ("spm_unit_medical_out_of_pocket_expenses",),
+    },
+    {
+        "key": "child_support_paid",
+        "label": "Child support paid",
+        "section": "subtraction",
+        "raw_columns": ("SPM_CHILDSUPPD",),
+        "enhanced_variables": ("child_support_expense",),
+    },
+)
+
 ADMIN_CALIBRATION_TARGETS: tuple[dict[str, Any], ...] = (
     {
         "element": "Child support received and paid",
@@ -350,6 +454,35 @@ def threshold_ratio_distribution(
             distributions[group][key] = float(bin_mask[group_mask].mean())
 
     return distributions
+
+
+def _quantile_summary(values: MicroSeries, digits: int = 0) -> dict[str, float]:
+    return {
+        "p01": round(float(values.quantile(0.01)), digits),
+        "p05": round(float(values.quantile(0.05)), digits),
+        "p10": round(float(values.quantile(0.10)), digits),
+        "p25": round(float(values.quantile(0.25)), digits),
+        "p50": round(float(values.quantile(0.50)), digits),
+        "p75": round(float(values.quantile(0.75)), digits),
+        "p90": round(float(values.quantile(0.90)), digits),
+    }
+
+
+def _resource_distribution_summary(
+    resource: MicroSeries,
+    threshold: MicroSeries,
+) -> dict[str, Any]:
+    ratio = resource / threshold
+    return {
+        "resource_quantiles": _quantile_summary(resource),
+        "threshold_ratio_quantiles": _quantile_summary(ratio, digits=3),
+        "share_below_zero": float((resource < 0).mean()),
+        "share_zero_or_below": float((resource <= 0).mean()),
+        "share_below_half_threshold": float((ratio < 0.5).mean()),
+        "share_below_threshold": float((ratio < 1).mean()),
+        "share_from_one_to_two_threshold": float(((ratio >= 1) & (ratio < 2)).mean()),
+        "share_above_four_threshold": float((ratio >= 4).mean()),
+    }
 
 
 def _rate_check(label: str, poverty_status: Any, age: MicroSeries, note: str) -> dict:
@@ -611,6 +744,7 @@ def _missing_source_replication(
         "median_resource": None,
         "mean_threshold": None,
         "threshold_ratio_distribution": None,
+        "resource_distribution": None,
         "note": note,
     }
     if error:
@@ -663,6 +797,10 @@ def _source_replication_summary(
             threshold,
             age,
         ),
+        "resource_distribution": _resource_distribution_summary(
+            resource,
+            threshold,
+        ),
         "note": note,
     }
 
@@ -674,6 +812,34 @@ def _component_mean_gaps(
     year: int,
 ) -> list[dict[str, Any]]:
     gaps: list[dict[str, Any]] = []
+    enhanced_below_threshold = None
+    raw_below_threshold = None
+    try:
+        enhanced_resource = enhanced_sim.calculate(
+            "spm_unit_net_income",
+            period=year,
+            map_to="person",
+        )
+        enhanced_threshold = enhanced_sim.calculate(
+            "spm_unit_spm_threshold",
+            period=year,
+            map_to="person",
+        )
+        raw_resource = raw_sim.calculate(
+            "spm_unit_net_income_reported",
+            period=year,
+            map_to="person",
+        )
+        raw_threshold = raw_sim.calculate(
+            "spm_unit_spm_threshold",
+            period=year,
+            map_to="person",
+        )
+        enhanced_below_threshold = enhanced_resource < enhanced_threshold
+        raw_below_threshold = raw_resource < raw_threshold
+    except Exception:
+        pass
+
     for variable, label in SOURCE_REPLICATION_COMPONENTS:
         try:
             enhanced = enhanced_sim.calculate(variable, period=year, map_to="person")
@@ -687,6 +853,9 @@ def _component_mean_gaps(
                     "enhanced_mean": None,
                     "raw_mean": None,
                     "difference": None,
+                    "enhanced_below_threshold_mean": None,
+                    "raw_below_threshold_mean": None,
+                    "below_threshold_difference": None,
                     "error": f"{type(error).__name__}: {error}",
                 }
             )
@@ -694,6 +863,8 @@ def _component_mean_gaps(
 
         enhanced_mean = round(float(enhanced.mean()))
         raw_mean = round(float(raw.mean()))
+        enhanced_below_mean = _masked_mean(enhanced, enhanced_below_threshold)
+        raw_below_mean = _masked_mean(raw, raw_below_threshold)
         gaps.append(
             {
                 "variable": variable,
@@ -702,6 +873,13 @@ def _component_mean_gaps(
                 "enhanced_mean": enhanced_mean,
                 "raw_mean": raw_mean,
                 "difference": enhanced_mean - raw_mean,
+                "enhanced_below_threshold_mean": enhanced_below_mean,
+                "raw_below_threshold_mean": raw_below_mean,
+                "below_threshold_difference": (
+                    enhanced_below_mean - raw_below_mean
+                    if enhanced_below_mean is not None and raw_below_mean is not None
+                    else None
+                ),
             }
         )
 
@@ -710,6 +888,12 @@ def _component_mean_gaps(
         key=lambda row: abs(row["difference"] or 0),
         reverse=True,
     )
+
+
+def _masked_mean(values: MicroSeries, mask: Any | None) -> int | None:
+    if mask is None or float(mask.sum()) == 0:
+        return None
+    return round(float(values[mask].mean()))
 
 
 def _raw_asec_zip_path() -> Path:
@@ -729,13 +913,19 @@ def _raw_asec_person_frame(zip_path: str | Path | None = None) -> pd.DataFrame:
         for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS
         for column in component["raw_columns"]
     }
+    spm_formula_columns = {
+        column
+        for component in CENSUS_SPM_RESOURCE_FORMULA_COMPONENTS
+        for column in component["raw_columns"]
+    }
     usecols = [
         "SPM_ID",
         "A_FNLWGT",
         "PTOTVAL",
         "SPM_TOTVAL",
+        "SPM_RESOURCES",
         "SPM_WEIGHT",
-        *sorted(leaf_columns),
+        *sorted(leaf_columns | spm_formula_columns),
     ]
     path = Path(zip_path) if zip_path is not None else _raw_asec_zip_path()
     with ZipFile(path) as archive:
@@ -782,6 +972,70 @@ def _enhanced_total_income_leaf_mean(
     return round(float(total.mean())), None
 
 
+def _raw_spm_resource_formula_summary(
+    person: pd.DataFrame,
+    unit: pd.DataFrame,
+    enhanced_sim: Any,
+    year: int,
+) -> dict[str, Any]:
+    components: list[dict[str, Any]] = []
+    formula_resource = unit["spm_totval"].copy()
+
+    for component in CENSUS_SPM_RESOURCE_FORMULA_COMPONENTS:
+        raw_columns = list(component["raw_columns"])
+        unit_amount = unit[raw_columns].sum(axis=1)
+        if component["section"] == "addition":
+            formula_resource += unit_amount
+        else:
+            formula_resource -= unit_amount
+
+        raw_values = person[raw_columns].sum(axis=1)
+        raw_mean = round(_weighted_mean(raw_values, person["SPM_WEIGHT"]))
+        enhanced_mean, error = _enhanced_total_income_leaf_mean(
+            enhanced_sim,
+            component["enhanced_variables"],
+            year,
+        )
+        components.append(
+            {
+                "key": component["key"],
+                "label": component["label"],
+                "section": component["section"],
+                "raw_columns": raw_columns,
+                "enhanced_variables": list(component["enhanced_variables"]),
+                "raw_mean": raw_mean,
+                "enhanced_mean": enhanced_mean,
+                "difference": (
+                    enhanced_mean - raw_mean if enhanced_mean is not None else None
+                ),
+                "enhanced_available": enhanced_mean is not None,
+                "note": component.get("note") or error,
+            }
+        )
+
+    components.sort(
+        key=lambda row: abs(row["difference"] or row["raw_mean"] or 0),
+        reverse=True,
+    )
+
+    return {
+        "title": "Raw ASEC SPM resource formula reconstruction",
+        "spm_resources_from_formula": _reconstruction_metrics(
+            formula_resource,
+            unit["spm_resources"],
+            unit["spm_weight"],
+        ),
+        "components": components,
+        "note": (
+            "Public ASEC SPM_RESOURCES is exactly reconstructed as "
+            "SPM_TOTVAL plus refundable federal tax credits and noncash "
+            "benefits, minus federal income tax before refundable credits, "
+            "state tax, FICA, capped work/childcare expenses, medical "
+            "expenses, and child support paid."
+        ),
+    }
+
+
 def compute_total_income_leaf_diagnostics(
     *,
     year: int,
@@ -798,25 +1052,34 @@ def compute_total_income_leaf_diagnostics(
         for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS
         for column in component["raw_columns"]
     ]
+    spm_formula_columns = [
+        column
+        for component in CENSUS_SPM_RESOURCE_FORMULA_COMPONENTS
+        for column in component["raw_columns"]
+    ]
     leaf_sum = person[leaf_columns].sum(axis=1)
-    unit = (
-        pd.DataFrame(
-            {
-                "leaf_income": leaf_sum,
-                "ptotval": person["PTOTVAL"],
-                "spm_totval": person["SPM_TOTVAL"],
-                "spm_weight": person["SPM_WEIGHT"],
-                "spm_id": person["SPM_ID"],
-            }
-        )
-        .groupby("spm_id", sort=False)
-        .agg(
-            leaf_income=("leaf_income", "sum"),
-            ptotval=("ptotval", "sum"),
-            spm_totval=("spm_totval", "first"),
-            spm_weight=("spm_weight", "first"),
-        )
+    unit_input = pd.DataFrame(
+        {
+            "leaf_income": leaf_sum,
+            "ptotval": person["PTOTVAL"],
+            "spm_totval": person["SPM_TOTVAL"],
+            "spm_resources": person["SPM_RESOURCES"],
+            "spm_weight": person["SPM_WEIGHT"],
+            "spm_id": person["SPM_ID"],
+        }
     )
+    for column in spm_formula_columns:
+        unit_input[column] = person[column]
+
+    aggregation: dict[str, Any] = {
+        "leaf_income": ("leaf_income", "sum"),
+        "ptotval": ("ptotval", "sum"),
+        "spm_totval": ("spm_totval", "first"),
+        "spm_resources": ("spm_resources", "first"),
+        "spm_weight": ("spm_weight", "first"),
+    }
+    aggregation.update({column: (column, "first") for column in spm_formula_columns})
+    unit = unit_input.groupby("spm_id", sort=False).agg(**aggregation)
 
     components: list[dict[str, Any]] = []
     for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS:
@@ -872,6 +1135,12 @@ def compute_total_income_leaf_diagnostics(
             unit["leaf_income"],
             unit["spm_totval"],
             unit["spm_weight"],
+        ),
+        "spm_resource_formula": _raw_spm_resource_formula_summary(
+            person,
+            unit,
+            enhanced_sim,
+            year,
         ),
         "component_mean_gaps": components,
         "note": (
@@ -952,6 +1221,37 @@ def compute_source_replication_diagnostics(
             "but ECPS modeled resources are not, the gap is more likely in "
             "the enhanced CPS income distribution, calibration, or imputation "
             "than in individual SPM program rows."
+        ),
+    }
+
+
+def _gap_accounting(
+    *,
+    census_rate: float,
+    modeled_rate: float,
+    corrected_rate: float,
+    raw_rate: float | None,
+) -> dict[str, Any]:
+    modeled_gap = modeled_rate - census_rate
+    omitted_gap_closure = modeled_rate - corrected_rate
+    return {
+        "census_rate": census_rate,
+        "policyengine_modeled_rate": modeled_rate,
+        "policyengine_modeled_gap": modeled_gap,
+        "modeled_plus_omitted_rate": corrected_rate,
+        "remaining_gap_after_omitted_resources": corrected_rate - census_rate,
+        "omitted_resources_gap_closure": omitted_gap_closure,
+        "omitted_resources_share_of_gap": (
+            omitted_gap_closure / modeled_gap if modeled_gap else None
+        ),
+        "raw_cps_reported_rate": raw_rate,
+        "raw_cps_reported_gap": (
+            raw_rate - census_rate if raw_rate is not None else None
+        ),
+        "note": (
+            "Rates are national all-person SPM rates. Omitted-resource "
+            "closure adds child support received and workers' compensation "
+            "arithmetically, without rerunning a microsimulation."
         ),
     }
 
@@ -1038,6 +1338,8 @@ def compute_spm_gap_diagnostics(
         enhanced_sim=sim,
         enhanced_dataset_path=dataset_path,
     )
+    raw_replication = source_replication["sources"]["raw_cps_asec"]
+    raw_rates = raw_replication["rates"] if raw_replication["available"] else None
 
     return {
         "generated_at": datetime.now(UTC).isoformat(),
@@ -1086,6 +1388,12 @@ def compute_spm_gap_diagnostics(
                 "people": 341815362.3148309,
             },
         },
+        "gap_accounting": _gap_accounting(
+            census_rate=census["national"]["all"]["rate"],
+            modeled_rate=checks[0]["all"],
+            corrected_rate=checks[-1]["all"],
+            raw_rate=raw_rates["all"] if raw_rates else None,
+        ),
         "policyengine_2024_checks": checks,
         "policyengine_2024_element_effects": compute_spm_element_effects(
             region_code,

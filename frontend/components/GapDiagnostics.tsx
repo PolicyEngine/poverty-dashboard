@@ -25,7 +25,8 @@ function dollars(value: number | string | null | undefined): string {
   return `$${num(value)}`;
 }
 
-function pp(value: number): string {
+function pp(value: number | null | undefined): string {
+  if (value === null || value === undefined || Number.isNaN(value)) return "—";
   return `${(value * 100).toFixed(1)} pp`;
 }
 
@@ -44,6 +45,7 @@ export function GapDiagnostics({ diagnostics }: Props) {
   const totalIncome = diagnostics.total_income_leaf_diagnostics;
   const rawReplication = sourceReplication?.sources.raw_cps_asec;
   const pe2026 = diagnostics.benchmarks.policyengine_2026_committed;
+  const gap = diagnostics.gap_accounting;
   const thresholds = diagnostics.bls_2024_reference_thresholds.two_adults_two_children;
   const means = diagnostics.policyengine_2024_resource_means;
   const ratioDistribution = diagnostics.threshold_ratio_distribution;
@@ -90,6 +92,68 @@ export function GapDiagnostics({ diagnostics }: Props) {
           </a>
         </div>
       </div>
+
+      {gap ? (
+        <div className="overflow-hidden rounded-lg border border-secondary-200 bg-white shadow-sm">
+          <div className="border-b border-secondary-200 bg-secondary-100 px-4 py-3">
+            <div className="text-sm font-semibold text-secondary-900">
+              National gap accounting
+            </div>
+            <div className="text-xs text-secondary-600">
+              All-person rate differences, percentage points, against Census 2024 SPM.
+            </div>
+          </div>
+          <div className="grid gap-px bg-secondary-200 text-sm md:grid-cols-4">
+            <div className="bg-white p-4">
+              <div className="text-xs uppercase tracking-wider text-secondary-500">
+                Modeled PE gap
+              </div>
+              <div className="mt-1 text-2xl font-semibold text-secondary-900">
+                {pp(gap.policyengine_modeled_gap)}
+              </div>
+              <div className="text-xs text-secondary-500">
+                {pct(gap.policyengine_modeled_rate)} vs {pct(gap.census_rate)}
+              </div>
+            </div>
+            <div className="bg-white p-4">
+              <div className="text-xs uppercase tracking-wider text-secondary-500">
+                Closed by omitted rows
+              </div>
+              <div className="mt-1 text-2xl font-semibold text-secondary-900">
+                {pp(gap.omitted_resources_gap_closure)}
+              </div>
+              <div className="text-xs text-secondary-500">
+                {pct(gap.omitted_resources_share_of_gap)} of modeled gap
+              </div>
+            </div>
+            <div className="bg-white p-4">
+              <div className="text-xs uppercase tracking-wider text-secondary-500">
+                Remaining after omitted
+              </div>
+              <div className="mt-1 text-2xl font-semibold text-secondary-900">
+                {pp(gap.remaining_gap_after_omitted_resources)}
+              </div>
+              <div className="text-xs text-secondary-500">
+                Child support + workers' comp added arithmetically
+              </div>
+            </div>
+            <div className="bg-white p-4">
+              <div className="text-xs uppercase tracking-wider text-secondary-500">
+                Raw CPS reported gap
+              </div>
+              <div className="mt-1 text-2xl font-semibold text-secondary-900">
+                {pp(gap.raw_cps_reported_gap)}
+              </div>
+              <div className="text-xs text-secondary-500">
+                Validation-only Census resources control
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-secondary-200 px-4 py-3 text-xs text-secondary-600">
+            {gap.note}
+          </div>
+        </div>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-lg border border-secondary-200 bg-white p-4 shadow-sm">
@@ -139,6 +203,96 @@ export function GapDiagnostics({ diagnostics }: Props) {
           </div>
         </div>
       </div>
+
+      {sourceReplication ? (
+        <div className="overflow-hidden rounded-lg border border-secondary-200 bg-white shadow-sm">
+          <div className="border-b border-secondary-200 bg-secondary-100 px-4 py-3">
+            <div className="text-sm font-semibold text-secondary-900">
+              Resource distribution shape
+            </div>
+            <div className="text-xs text-secondary-600">
+              Weighted person-level SPM resources and resource-to-threshold quantiles.
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="bg-white">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    Source
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    P05 resource
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    P10 resource
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    Median resource
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    P90 resource
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    P10 ratio
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    &lt;= $0
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                    &lt; threshold
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-secondary-200">
+                {[
+                  sourceReplication.sources.enhanced_cps,
+                  sourceReplication.sources.raw_cps_asec,
+                ].map((source) => {
+                  const distribution = source.resource_distribution;
+                  return (
+                    <tr key={source.key}>
+                      <td className="px-4 py-2">
+                        <div className="font-medium text-secondary-900">
+                          {source.label}
+                        </div>
+                        <div className="text-xs text-secondary-500">
+                          {source.available
+                            ? source.resource_variable
+                            : source.error ?? source.note}
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(distribution?.resource_quantiles.p05)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(distribution?.resource_quantiles.p10)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(distribution?.resource_quantiles.p50)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(distribution?.resource_quantiles.p90)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {distribution
+                          ? distribution.threshold_ratio_quantiles.p10.toFixed(2)
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {pct(distribution?.share_zero_or_below)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {pct(distribution?.share_below_threshold)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : null}
 
       <div className="overflow-hidden rounded-lg border border-secondary-200 bg-white shadow-sm">
         <div className="border-b border-secondary-200 bg-secondary-100 px-4 py-3">
@@ -317,6 +471,9 @@ export function GapDiagnostics({ diagnostics }: Props) {
                     <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
                       Diff
                     </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                      Diff below threshold
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-secondary-200">
@@ -342,6 +499,9 @@ export function GapDiagnostics({ diagnostics }: Props) {
                         <td className="px-4 py-2 text-right tabular-nums">
                           {dollars(row.difference)}
                         </td>
+                        <td className="px-4 py-2 text-right tabular-nums">
+                          {dollars(row.below_threshold_difference)}
+                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -361,11 +521,19 @@ export function GapDiagnostics({ diagnostics }: Props) {
               Raw ASEC SPM_TOTVAL reconstructed from person-level money-income leaves.
             </div>
           </div>
-          <div className="grid gap-px bg-secondary-200 text-sm md:grid-cols-3">
+          <div className="grid gap-px bg-secondary-200 text-sm md:grid-cols-4">
             {[
               ["PTOTVAL from leaves", totalIncome.ptotval_from_person_leaves],
               ["SPM_TOTVAL from PTOTVAL", totalIncome.spm_totval_from_ptotval],
               ["SPM_TOTVAL from leaves", totalIncome.spm_totval_from_person_leaves],
+              ...(totalIncome.spm_resource_formula
+                ? [
+                    [
+                      "SPM_RESOURCES formula",
+                      totalIncome.spm_resource_formula.spm_resources_from_formula,
+                    ],
+                  ]
+                : []),
             ].map(([label, metrics]) => (
               <div key={label as string} className="bg-white p-4">
                 <div className="text-xs uppercase tracking-wider text-secondary-500">
@@ -384,6 +552,68 @@ export function GapDiagnostics({ diagnostics }: Props) {
               </div>
             ))}
           </div>
+          {totalIncome.spm_resource_formula ? (
+            <div className="overflow-x-auto border-t border-secondary-200">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="bg-white">
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-secondary-700">
+                      Census SPM formula component
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-secondary-700">
+                      Treatment
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                      Raw Census
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                      PE
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-secondary-700">
+                      Diff
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-secondary-200">
+                  {totalIncome.spm_resource_formula.components.map((row) => (
+                    <tr key={row.key}>
+                      <td className="px-4 py-2">
+                        <div className="font-medium text-secondary-900">
+                          {row.label}
+                        </div>
+                        <div className="font-mono text-xs text-secondary-500">
+                          {row.raw_columns.join(" + ")}
+                          {row.enhanced_variables.length
+                            ? ` -> ${row.enhanced_variables.join(" + ")}`
+                            : " -> no PE equivalent"}
+                        </div>
+                        {row.note ? (
+                          <div className="max-w-lg text-xs text-secondary-500">
+                            {row.note}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td className="px-4 py-2 text-secondary-700">
+                        {row.section === "addition" ? "Resource" : "Subtraction"}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(row.raw_mean)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(row.enhanced_mean)}
+                      </td>
+                      <td className="px-4 py-2 text-right tabular-nums">
+                        {dollars(row.difference)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="border-t border-secondary-200 px-4 py-3 text-xs text-secondary-600">
+                {totalIncome.spm_resource_formula.note}
+              </div>
+            </div>
+          ) : null}
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>

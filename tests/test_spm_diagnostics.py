@@ -192,7 +192,19 @@ def test__given_raw_cps_reported_resources__then_source_replication_is_compared(
     assert raw["resource_variable"] == "spm_unit_net_income_reported"
     assert enhanced["rates"]["all"] == pytest.approx(1 / 4)
     assert raw["rates"]["all"] == pytest.approx(1 / 4)
+    assert enhanced["resource_distribution"]["share_below_threshold"] == pytest.approx(
+        1 / 4
+    )
+    assert raw["resource_distribution"]["resource_quantiles"]["p50"] == pytest.approx(
+        150
+    )
+    assert raw["resource_distribution"]["threshold_ratio_quantiles"]["p10"] == (
+        pytest.approx(0.8)
+    )
     assert result["component_mean_gaps"][0]["available"]
+    assert result["component_mean_gaps"][0]["below_threshold_difference"] == (
+        pytest.approx(10)
+    )
 
 
 def test__given_raw_cps_not_loadable__then_availability_limitation_is_recorded():
@@ -238,6 +250,7 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
             "A_FNLWGT": [1, 2, 3],
             "SPM_WEIGHT": [3, 3, 3],
             "SPM_TOTVAL": [30, 30, 43],
+            "SPM_RESOURCES": [27, 27, 44],
             "PTOTVAL": [10, 20, 43],
             "WSAL_VAL": [10, 20, 0],
             "PNSN_VAL": [0, 0, 3],
@@ -265,6 +278,27 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
         "WC_VAL",
     ]:
         raw[column] = 0
+    for column in [
+        "SPM_ACTC",
+        "SPM_BBSUBVAL",
+        "SPM_CAPHOUSESUB",
+        "SPM_CAPWKCCXPNS",
+        "SPM_CHILDSUPPD",
+        "SPM_EITC",
+        "SPM_ENGVAL",
+        "SPM_FEDTAXBC",
+        "SPM_FICA",
+        "SPM_MEDXPNS",
+        "SPM_SCHLUNCH",
+        "SPM_SNAPSUB",
+        "SPM_STTAX",
+        "SPM_WICVAL",
+    ]:
+        raw[column] = 0
+    raw["SPM_EITC"] = [5, 5, 0]
+    raw["SPM_FEDTAXBC"] = [8, 8, 0]
+    raw["SPM_SNAPSUB"] = [0, 0, 2]
+    raw["SPM_MEDXPNS"] = [0, 0, 1]
 
     monkeypatch.setattr(
         "poverty_dashboard.spm_diagnostics._raw_asec_person_frame",
@@ -279,7 +313,17 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
 
     # Then
     assert result["spm_totval_from_person_leaves"]["exact_share"] == pytest.approx(1)
+    assert result["spm_resource_formula"]["spm_resources_from_formula"][
+        "exact_share"
+    ] == pytest.approx(1)
     assert result["ptotval_from_person_leaves"]["max_abs_error"] == pytest.approx(0)
+    refundable_credits = next(
+        row
+        for row in result["spm_resource_formula"]["components"]
+        if row["key"] == "refundable_tax_credits"
+    )
+    assert refundable_credits["raw_mean"] == 3
+    assert refundable_credits["enhanced_variables"] == ["eitc", "refundable_ctc"]
     pension = next(
         row for row in result["component_mean_gaps"] if row["key"] == "pension_income"
     )

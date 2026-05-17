@@ -148,8 +148,30 @@ export type SourceReplicationSourceDiagnostic = {
   median_resource: number | null;
   mean_threshold: number | null;
   threshold_ratio_distribution: ThresholdRatioDistribution | null;
+  resource_distribution: ResourceDistributionDiagnostic | null;
   note: string;
   error?: string;
+};
+
+export type QuantileSummary = {
+  p01: number;
+  p05: number;
+  p10: number;
+  p25: number;
+  p50: number;
+  p75: number;
+  p90: number;
+};
+
+export type ResourceDistributionDiagnostic = {
+  resource_quantiles: QuantileSummary;
+  threshold_ratio_quantiles: QuantileSummary;
+  share_below_zero: number;
+  share_zero_or_below: number;
+  share_below_half_threshold: number;
+  share_below_threshold: number;
+  share_from_one_to_two_threshold: number;
+  share_above_four_threshold: number;
 };
 
 export type SourceReplicationDiagnostics = {
@@ -166,6 +188,9 @@ export type SourceReplicationDiagnostics = {
     enhanced_mean: number | null;
     raw_mean: number | null;
     difference: number | null;
+    enhanced_below_threshold_mean: number | null;
+    raw_below_threshold_mean: number | null;
+    below_threshold_difference: number | null;
     error?: string;
   }[];
   note: string;
@@ -180,6 +205,12 @@ export type TotalIncomeLeafDiagnostics = {
   ptotval_from_person_leaves: ReconstructionMetrics;
   spm_totval_from_ptotval: ReconstructionMetrics;
   spm_totval_from_person_leaves: ReconstructionMetrics;
+  spm_resource_formula?: {
+    title: string;
+    spm_resources_from_formula: ReconstructionMetrics;
+    components: RawSpmResourceFormulaComponent[];
+    note: string;
+  };
   component_mean_gaps: {
     key: string;
     label: string;
@@ -192,6 +223,19 @@ export type TotalIncomeLeafDiagnostics = {
     note: string | null;
   }[];
   note: string;
+};
+
+export type RawSpmResourceFormulaComponent = {
+  key: string;
+  label: string;
+  section: "addition" | "subtraction";
+  raw_columns: string[];
+  enhanced_variables: string[];
+  raw_mean: number;
+  enhanced_mean: number | null;
+  difference: number | null;
+  enhanced_available: boolean;
+  note: string | null;
 };
 
 export type ReconstructionMetrics = {
@@ -214,6 +258,18 @@ export type SpmGapDiagnostics = {
       deep_child: number;
       people: number;
     };
+  };
+  gap_accounting?: {
+    census_rate: number;
+    policyengine_modeled_rate: number;
+    policyengine_modeled_gap: number;
+    modeled_plus_omitted_rate: number;
+    remaining_gap_after_omitted_resources: number;
+    omitted_resources_gap_closure: number;
+    omitted_resources_share_of_gap: number | null;
+    raw_cps_reported_rate: number | null;
+    raw_cps_reported_gap: number | null;
+    note: string;
   };
   policyengine_2024_checks: SpmGapCheck[];
   policyengine_2024_element_effects: PolicyEngineSpmEffect[];

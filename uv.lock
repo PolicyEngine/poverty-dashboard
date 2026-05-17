@@ -1042,7 +1042,7 @@ wheels = [
 
 [[package]]
 name = "policyengine-us"
-version = "1.691.11"
+version = "1.691.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "microdf-python" },
@@ -1052,9 +1052,9 @@ dependencies = [
     { name = "tables" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/71/97a646a5351cd203ccd7ed364e20e36bf940722354d52c3f9f3bf4fc4f54/policyengine_us-1.691.11.tar.gz", hash = "sha256:cd60e6e373725a2ccd231b584006de0517c334c554344b4361a238fa18887cbb", size = 9507822, upload-time = "2026-05-16T12:01:17.62Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/c7/0fd113bec6b2b3894232d0d3a5826f626a5ac6c1c74a0e853cf7dfd1eacf/policyengine_us-1.691.13.tar.gz", hash = "sha256:189b66166b19ce5aa8f890f79af80e03f6851cae24cc30d7ac3f477bd1b55033", size = 9509661, upload-time = "2026-05-17T04:16:45.57Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/54/f7a058157dc0e5532ff2fead4169cdf9679141ba2ef98af9173cb652b406/policyengine_us-1.691.11-py3-none-any.whl", hash = "sha256:dc3e110ae7a166e2483d00ea759ab9abb00a0fa4f56bc73b0e601ade2d78c3b6", size = 10022959, upload-time = "2026-05-16T12:01:13.823Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/56/c13e3e0d91e72124fc3839f5d9fff241028efba96fa3edefb227e7275800/policyengine_us-1.691.13-py3-none-any.whl", hash = "sha256:621cc2c98e6f53d69a43b87cceb3c13beff831c6b438e2c15795205765032c41", size = 10026946, upload-time = "2026-05-17T04:16:42.835Z" },
 ]
 
 [[package]]
@@ -1083,7 +1083,7 @@ requires-dist = [
     { name = "microdf-python", specifier = ">=1.3.0" },
     { name = "modal", specifier = ">=0.66.0" },
     { name = "policyengine", specifier = ">=4.5.1" },
-    { name = "policyengine-us", specifier = ">=1.691.11" },
+    { name = "policyengine-us", specifier = ">=1.691.13" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
