@@ -1,4 +1,9 @@
-import type { Baseline, Versions } from "./types";
+import type {
+  Baseline,
+  CensusSpmReport,
+  SpmGapDiagnostics,
+  Versions,
+} from "./types";
 
 const MODAL_BASE_URL = process.env.NEXT_PUBLIC_MODAL_BASE_URL || "";
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -11,6 +16,18 @@ export async function fetchCommittedBaseline(): Promise<Baseline> {
   return r.json();
 }
 
+export async function fetchCensusSpm2024(): Promise<CensusSpmReport> {
+  const r = await fetch(`${BASE_PATH}/census_spm_2024.json`, { cache: "no-store" });
+  if (!r.ok) throw new Error(`census_spm_2024.json fetch failed: ${r.status}`);
+  return r.json();
+}
+
+export async function fetchSpmGapDiagnostics(): Promise<SpmGapDiagnostics> {
+  const r = await fetch(`${BASE_PATH}/spm_gap_diagnostics.json`, { cache: "no-store" });
+  if (!r.ok) throw new Error(`spm_gap_diagnostics.json fetch failed: ${r.status}`);
+  return r.json();
+}
+
 export async function fetchVersions(opts: { upgrade?: boolean } = {}): Promise<Versions> {
   if (!MODAL_BASE_URL) throw new Error("NEXT_PUBLIC_MODAL_BASE_URL not set");
   const url = `${MODAL_BASE_URL}/versions?upgrade=${opts.upgrade ? "true" : "false"}`;
@@ -19,9 +36,13 @@ export async function fetchVersions(opts: { upgrade?: boolean } = {}): Promise<V
   return r.json();
 }
 
-export async function recompute(opts: { upgrade?: boolean } = {}): Promise<Baseline> {
+export async function recompute(opts: { upgrade?: boolean; year?: number } = {}): Promise<Baseline> {
   if (!MODAL_BASE_URL) throw new Error("NEXT_PUBLIC_MODAL_BASE_URL not set");
-  const url = `${MODAL_BASE_URL}/recompute?upgrade=${opts.upgrade ? "true" : "false"}`;
+  const qs = new URLSearchParams({
+    upgrade: opts.upgrade ? "true" : "false",
+    year: String(opts.year ?? 2026),
+  });
+  const url = `${MODAL_BASE_URL}/recompute?${qs}`;
   const r = await fetch(url, { method: "POST" });
   if (!r.ok) throw new Error(`recompute failed: ${r.status}`);
   return r.json();

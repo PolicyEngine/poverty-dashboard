@@ -8,11 +8,12 @@
     "dev": "next dev -p 3010",
     "build": "next build",
     "start": "next start -p 3010",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.9",
-    "next": "15.5.7",
+    "next": "15.5.18",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
@@ -23,5 +24,8 @@
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
   }
 }

@@ -2,11 +2,14 @@
 
 import { useMemo, useState } from "react";
 
-import type { RegionResult } from "@/lib/types";
+import type { CensusSpmReport, RegionResult } from "@/lib/types";
 import { num, pct, shortDataset } from "@/lib/format";
 import { regionLabel, regionStateCode } from "@/lib/api";
 
-type Props = { regions: Record<string, RegionResult> };
+type Props = {
+  regions: Record<string, RegionResult>;
+  census: CensusSpmReport | null;
+};
 
 type SortKey =
   | "label"
@@ -14,6 +17,8 @@ type SortKey =
   | "rates.all"
   | "rates.child"
   | "rates.senior"
+  | "census.spm"
+  | "census.gap"
   | "deep_rates.all"
   | "deep_rates.child"
   | "deep_rates.senior";
@@ -24,33 +29,42 @@ const COLUMNS: { key: SortKey; label: string; numeric: boolean }[] = [
   { key: "rates.all", label: "Poverty", numeric: true },
   { key: "rates.child", label: "Child poverty", numeric: true },
   { key: "rates.senior", label: "Senior poverty", numeric: true },
+  { key: "census.spm", label: "Census SPM", numeric: true },
+  { key: "census.gap", label: "Gap", numeric: true },
   { key: "deep_rates.all", label: "Deep poverty", numeric: true },
   { key: "deep_rates.child", label: "Deep child", numeric: true },
   { key: "deep_rates.senior", label: "Deep senior", numeric: true },
 ];
 
-function pluck(r: RegionResult, key: SortKey): number | string {
+function pluck(
+  r: RegionResult,
+  key: SortKey,
+  census: CensusSpmReport | null,
+): number | string {
+  const censusRate = census?.states_3yr_2022_2024[r.region_code]?.spm_rate;
   switch (key) {
     case "label": return regionLabel(r.region_code);
     case "people": return r.people;
     case "rates.all": return r.rates.all;
     case "rates.child": return r.rates.child;
     case "rates.senior": return r.rates.senior;
+    case "census.spm": return censusRate ?? Number.NEGATIVE_INFINITY;
+    case "census.gap": return censusRate === undefined ? Number.NEGATIVE_INFINITY : r.rates.all - censusRate;
     case "deep_rates.all": return r.deep_rates.all;
     case "deep_rates.child": return r.deep_rates.child;
     case "deep_rates.senior": return r.deep_rates.senior;
   }
 }
 
-export function StateTable({ regions }: Props) {
+export function StateTable({ regions, census }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("rates.child");
   const [desc, setDesc] = useState(true);
 
   const rows = useMemo(() => {
     const states = Object.values(regions).filter((r) => r.region_code !== "us");
     return states.sort((a, b) => {
-      const av = pluck(a, sortKey);
-      const bv = pluck(b, sortKey);
+      const av = pluck(a, sortKey, census);
+      const bv = pluck(b, sortKey, census);
       if (typeof av === "number" && typeof bv === "number") {
         return desc ? bv - av : av - bv;
       }
@@ -58,7 +72,7 @@ export function StateTable({ regions }: Props) {
         ? String(bv).localeCompare(String(av))
         : String(av).localeCompare(String(bv));
     });
-  }, [regions, sortKey, desc]);
+  }, [regions, sortKey, desc, census]);
 
   if (rows.length === 0) {
     return (
@@ -114,6 +128,17 @@ export function StateTable({ regions }: Props) {
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.rates.all)}</td>
               <td className="px-4 py-2 text-right tabular-nums font-medium">{pct(r.rates.child)}</td>
               <td className="px-4 py-2 text-right tabular-nums font-medium">{pct(r.rates.senior)}</td>
+              <td className="px-4 py-2 text-right tabular-nums">
+                {pct(census?.states_3yr_2022_2024[r.region_code]?.spm_rate)}
+              </td>
+              <td className="px-4 py-2 text-right tabular-nums font-medium">
+                {(() => {
+                  const censusRate = census?.states_3yr_2022_2024[r.region_code]?.spm_rate;
+                  return censusRate === undefined
+                    ? "—"
+                    : `${((r.rates.all - censusRate) * 100).toFixed(1)} pp`;
+                })()}
+              </td>
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.deep_rates.all)}</td>
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.deep_rates.child)}</td>
               <td className="px-4 py-2 text-right tabular-nums">{pct(r.deep_rates.senior)}</td>

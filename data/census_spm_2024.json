@@ -1,0 +1,647 @@
+{
+  "report": "Poverty in the United States: 2024",
+  "report_year": 2024,
+  "published": "2025-09",
+  "sources": {
+    "tables_page": "https://www.census.gov/data/tables/2025/demo/income-poverty/p60-287.html",
+    "table_b2": "https://www2.census.gov/programs-surveys/demo/tables/p60/287/tableB-2.xlsx",
+    "table_b5": "https://www2.census.gov/programs-surveys/demo/tables/p60/287/tableB-5.xlsx",
+    "table_b6": "https://www2.census.gov/programs-surveys/demo/tables/p60/287/tableB-6.xlsx",
+    "state_3yr": "https://www2.census.gov/programs-surveys/demo/tables/p60/287/spm_opm_state.xlsx"
+  },
+  "national": {
+    "all": {
+      "population": 337700000,
+      "poverty_count": 43690000,
+      "rate": 0.129,
+      "moe": 0.003
+    },
+    "child": {
+      "population": 72980000,
+      "poverty_count": 9744000,
+      "rate": 0.134,
+      "moe": 0.005
+    },
+    "working_age": {
+      "population": 203200000,
+      "poverty_count": 24720000,
+      "rate": 0.122,
+      "moe": 0.003
+    },
+    "senior": {
+      "population": 61490000,
+      "poverty_count": 9223000,
+      "rate": 0.15,
+      "moe": 0.005
+    }
+  },
+  "threshold_ratio_distribution": {
+    "spm_2024": {
+      "all": {
+        "less_than_0_50": 0.042,
+        "from_0_50_to_0_99": 0.088,
+        "from_1_00_to_1_49": 0.149,
+        "from_1_50_to_1_99": 0.136,
+        "from_2_00_to_3_99": 0.359,
+        "from_4_00_or_more": 0.227
+      },
+      "child": {
+        "less_than_0_50": 0.033,
+        "from_0_50_to_0_99": 0.101,
+        "from_1_00_to_1_49": 0.193,
+        "from_1_50_to_1_99": 0.162,
+        "from_2_00_to_3_99": 0.342,
+        "from_4_00_or_more": 0.169
+      },
+      "working_age": {
+        "less_than_0_50": 0.041,
+        "from_0_50_to_0_99": 0.08,
+        "from_1_00_to_1_49": 0.134,
+        "from_1_50_to_1_99": 0.13,
+        "from_2_00_to_3_99": 0.371,
+        "from_4_00_or_more": 0.243
+      },
+      "senior": {
+        "less_than_0_50": 0.052,
+        "from_0_50_to_0_99": 0.098,
+        "from_1_00_to_1_49": 0.148,
+        "from_1_50_to_1_99": 0.121,
+        "from_2_00_to_3_99": 0.338,
+        "from_4_00_or_more": 0.243
+      }
+    },
+    "source": "Census Table B-5, SPM rows for 2024."
+  },
+  "effects": [
+    {
+      "element": "Social Security",
+      "section": "addition",
+      "all": -0.085,
+      "child": -0.018600000000000002,
+      "working_age": -0.0356,
+      "senior": -0.32689999999999997
+    },
+    {
+      "element": "Refundable tax credits",
+      "section": "addition",
+      "all": -0.02,
+      "child": -0.0508,
+      "working_age": -0.0147,
+      "senior": -0.0013
+    },
+    {
+      "element": "SNAP",
+      "section": "addition",
+      "all": -0.0106,
+      "child": -0.0194,
+      "working_age": -0.0079,
+      "senior": -0.009300000000000001
+    },
+    {
+      "element": "SSI",
+      "section": "addition",
+      "all": -0.0074,
+      "child": -0.0046,
+      "working_age": -0.0079,
+      "senior": -0.0087
+    },
+    {
+      "element": "Refundable Child Tax Credit",
+      "section": "addition",
+      "all": -0.0073,
+      "child": -0.020099999999999996,
+      "working_age": -0.004699999999999999,
+      "senior": -0.0005
+    },
+    {
+      "element": "Housing subsidies",
+      "section": "addition",
+      "all": -0.0063,
+      "child": -0.0087,
+      "working_age": -0.0044,
+      "senior": -0.0097
+    },
+    {
+      "element": "School lunch",
+      "section": "addition",
+      "all": -0.0034000000000000002,
+      "child": -0.0091,
+      "working_age": -0.0021,
+      "senior": -0.0006
+    },
+    {
+      "element": "Child support received",
+      "section": "addition",
+      "all": -0.0018,
+      "child": -0.005,
+      "working_age": -0.0012,
+      "senior": null
+    },
+    {
+      "element": "Unemployment insurance",
+      "section": "addition",
+      "all": -0.0013,
+      "child": -0.0017000000000000001,
+      "working_age": -0.0012,
+      "senior": -0.001
+    },
+    {
+      "element": "TANF/general assistance",
+      "section": "addition",
+      "all": -0.0011,
+      "child": -0.0025,
+      "working_age": -0.0008,
+      "senior": -0.0002
+    },
+    {
+      "element": "WIC",
+      "section": "addition",
+      "all": -0.0009,
+      "child": -0.0028000000000000004,
+      "working_age": -0.0005,
+      "senior": -0.0001
+    },
+    {
+      "element": "Utility assistance",
+      "section": "addition",
+      "all": -0.0008,
+      "child": -0.0008,
+      "working_age": -0.0006,
+      "senior": -0.0014000000000000002
+    },
+    {
+      "element": "Energy assistance",
+      "section": "addition",
+      "all": -0.0007000000000000001,
+      "child": -0.0008,
+      "working_age": -0.0005,
+      "senior": -0.0013
+    },
+    {
+      "element": "Workers' compensation",
+      "section": "addition",
+      "all": -0.0006,
+      "child": -0.0009,
+      "working_age": -0.0006,
+      "senior": -0.0003
+    },
+    {
+      "element": "Broadband Assistance",
+      "section": "addition",
+      "all": -0.0001,
+      "child": -0.0001,
+      "working_age": null,
+      "senior": -0.0003
+    },
+    {
+      "element": "Child support paid",
+      "section": "subtraction",
+      "all": 0.0006,
+      "child": 0.0006,
+      "working_age": 0.0007000000000000001,
+      "senior": null
+    },
+    {
+      "element": "Federal income tax",
+      "section": "subtraction",
+      "all": 0.0042,
+      "child": 0.003,
+      "working_age": 0.005,
+      "senior": 0.0027
+    },
+    {
+      "element": "Work expenses",
+      "section": "subtraction",
+      "all": 0.011699999999999999,
+      "child": 0.0179,
+      "working_age": 0.0118,
+      "senior": 0.0039000000000000003
+    },
+    {
+      "element": "FICA",
+      "section": "subtraction",
+      "all": 0.0134,
+      "child": 0.019799999999999998,
+      "working_age": 0.013999999999999999,
+      "senior": 0.004
+    },
+    {
+      "element": "Medical expenses",
+      "section": "subtraction",
+      "all": 0.0222,
+      "child": 0.0209,
+      "working_age": 0.018000000000000002,
+      "senior": 0.0373
+    }
+  ],
+  "states_3yr_2022_2024": {
+    "state/al": {
+      "name": "Alabama",
+      "official_rate": 0.147,
+      "official_count": 738000,
+      "spm_rate": 0.135,
+      "spm_count": 679000,
+      "rate_difference": -0.012
+    },
+    "state/ak": {
+      "name": "Alaska",
+      "official_rate": 0.09699999999999999,
+      "official_count": 69000,
+      "spm_rate": 0.10400000000000001,
+      "spm_count": 74000,
+      "rate_difference": 0.006999999999999999
+    },
+    "state/az": {
+      "name": "Arizona",
+      "official_rate": 0.11599999999999999,
+      "official_count": 849000,
+      "spm_rate": 0.129,
+      "spm_count": 950000,
+      "rate_difference": 0.013999999999999999
+    },
+    "state/ar": {
+      "name": "Arkansas",
+      "official_rate": 0.145,
+      "official_count": 437000,
+      "spm_rate": 0.136,
+      "spm_count": 410000,
+      "rate_difference": -0.009000000000000001
+    },
+    "state/ca": {
+      "name": "California",
+      "official_rate": 0.11199999999999999,
+      "official_count": 4344000,
+      "spm_rate": 0.177,
+      "spm_count": 6883000,
+      "rate_difference": 0.065
+    },
+    "state/co": {
+      "name": "Colorado",
+      "official_rate": 0.081,
+      "official_count": 471000,
+      "spm_rate": 0.10300000000000001,
+      "spm_count": 604000,
+      "rate_difference": 0.023
+    },
+    "state/ct": {
+      "name": "Connecticut",
+      "official_rate": 0.092,
+      "official_count": 334000,
+      "spm_rate": 0.099,
+      "spm_count": 358000,
+      "rate_difference": 0.006999999999999999
+    },
+    "state/de": {
+      "name": "Delaware",
+      "official_rate": 0.085,
+      "official_count": 88000,
+      "spm_rate": 0.09300000000000001,
+      "spm_count": 97000,
+      "rate_difference": 0.008
+    },
+    "state/dc": {
+      "name": "District of Columbia",
+      "official_rate": 0.124,
+      "official_count": 84000,
+      "spm_rate": 0.153,
+      "spm_count": 103000,
+      "rate_difference": 0.028999999999999998
+    },
+    "state/fl": {
+      "name": "Florida",
+      "official_rate": 0.121,
+      "official_count": 2767000,
+      "spm_rate": 0.16,
+      "spm_count": 3660000,
+      "rate_difference": 0.039
+    },
+    "state/ga": {
+      "name": "Georgia",
+      "official_rate": 0.124,
+      "official_count": 1372000,
+      "spm_rate": 0.135,
+      "spm_count": 1494000,
+      "rate_difference": 0.011000000000000001
+    },
+    "state/hi": {
+      "name": "Hawaii",
+      "official_rate": 0.086,
+      "official_count": 122000,
+      "spm_rate": 0.10800000000000001,
+      "spm_count": 154000,
+      "rate_difference": 0.023
+    },
+    "state/id": {
+      "name": "Idaho",
+      "official_rate": 0.085,
+      "official_count": 167000,
+      "spm_rate": 0.084,
+      "spm_count": 164000,
+      "rate_difference": -0.002
+    },
+    "state/il": {
+      "name": "Illinois",
+      "official_rate": 0.10300000000000001,
+      "official_count": 1291000,
+      "spm_rate": 0.111,
+      "spm_count": 1389000,
+      "rate_difference": 0.008
+    },
+    "state/in": {
+      "name": "Indiana",
+      "official_rate": 0.091,
+      "official_count": 621000,
+      "spm_rate": 0.09300000000000001,
+      "spm_count": 638000,
+      "rate_difference": 0.002
+    },
+    "state/ia": {
+      "name": "Iowa",
+      "official_rate": 0.084,
+      "official_count": 270000,
+      "spm_rate": 0.077,
+      "spm_count": 247000,
+      "rate_difference": -0.006999999999999999
+    },
+    "state/ks": {
+      "name": "Kansas",
+      "official_rate": 0.08900000000000001,
+      "official_count": 260000,
+      "spm_rate": 0.091,
+      "spm_count": 263000,
+      "rate_difference": 0.001
+    },
+    "state/ky": {
+      "name": "Kentucky",
+      "official_rate": 0.155,
+      "official_count": 696000,
+      "spm_rate": 0.14300000000000002,
+      "spm_count": 645000,
+      "rate_difference": -0.011000000000000001
+    },
+    "state/la": {
+      "name": "Louisiana",
+      "official_rate": 0.19399999999999998,
+      "official_count": 880000,
+      "spm_rate": 0.177,
+      "spm_count": 802000,
+      "rate_difference": -0.017
+    },
+    "state/me": {
+      "name": "Maine",
+      "official_rate": 0.081,
+      "official_count": 113000,
+      "spm_rate": 0.067,
+      "spm_count": 93000,
+      "rate_difference": -0.013999999999999999
+    },
+    "state/md": {
+      "name": "Maryland",
+      "official_rate": 0.083,
+      "official_count": 516000,
+      "spm_rate": 0.11199999999999999,
+      "spm_count": 699000,
+      "rate_difference": 0.028999999999999998
+    },
+    "state/ma": {
+      "name": "Massachusetts",
+      "official_rate": 0.092,
+      "official_count": 639000,
+      "spm_rate": 0.11699999999999999,
+      "spm_count": 812000,
+      "rate_difference": 0.025
+    },
+    "state/mi": {
+      "name": "Michigan",
+      "official_rate": 0.11900000000000001,
+      "official_count": 1186000,
+      "spm_rate": 0.105,
+      "spm_count": 1050000,
+      "rate_difference": -0.013999999999999999
+    },
+    "state/mn": {
+      "name": "Minnesota",
+      "official_rate": 0.07200000000000001,
+      "official_count": 416000,
+      "spm_rate": 0.075,
+      "spm_count": 434000,
+      "rate_difference": 0.003
+    },
+    "state/ms": {
+      "name": "Mississippi",
+      "official_rate": 0.174,
+      "official_count": 506000,
+      "spm_rate": 0.16399999999999998,
+      "spm_count": 477000,
+      "rate_difference": -0.01
+    },
+    "state/mo": {
+      "name": "Missouri",
+      "official_rate": 0.102,
+      "official_count": 626000,
+      "spm_rate": 0.1,
+      "spm_count": 616000,
+      "rate_difference": -0.002
+    },
+    "state/mt": {
+      "name": "Montana",
+      "official_rate": 0.087,
+      "official_count": 98000,
+      "spm_rate": 0.094,
+      "spm_count": 106000,
+      "rate_difference": 0.006999999999999999
+    },
+    "state/ne": {
+      "name": "Nebraska",
+      "official_rate": 0.08,
+      "official_count": 157000,
+      "spm_rate": 0.08199999999999999,
+      "spm_count": 162000,
+      "rate_difference": 0.002
+    },
+    "state/nv": {
+      "name": "Nevada",
+      "official_rate": 0.126,
+      "official_count": 409000,
+      "spm_rate": 0.147,
+      "spm_count": 477000,
+      "rate_difference": 0.021
+    },
+    "state/nh": {
+      "name": "New Hampshire",
+      "official_rate": 0.068,
+      "official_count": 93000,
+      "spm_rate": 0.086,
+      "spm_count": 119000,
+      "rate_difference": 0.019
+    },
+    "state/nj": {
+      "name": "New Jersey",
+      "official_rate": 0.091,
+      "official_count": 843000,
+      "spm_rate": 0.124,
+      "spm_count": 1143000,
+      "rate_difference": 0.032
+    },
+    "state/nm": {
+      "name": "New Mexico",
+      "official_rate": 0.172,
+      "official_count": 363000,
+      "spm_rate": 0.124,
+      "spm_count": 261000,
+      "rate_difference": -0.048
+    },
+    "state/ny": {
+      "name": "New York",
+      "official_rate": 0.11599999999999999,
+      "official_count": 2258000,
+      "spm_rate": 0.14400000000000002,
+      "spm_count": 2793000,
+      "rate_difference": 0.027999999999999997
+    },
+    "state/nc": {
+      "name": "North Carolina",
+      "official_rate": 0.14,
+      "official_count": 1513000,
+      "spm_rate": 0.14,
+      "spm_count": 1516000,
+      "rate_difference": null
+    },
+    "state/nd": {
+      "name": "North Dakota",
+      "official_rate": 0.09300000000000001,
+      "official_count": 72000,
+      "spm_rate": 0.08199999999999999,
+      "spm_count": 63000,
+      "rate_difference": -0.011000000000000001
+    },
+    "state/oh": {
+      "name": "Ohio",
+      "official_rate": 0.105,
+      "official_count": 1220000,
+      "spm_rate": 0.09300000000000001,
+      "spm_count": 1077000,
+      "rate_difference": -0.012
+    },
+    "state/ok": {
+      "name": "Oklahoma",
+      "official_rate": 0.13699999999999998,
+      "official_count": 544000,
+      "spm_rate": 0.11599999999999999,
+      "spm_count": 460000,
+      "rate_difference": -0.021
+    },
+    "state/or": {
+      "name": "Oregon",
+      "official_rate": 0.096,
+      "official_count": 409000,
+      "spm_rate": 0.111,
+      "spm_count": 472000,
+      "rate_difference": 0.015
+    },
+    "state/pa": {
+      "name": "Pennsylvania",
+      "official_rate": 0.102,
+      "official_count": 1304000,
+      "spm_rate": 0.106,
+      "spm_count": 1352000,
+      "rate_difference": 0.004
+    },
+    "state/ri": {
+      "name": "Rhode Island",
+      "official_rate": 0.09300000000000001,
+      "official_count": 101000,
+      "spm_rate": 0.091,
+      "spm_count": 99000,
+      "rate_difference": -0.002
+    },
+    "state/sc": {
+      "name": "South Carolina",
+      "official_rate": 0.11900000000000001,
+      "official_count": 639000,
+      "spm_rate": 0.11699999999999999,
+      "spm_count": 628000,
+      "rate_difference": -0.002
+    },
+    "state/sd": {
+      "name": "South Dakota",
+      "official_rate": 0.086,
+      "official_count": 77000,
+      "spm_rate": 0.079,
+      "spm_count": 71000,
+      "rate_difference": -0.006999999999999999
+    },
+    "state/tn": {
+      "name": "Tennessee",
+      "official_rate": 0.10099999999999999,
+      "official_count": 716000,
+      "spm_rate": 0.10099999999999999,
+      "spm_count": 717000,
+      "rate_difference": null
+    },
+    "state/tx": {
+      "name": "Texas",
+      "official_rate": 0.12300000000000001,
+      "official_count": 3731000,
+      "spm_rate": 0.14300000000000002,
+      "spm_count": 4356000,
+      "rate_difference": 0.021
+    },
+    "state/ut": {
+      "name": "Utah",
+      "official_rate": 0.066,
+      "official_count": 226000,
+      "spm_rate": 0.084,
+      "spm_count": 288000,
+      "rate_difference": 0.018000000000000002
+    },
+    "state/vt": {
+      "name": "Vermont",
+      "official_rate": 0.076,
+      "official_count": 49000,
+      "spm_rate": 0.095,
+      "spm_count": 61000,
+      "rate_difference": 0.019
+    },
+    "state/va": {
+      "name": "Virginia",
+      "official_rate": 0.086,
+      "official_count": 741000,
+      "spm_rate": 0.105,
+      "spm_count": 903000,
+      "rate_difference": 0.019
+    },
+    "state/wa": {
+      "name": "Washington",
+      "official_rate": 0.092,
+      "official_count": 723000,
+      "spm_rate": 0.10800000000000001,
+      "spm_count": 848000,
+      "rate_difference": 0.016
+    },
+    "state/wv": {
+      "name": "West Virginia",
+      "official_rate": 0.139,
+      "official_count": 243000,
+      "spm_rate": 0.125,
+      "spm_count": 218000,
+      "rate_difference": -0.013999999999999999
+    },
+    "state/wi": {
+      "name": "Wisconsin",
+      "official_rate": 0.083,
+      "official_count": 481000,
+      "spm_rate": 0.077,
+      "spm_count": 446000,
+      "rate_difference": -0.006
+    },
+    "state/wy": {
+      "name": "Wyoming",
+      "official_rate": 0.081,
+      "official_count": 46000,
+      "spm_rate": 0.083,
+      "spm_count": 47000,
+      "rate_difference": 0.003
+    }
+  }
+}

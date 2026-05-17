@@ -8,8 +8,8 @@ Two pieces: a Modal app (Python backend that runs simulations) and a Vercel app
 Deploy from the repo root:
 
 ```bash
-pip install -e .
-modal deploy modal_app.py
+make install-python
+uv run modal deploy modal_app.py
 ```
 
 Modal will print a `web_app` URL like `https://policyengine--poverty-dashboard-web-app.modal.run`.
@@ -20,7 +20,7 @@ The backend exposes:
 - `GET  /health`
 - `GET  /baseline` — returns the JSON committed to the repo (only useful as a fallback)
 - `GET  /versions?upgrade=true|false` — installed PolicyEngine package versions
-- `POST /recompute?upgrade=true|false` — fan out across 51 regions, return fresh baseline JSON
+- `POST /recompute?upgrade=true|false&year=2024|2025|2026` — fan out across regions, return fresh baseline JSON
 
 ## 2. Vercel — frontend
 
@@ -48,6 +48,7 @@ npm run dev    # http://localhost:3010
 For local computes without Modal:
 
 ```bash
-python -m scripts.compute_local us              # federal only
-python -m scripts.compute_local --all           # all 52 regions (~30 min)
+uv run python -m poverty_dashboard.compute_local us      # federal only
+uv run python -m poverty_dashboard.compute_local --year 2024 us
+uv run python -m poverty_dashboard.compute_local --all   # all 52 regions (~30 min)
 ```

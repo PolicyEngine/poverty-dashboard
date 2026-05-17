@@ -14,7 +14,7 @@ export function Header() {
             src="/assets/logos/policyengine-white.svg"
             alt="PolicyEngine"
             width={140}
-            height={24}
+            height={29}
             priority
           />
         </a>

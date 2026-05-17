@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { fetchCommittedBaseline, fetchVersions, recompute } from "@/lib/api";
+import {
+  fetchCensusSpm2024,
+  fetchCommittedBaseline,
+  fetchSpmGapDiagnostics,
+  fetchVersions,
+  recompute,
+} from "@/lib/api";
 import type { Baseline } from "@/lib/types";
 import { FederalCard } from "@/components/FederalCard";
 import { StateTable } from "@/components/StateTable";
 import { VersionBar } from "@/components/VersionBar";
 import { DownloadJSONButton } from "@/components/DownloadJSONButton";
+import { CensusEffects } from "@/components/CensusEffects";
+import { GapDiagnostics } from "@/components/GapDiagnostics";
 
 const EMPTY_BASELINE: Baseline = {
   generated_at: null,
@@ -18,14 +26,33 @@ const EMPTY_BASELINE: Baseline = {
   errors: [],
 };
 
+const AVAILABLE_YEARS = [2024, 2025, 2026];
+
 export default function Page() {
+  const [selectedYear, setSelectedYear] = useState(2026);
   const committedQuery = useQuery({
     queryKey: ["committed-baseline"],
     queryFn: fetchCommittedBaseline,
     retry: false,
   });
   const [override, setOverride] = useState<Baseline | null>(null);
-  const baseline = override ?? committedQuery.data ?? EMPTY_BASELINE;
+  const sourceBaseline = override ?? committedQuery.data ?? EMPTY_BASELINE;
+  const baseline =
+    sourceBaseline.year === selectedYear
+      ? sourceBaseline
+      : { ...EMPTY_BASELINE, year: selectedYear };
+
+  const censusQuery = useQuery({
+    queryKey: ["census-spm-2024"],
+    queryFn: fetchCensusSpm2024,
+    retry: false,
+  });
+
+  const diagnosticsQuery = useQuery({
+    queryKey: ["spm-gap-diagnostics"],
+    queryFn: fetchSpmGapDiagnostics,
+    retry: false,
+  });
 
   const versionsQuery = useQuery({
     queryKey: ["versions"],
@@ -35,7 +62,8 @@ export default function Page() {
   });
 
   const recomputeMut = useMutation({
-    mutationFn: ({ upgrade }: { upgrade: boolean }) => recompute({ upgrade }),
+    mutationFn: ({ upgrade, year }: { upgrade: boolean; year: number }) =>
+      recompute({ upgrade, year }),
     onSuccess: (data) => setOverride(data),
   });
 
@@ -47,12 +75,18 @@ export default function Page() {
       <VersionBar
         committed={baseline.versions}
         generatedAt={baseline.generated_at}
+        selectedYear={selectedYear}
+        availableYears={AVAILABLE_YEARS}
         live={versionsQuery.data ?? null}
         liveLoading={versionsQuery.isFetching}
         liveError={versionsQuery.error ? String(versionsQuery.error) : null}
+        onYearChange={(year) => {
+          setSelectedYear(year);
+          setOverride(null);
+        }}
         onRefreshVersions={() => versionsQuery.refetch()}
-        onRecompute={() => recomputeMut.mutate({ upgrade: false })}
-        onRecomputeUpgrade={() => recomputeMut.mutate({ upgrade: true })}
+        onRecompute={() => recomputeMut.mutate({ upgrade: false, year: selectedYear })}
+        onRecomputeUpgrade={() => recomputeMut.mutate({ upgrade: true, year: selectedYear })}
         recomputing={recomputeMut.isPending}
       />
 
@@ -72,7 +106,18 @@ export default function Page() {
         </div>
       )}
 
-      <FederalCard federal={federal} />
+      <FederalCard
+        federal={federal}
+        year={selectedYear}
+        census={censusQuery.data ?? null}
+      />
+
+      <GapDiagnostics diagnostics={diagnosticsQuery.data ?? null} />
+
+      <CensusEffects
+        census={censusQuery.data ?? null}
+        diagnostics={diagnosticsQuery.data ?? null}
+      />
 
       <section className="space-y-2">
         <div className="flex items-baseline justify-between">
@@ -83,7 +128,10 @@ export default function Page() {
             </span>
           )}
         </div>
-        <StateTable regions={baseline.regions} />
+        <StateTable
+          regions={baseline.regions}
+          census={censusQuery.data ?? null}
+        />
       </section>
 
       {errorCount > 0 && (
