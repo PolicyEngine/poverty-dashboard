@@ -69,7 +69,10 @@ class FlexibleSimulation:
         assert map_to == "person"
         values = {
             "employment_income": [10, 20],
-            "pension_income": [3, 0],
+            "taxable_private_pension_income": [2, 0],
+            "tax_exempt_private_pension_income": [1, 0],
+            "taxable_public_pension_income": [0, 0],
+            "tax_exempt_public_pension_income": [0, 0],
             "miscellaneous_income": [4, 0],
             "alimony_income": [1, 1],
             "strike_benefits": [0, 2],
@@ -329,6 +332,12 @@ def test__given_raw_asec_leaves__then_spm_totval_is_reconstructed(monkeypatch):
     )
     assert pension["raw_mean"] == 4
     assert pension["enhanced_mean"] == 2
+    assert pension["enhanced_variables"] == [
+        "taxable_private_pension_income",
+        "tax_exempt_private_pension_income",
+        "taxable_public_pension_income",
+        "tax_exempt_public_pension_income",
+    ]
     other = next(
         row for row in result["component_mean_gaps"] if row["key"] == "other_income"
     )

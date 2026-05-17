@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { SpmGapDiagnostics, ThresholdRatioDistribution } from "@/lib/types";
-import { num, pct } from "@/lib/format";
+import { dollars, num, pct } from "@/lib/format";
 
 type Props = {
   diagnostics: SpmGapDiagnostics | null;
@@ -19,11 +19,6 @@ const AGE_COLUMNS: {
   { key: "working_age", label: "18-64", description: "Ages 18 to 64" },
   { key: "senior", label: "65+", description: "Ages 65 and older" },
 ];
-
-function dollars(value: number | string | null | undefined): string {
-  if (typeof value !== "number") return "—";
-  return `$${num(value)}`;
-}
 
 function pp(value: number | null | undefined): string {
   if (value === null || value === undefined || Number.isNaN(value)) return "—";

@@ -79,6 +79,7 @@ RESOURCE_MEAN_VARIABLES: tuple[str, ...] = (
     "spm_unit_taxes",
     "spm_unit_spm_expenses",
     "spm_unit_medical_out_of_pocket_expenses",
+    "pension_income",
     "child_support_received",
     "workers_compensation",
     "miscellaneous_income",
@@ -87,6 +88,8 @@ RESOURCE_MEAN_VARIABLES: tuple[str, ...] = (
     "educational_assistance",
     "financial_assistance",
     "survivor_benefits",
+    "spm_unit_capped_housing_subsidy",
+    "housing_assistance",
     "spm_unit_energy_subsidy",
 )
 
@@ -175,7 +178,12 @@ CPS_TOTAL_INCOME_LEAF_COMPONENTS: tuple[dict[str, Any], ...] = (
         "key": "pension_income",
         "label": "Pensions and annuities",
         "raw_columns": ("PNSN_VAL", "ANN_VAL"),
-        "enhanced_variables": ("pension_income",),
+        "enhanced_variables": (
+            "taxable_private_pension_income",
+            "tax_exempt_private_pension_income",
+            "taxable_public_pension_income",
+            "tax_exempt_public_pension_income",
+        ),
     },
     {
         "key": "other_income",
@@ -493,15 +501,15 @@ def _rate_check(label: str, poverty_status: Any, age: MicroSeries, note: str) ->
     }
 
 
-def _resource_means(sim: Any, year: int) -> dict[str, int | str]:
-    means: dict[str, int | str] = {}
+def _resource_means(sim: Any, year: int) -> dict[str, float | str]:
+    means: dict[str, float | str] = {}
     for variable in RESOURCE_MEAN_VARIABLES:
         try:
             value = sim.calculate(variable, period=year, map_to="person")
         except Exception as error:
             means[variable] = f"{type(error).__name__}: {error}"
             continue
-        means[variable] = round(float(value.mean()))
+        means[variable] = _round_mean_amount(float(value.mean()))
     means["note"] = "Weighted person-average values after mapping variables to people."
     return means
 
@@ -937,6 +945,14 @@ def _weighted_mean(values: Any, weights: Any) -> float:
     return float(MicroSeries(values, weights=weights).mean())
 
 
+def _round_mean_amount(value: float) -> float:
+    if value == 0:
+        return 0
+    if abs(value) < 1:
+        return round(value, 2)
+    return round(value)
+
+
 def _reconstruction_metrics(values: Any, target: Any, weights: Any) -> dict[str, Any]:
     residual = pd.Series(values).to_numpy(dtype=float) - pd.Series(target).to_numpy(
         dtype=float
@@ -969,7 +985,7 @@ def _enhanced_total_income_leaf_mean(
 
     if total is None:
         return None, "No PolicyEngine variables configured."
-    return round(float(total.mean())), None
+    return _round_mean_amount(float(total.mean())), None
 
 
 def _raw_spm_resource_formula_summary(
@@ -990,7 +1006,7 @@ def _raw_spm_resource_formula_summary(
             formula_resource -= unit_amount
 
         raw_values = person[raw_columns].sum(axis=1)
-        raw_mean = round(_weighted_mean(raw_values, person["SPM_WEIGHT"]))
+        raw_mean = _round_mean_amount(_weighted_mean(raw_values, person["SPM_WEIGHT"]))
         enhanced_mean, error = _enhanced_total_income_leaf_mean(
             enhanced_sim,
             component["enhanced_variables"],
@@ -1084,7 +1100,7 @@ def compute_total_income_leaf_diagnostics(
     components: list[dict[str, Any]] = []
     for component in CPS_TOTAL_INCOME_LEAF_COMPONENTS:
         raw_values = person[list(component["raw_columns"])].sum(axis=1)
-        raw_mean = round(_weighted_mean(raw_values, person["A_FNLWGT"]))
+        raw_mean = _round_mean_amount(_weighted_mean(raw_values, person["A_FNLWGT"]))
         enhanced_mean, error = _enhanced_total_income_leaf_mean(
             enhanced_sim,
             component["enhanced_variables"],

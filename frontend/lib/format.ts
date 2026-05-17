@@ -8,6 +8,12 @@ export function num(x: number | null | undefined): string {
   return new Intl.NumberFormat("en-US").format(Math.round(x));
 }
 
+export function dollars(x: number | string | null | undefined): string {
+  if (typeof x !== "number" || Number.isNaN(x)) return "—";
+  if (x !== 0 && Math.abs(x) < 1) return `$${x.toFixed(2)}`;
+  return `$${num(x)}`;
+}
+
 export function shortDataset(path: string | null | undefined): string {
   if (!path) return "—";
   return path.replace("hf://policyengine/policyengine-us-data/", "");
