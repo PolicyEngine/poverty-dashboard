@@ -39,7 +39,7 @@ export function PageHeader() {
     <div className="border-b border-secondary-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-semibold tracking-tight text-secondary-900">
-          Baseline poverty dashboard
+          2024 SPM comparison dashboard
         </h1>
       </div>
     </div>

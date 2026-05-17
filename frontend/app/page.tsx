@@ -17,6 +17,7 @@ import { VersionBar } from "@/components/VersionBar";
 import { DownloadJSONButton } from "@/components/DownloadJSONButton";
 import { CensusEffects } from "@/components/CensusEffects";
 import { GapDiagnostics } from "@/components/GapDiagnostics";
+import { Census2024Focus } from "@/components/Census2024Focus";
 
 const EMPTY_BASELINE: Baseline = {
   generated_at: null,
@@ -29,7 +30,7 @@ const EMPTY_BASELINE: Baseline = {
 const AVAILABLE_YEARS = [2024, 2025, 2026];
 
 export default function Page() {
-  const [selectedYear, setSelectedYear] = useState(2026);
+  const [exploreYear, setExploreYear] = useState(2026);
   const committedQuery = useQuery({
     queryKey: ["committed-baseline"],
     queryFn: fetchCommittedBaseline,
@@ -38,9 +39,9 @@ export default function Page() {
   const [override, setOverride] = useState<Baseline | null>(null);
   const sourceBaseline = override ?? committedQuery.data ?? EMPTY_BASELINE;
   const baseline =
-    sourceBaseline.year === selectedYear
+    sourceBaseline.year === exploreYear
       ? sourceBaseline
-      : { ...EMPTY_BASELINE, year: selectedYear };
+      : { ...EMPTY_BASELINE, year: exploreYear };
 
   const censusQuery = useQuery({
     queryKey: ["census-spm-2024"],
@@ -72,44 +73,9 @@ export default function Page() {
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-      <VersionBar
-        committed={baseline.versions}
-        generatedAt={baseline.generated_at}
-        selectedYear={selectedYear}
-        availableYears={AVAILABLE_YEARS}
-        live={versionsQuery.data ?? null}
-        liveLoading={versionsQuery.isFetching}
-        liveError={versionsQuery.error ? String(versionsQuery.error) : null}
-        onYearChange={(year) => {
-          setSelectedYear(year);
-          setOverride(null);
-        }}
-        onRefreshVersions={() => versionsQuery.refetch()}
-        onRecompute={() => recomputeMut.mutate({ upgrade: false, year: selectedYear })}
-        onRecomputeUpgrade={() => recomputeMut.mutate({ upgrade: true, year: selectedYear })}
-        recomputing={recomputeMut.isPending}
-      />
-
-      {recomputeMut.isError && (
-        <div className="rounded-md border border-error/30 bg-error/5 px-4 py-3 text-sm text-error">
-          Recompute failed: {String(recomputeMut.error)}
-        </div>
-      )}
-
-      {override && (
-        <div className="flex items-center justify-between rounded-md border border-primary-300 bg-primary-50 px-4 py-3 text-sm text-primary-800">
-          <span>
-            Showing freshly computed numbers (not yet committed). Generated{" "}
-            {override.generated_at}.
-          </span>
-          <DownloadJSONButton baseline={override} />
-        </div>
-      )}
-
-      <FederalCard
-        federal={federal}
-        year={selectedYear}
+      <Census2024Focus
         census={censusQuery.data ?? null}
+        diagnostics={diagnosticsQuery.data ?? null}
       />
 
       <GapDiagnostics diagnostics={diagnosticsQuery.data ?? null} />
@@ -119,35 +85,88 @@ export default function Page() {
         diagnostics={diagnosticsQuery.data ?? null}
       />
 
-      <section className="space-y-2">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-lg font-semibold text-secondary-900">By state</h2>
-          {errorCount > 0 && (
-            <span className="text-xs text-error">
-              {errorCount} region{errorCount === 1 ? "" : "s"} failed
-            </span>
-          )}
+      <section className="space-y-4 border-t border-secondary-200 pt-6">
+        <div>
+          <h2 className="text-lg font-semibold text-secondary-900">
+            Explore other years
+          </h2>
+          <div className="text-sm text-secondary-600">
+            Baseline poverty runs for non-Census-comparison years.
+          </div>
         </div>
-        <StateTable
-          regions={baseline.regions}
+
+        <VersionBar
+          committed={baseline.versions}
+          generatedAt={baseline.generated_at}
+          selectedYear={exploreYear}
+          availableYears={AVAILABLE_YEARS}
+          live={versionsQuery.data ?? null}
+          liveLoading={versionsQuery.isFetching}
+          liveError={versionsQuery.error ? String(versionsQuery.error) : null}
+          onYearChange={(year) => {
+            setExploreYear(year);
+            setOverride(null);
+          }}
+          onRefreshVersions={() => versionsQuery.refetch()}
+          onRecompute={() => recomputeMut.mutate({ upgrade: false, year: exploreYear })}
+          onRecomputeUpgrade={() =>
+            recomputeMut.mutate({ upgrade: true, year: exploreYear })
+          }
+          recomputing={recomputeMut.isPending}
+        />
+
+        {recomputeMut.isError && (
+          <div className="rounded-md border border-error/30 bg-error/5 px-4 py-3 text-sm text-error">
+            Recompute failed: {String(recomputeMut.error)}
+          </div>
+        )}
+
+        {override && (
+          <div className="flex items-center justify-between rounded-md border border-primary-300 bg-primary-50 px-4 py-3 text-sm text-primary-800">
+            <span>
+              Showing freshly computed numbers (not yet committed). Generated{" "}
+              {override.generated_at}.
+            </span>
+            <DownloadJSONButton baseline={override} />
+          </div>
+        )}
+
+        <FederalCard
+          federal={federal}
+          year={exploreYear}
           census={censusQuery.data ?? null}
         />
-      </section>
 
-      {errorCount > 0 && (
-        <details className="rounded-md border border-error/30 bg-error/5 p-4 text-sm">
-          <summary className="cursor-pointer font-medium text-error">
-            Errors ({errorCount})
-          </summary>
-          <ul className="mt-2 space-y-1 font-mono text-xs">
-            {baseline.errors.map((e) => (
-              <li key={e.region_code}>
-                <span className="font-bold">{e.region_code}:</span> {e.error}
-              </li>
-            ))}
-          </ul>
-        </details>
-      )}
+        <div className="space-y-2">
+          <div className="flex items-baseline justify-between">
+            <h3 className="text-base font-semibold text-secondary-900">By state</h3>
+            {errorCount > 0 && (
+              <span className="text-xs text-error">
+                {errorCount} region{errorCount === 1 ? "" : "s"} failed
+              </span>
+            )}
+          </div>
+          <StateTable
+            regions={baseline.regions}
+            census={exploreYear === 2024 ? censusQuery.data ?? null : null}
+          />
+        </div>
+
+        {errorCount > 0 && (
+          <details className="rounded-md border border-error/30 bg-error/5 p-4 text-sm">
+            <summary className="cursor-pointer font-medium text-error">
+              Errors ({errorCount})
+            </summary>
+            <ul className="mt-2 space-y-1 font-mono text-xs">
+              {baseline.errors.map((e) => (
+                <li key={e.region_code}>
+                  <span className="font-bold">{e.region_code}:</span> {e.error}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </section>
     </main>
   );
 }

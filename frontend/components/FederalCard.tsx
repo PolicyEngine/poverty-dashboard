@@ -45,7 +45,7 @@ function CensusComparison({
   federal: RegionResult | undefined;
   year: number;
 }) {
-  if (!census) return null;
+  if (!census || year !== census.report_year) return null;
 
   return (
     <div className="mt-6 overflow-hidden rounded-md border border-secondary-200">

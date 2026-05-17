@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T11:31:31.451350+00:00",
+  "generated_at": "2026-05-17T12:33:34.292145+00:00",
   "title": "Why is PolicyEngine higher than Census SPM?",
   "summary": [
     "PolicyEngine's 2024 SPM-like rate is much higher than Census's 2024 SPM rate.",
@@ -1314,11 +1314,14 @@
           "ANN_VAL"
         ],
         "enhanced_variables": [
-          "pension_income"
+          "taxable_private_pension_income",
+          "tax_exempt_private_pension_income",
+          "taxable_public_pension_income",
+          "tax_exempt_public_pension_income"
         ],
         "raw_mean": 1738,
-        "enhanced_mean": 0,
-        "difference": -1738,
+        "enhanced_mean": 0.2,
+        "difference": -1737.8,
         "enhanced_available": true,
         "note": null
       },
@@ -1667,14 +1670,17 @@
     "spm_unit_taxes": 24294,
     "spm_unit_spm_expenses": 10120,
     "spm_unit_medical_out_of_pocket_expenses": 7656,
+    "pension_income": 0.2,
     "child_support_received": 30,
     "workers_compensation": 21,
     "miscellaneous_income": 77,
-    "alimony_income": 0,
+    "alimony_income": 0.01,
     "strike_benefits": 0,
     "educational_assistance": 0,
     "financial_assistance": 0,
     "survivor_benefits": 0,
+    "spm_unit_capped_housing_subsidy": 0,
+    "housing_assistance": 0,
     "spm_unit_energy_subsidy": 0,
     "note": "Weighted person-average values after mapping variables to people."
   },

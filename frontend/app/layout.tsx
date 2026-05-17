@@ -11,9 +11,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PolicyEngine poverty dashboard",
+  title: "PolicyEngine 2024 SPM comparison",
   description:
-    "Internal dashboard tracking baseline federal and per-state poverty and child poverty rates from PolicyEngine-US.",
+    "Internal dashboard comparing PolicyEngine-US 2024 SPM-like results with Census SPM report benchmarks.",
   icons: { icon: "/favicon.svg" },
 };
 
