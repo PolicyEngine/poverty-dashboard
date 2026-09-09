@@ -4,7 +4,7 @@ Endpoints:
 
     GET  /baseline                — return the committed baseline.json
     GET  /versions                — installed package versions on the worker
-    POST /recompute?upgrade=bool  — fan-out across 51 regions, return fresh JSON
+    POST /recompute?year=2026     — fan-out across regions, return fresh JSON
 """
 
 from __future__ import annotations
@@ -17,62 +17,27 @@ from datetime import UTC
 from pathlib import Path
 
 import modal
+from fastapi import Request
 
 APP_NAME = os.environ.get("MODAL_APP_NAME", "poverty-dashboard")
 
 app = modal.App(APP_NAME)
 
-# Unpinned policyengine[us] so a fresh deploy bakes in the current latest, and
-# the in-function ``pip install -U`` (when upgrade=true) tops it off without
-# rebuilding the image.
+# Package changes require rebuilding the image from the reviewed runtime pins.
 image = (
     modal.Image.debian_slim(python_version="3.14")
     .apt_install("git")
-    .pip_install(
-        "fastapi>=0.115.0",
-        "pydantic>=2.0",
-        "tables>=3.10.2",
-        "policyengine[us]",
-    )
+    .pip_install_from_pyproject("pyproject.toml")
     .add_local_python_source("poverty_dashboard", copy=True)
 )
-
-
-def _maybe_upgrade(upgrade: bool) -> None:
-    if not upgrade:
-        return
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "--upgrade",
-            "--quiet",
-            "policyengine",
-            "policyengine-us",
-            "policyengine-us-data",
-        ],
-        check=True,
-    )
 
 
 @app.function(image=image, cpu=2.0, memory=8192, timeout=1200)
 def compute_region_remote(
     region_code: str,
     year: int = 2026,
-    upgrade: bool = False,
 ) -> dict:
-    """Run a single-region poverty calc inside its own subprocess.
-
-    Subprocess isolation matters: when ``upgrade=True`` we just pip-installed
-    new wheels into this container, and an already-imported policyengine_us
-    would still hold the old code. A fresh interpreter sidesteps that.
-    """
-    from poverty_dashboard.versions import installed_versions
-
-    _maybe_upgrade(upgrade)
-
+    """Run a single-region poverty calc in an isolated subprocess."""
     proc = subprocess.run(
         [
             sys.executable,
@@ -91,16 +56,13 @@ def compute_region_remote(
             "error": proc.stderr.strip()[-2000:],
         }
 
-    result = json.loads(proc.stdout)
-    result["versions"] = installed_versions()
-    return result
+    return json.loads(proc.stdout)
 
 
 @app.function(image=image, cpu=1.0, memory=2048, timeout=60)
-def get_versions_remote(upgrade: bool = False) -> dict:
+def get_versions_remote() -> dict:
     from poverty_dashboard.versions import installed_versions
 
-    _maybe_upgrade(upgrade)
     return installed_versions()
 
 
@@ -126,6 +88,11 @@ def web_app():
 
     baseline_path = Path(__file__).parent / "data" / "baseline.json"
 
+    def require_known_query(request: Request, allowed: set[str]) -> None:
+        unexpected = set(request.query_params) - allowed
+        if unexpected:
+            raise HTTPException(422, f"Unknown query parameters: {sorted(unexpected)}")
+
     @api.get("/health")
     def health():
         return {"ok": True}
@@ -137,34 +104,37 @@ def web_app():
         return json.loads(baseline_path.read_text())
 
     @api.get("/versions")
-    def versions(upgrade: bool = False):
-        return get_versions_remote.remote(upgrade=upgrade)
+    def versions(request: Request):
+        require_known_query(request, set())
+        return get_versions_remote.remote()
 
     @api.post("/recompute")
-    def recompute(upgrade: bool = False, year: int = YEAR):
+    def recompute(request: Request, year: int = YEAR):
+        require_known_query(request, {"year"})
         if year not in SUPPORTED_YEARS:
             raise HTTPException(400, f"Unsupported year: {year}")
 
         codes = all_region_codes()
 
         # Fan out: each container runs one region in parallel.
-        args = [(code, year, upgrade) for code in codes]
+        args = [(code, year) for code in codes]
         results = list(compute_region_remote.starmap(args))
 
         regions: dict[str, dict] = {}
         errors: list[dict] = []
         last_versions: dict | None = None
-        last_dataset: str | None = None
         for r in results:
             code = r["region_code"]
             if "error" in r:
                 errors.append({"region_code": code, "error": r["error"]})
                 continue
             last_versions = r.get("versions", last_versions)
-            last_dataset = r.get("dataset_path", last_dataset)
             regions[code] = {
                 "region_code": code,
                 "dataset_path": r["dataset_path"],
+                "policyengine_bundle": r["policyengine_bundle"],
+                "region_scope": r["region_scope"],
+                "versions": r["versions"],
                 "people": r["people"],
                 "child_count": r["child_count"],
                 "rates": r["rates"],

@@ -1,6 +1,6 @@
 version = 1
 revision = 3
-requires-python = ">=3.14"
+requires-python = "==3.14.*"
 resolution-markers = [
     "sys_platform == 'win32'",
     "sys_platform == 'emscripten'",
@@ -996,7 +996,7 @@ wheels = [
 
 [[package]]
 name = "policyengine"
-version = "4.5.1"
+version = "5.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "h5py" },
@@ -1008,14 +1008,20 @@ dependencies = [
     { name = "pydantic" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8f/21/0b8010a0565ee7eb66129b2cfc45c5a42eec1607f2827b058e4ba55c1e92/policyengine-4.5.1.tar.gz", hash = "sha256:7785e97e05121b7e33aa1a4dbaaa12422bae220c8551aeacbc26c66bda416383", size = 528370, upload-time = "2026-05-16T05:40:41.554Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c3/b1/8e34dc457a27563933427d5f59129a5866bafb56e2795bdee88d7a0f8058/policyengine-5.3.0.tar.gz", hash = "sha256:8124dd008054586a155d4416af4de1e7de3c6c833424297e3d7323159e2d35c3", size = 744584, upload-time = "2026-08-30T11:57:30.475Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5e/38/86e8a9f9a5ea7a6b52f7327ce99c23cb2da4ddfe4e9cb1ed12114e60ce70/policyengine-4.5.1-py3-none-any.whl", hash = "sha256:0df8f8d0f8b82ebe4a6aa222ded2bb06befcc6f95b510c2d678a6f27f8b61f79", size = 164598, upload-time = "2026-05-16T05:40:40.02Z" },
+    { url = "https://files.pythonhosted.org/packages/e1/74/98e55a0017e9a0fc7a5dc1340d998d68f371e473e16537acbd29d5230035/policyengine-5.3.0-py3-none-any.whl", hash = "sha256:962882ea837debbe16ed9c44139ad5c594477af830be828034377819ff4c739c", size = 234192, upload-time = "2026-08-30T11:57:28.98Z" },
+]
+
+[package.optional-dependencies]
+us = [
+    { name = "policyengine-core" },
+    { name = "policyengine-us" },
 ]
 
 [[package]]
 name = "policyengine-core"
-version = "3.26.5"
+version = "3.30.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dpath" },
@@ -1035,14 +1041,14 @@ dependencies = [
     { name = "standard-imghdr" },
     { name = "wheel" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4f/d2/2b312673594c90262130ab5dac82c1866f6894c070d906e052290b5f2e27/policyengine_core-3.26.5.tar.gz", hash = "sha256:25ad497ac236516e3ca02d825ffd9f66906d3c6a234a4f9edfd108aa161ae73c", size = 477545, upload-time = "2026-05-14T23:33:40.526Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/9d/f71da3e348ddc52e058c76b72bbc4b2f20abcf0e7389ecd5aca5d550fd14/policyengine_core-3.30.1.tar.gz", hash = "sha256:a16f29fe51ec01a7be2171386f8bd26b9ba55ffc338adb70adcadafe33d9c55f", size = 500419, upload-time = "2026-07-19T15:50:41.288Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/15/2027f6ffe9d4cae63f1470a9a124296ca41ba411634d477deca6dc8676d7/policyengine_core-3.26.5-py3-none-any.whl", hash = "sha256:d5677096468a0489aaba4b9ceef7aef3a94f6c7e042ab437ee760a1012da3711", size = 234612, upload-time = "2026-05-14T23:33:39.172Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/7e/07624d8add8889af1b4af796d36c38b2e2af494b1d78a064fab29e9bea00/policyengine_core-3.30.1-py3-none-any.whl", hash = "sha256:2dbcf5f590a0199a7b7c77fcbbda2ff6bc289f6c6169ca0af3beace35d8b3e63", size = 244846, upload-time = "2026-07-19T15:50:39.651Z" },
 ]
 
 [[package]]
 name = "policyengine-us"
-version = "1.691.13"
+version = "1.764.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "microdf-python" },
@@ -1052,9 +1058,9 @@ dependencies = [
     { name = "tables" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/69/c7/0fd113bec6b2b3894232d0d3a5826f626a5ac6c1c74a0e853cf7dfd1eacf/policyengine_us-1.691.13.tar.gz", hash = "sha256:189b66166b19ce5aa8f890f79af80e03f6851cae24cc30d7ac3f477bd1b55033", size = 9509661, upload-time = "2026-05-17T04:16:45.57Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6e/cc/9e65a9586069beab1f02102a23f7a0e6332f1a9c2d590cb9f0e68f9ac987/policyengine_us-1.764.6.tar.gz", hash = "sha256:9817d48abc5b7d690b8abe33047005e5cf40b71654a85a2534bb5e3bcf921f79", size = 11009555, upload-time = "2026-07-06T13:13:07.254Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f5/56/c13e3e0d91e72124fc3839f5d9fff241028efba96fa3edefb227e7275800/policyengine_us-1.691.13-py3-none-any.whl", hash = "sha256:621cc2c98e6f53d69a43b87cceb3c13beff831c6b438e2c15795205765032c41", size = 10026946, upload-time = "2026-05-17T04:16:42.835Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/5a/0566666f30ad06e416f0cf25b24bdee73acd71897fb2de3c0ac43b59e3e3/policyengine_us-1.764.6-py3-none-any.whl", hash = "sha256:2b2c5c02c26ab212270948db1f30129728b625fc6109fc9ca0c604b714546909", size = 13117921, upload-time = "2026-07-06T13:13:03.476Z" },
 ]
 
 [[package]]
@@ -1065,14 +1071,17 @@ dependencies = [
     { name = "fastapi" },
     { name = "microdf-python" },
     { name = "modal" },
-    { name = "policyengine" },
+    { name = "policyengine", extra = ["us"] },
+    { name = "policyengine-core" },
     { name = "policyengine-us" },
     { name = "pydantic" },
+    { name = "spm-calculator" },
     { name = "tables" },
 ]
 
 [package.optional-dependencies]
 dev = [
+    { name = "httpx" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -1080,13 +1089,16 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.0" },
+    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.27" },
     { name = "microdf-python", specifier = ">=1.3.0" },
     { name = "modal", specifier = ">=0.66.0" },
-    { name = "policyengine", specifier = ">=4.5.1" },
-    { name = "policyengine-us", specifier = ">=1.691.13" },
+    { name = "policyengine", extras = ["us"], specifier = "==5.3.0" },
+    { name = "policyengine-core", specifier = "==3.30.1" },
+    { name = "policyengine-us", specifier = "==1.764.6" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
+    { name = "spm-calculator", specifier = "==0.3.1" },
     { name = "tables", specifier = ">=3.10.2" },
 ]
 provides-extras = ["dev"]

@@ -6,7 +6,6 @@ from microdf import MicroSeries
 from poverty_dashboard.poverty_calc import (
     US_DATASET_ENV,
     compute_region,
-    fallback_dataset,
     resolve_dataset,
     summarize_poverty,
 )
@@ -18,30 +17,54 @@ from poverty_dashboard.spm_elements import (
 )
 
 
-def test_fallback_dataset_uses_policyengine_us_data_paths() -> None:
-    assert (
-        fallback_dataset("us")
-        == "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5"
-    )
-    assert (
-        fallback_dataset("state/ca")
-        == "hf://policyengine/policyengine-us-data/states/CA.h5"
-    )
-
-
 def test_us_dataset_env_overrides_national_dataset(monkeypatch) -> None:
     monkeypatch.setenv(US_DATASET_ENV, "/tmp/local-enhanced-cps.h5")
 
-    assert fallback_dataset("us") == "/tmp/local-enhanced-cps.h5"
     assert resolve_dataset("us") == "/tmp/local-enhanced-cps.h5"
 
 
-def test_fallback_dataset_rejects_unknown_regions() -> None:
-    with pytest.raises(ValueError, match="Unknown state region"):
-        fallback_dataset("state/zz")
+def test_path_only_resolution_refuses_states_requiring_filtering() -> None:
+    with pytest.raises(ValueError, match="requires geographic filtering"):
+        resolve_dataset("state/ca")
 
-    with pytest.raises(ValueError, match="Unsupported region"):
-        fallback_dataset("county/001")
+
+def test_compute_state_filters_weighted_people_and_preserves_provenance(monkeypatch):
+    import policyengine as pe
+
+    provenance = {
+        "runtime_dataset_uri": "test-fixture://managed-population",
+        "runtime_dataset_sha256": "fixture-digest",
+        "future_provenance_field": {"retained": True},
+    }
+
+    class PopulationFixture:
+        policyengine_bundle = provenance
+
+        def calculate(self, variable, period, map_to="person"):
+            assert period == 2026
+            assert map_to == "person"
+            values = {
+                "age": [10, 30, 70, 10],
+                "state_fips": [6, 6, 6, 36],
+                "spm_unit_is_in_spm_poverty": [True, False, False, True],
+                "spm_unit_is_in_deep_spm_poverty": [False, False, False, True],
+            }[variable]
+            return MicroSeries(values, weights=[1, 2, 3, 100])
+
+    def managed_factory(*, dataset=None, allow_unmanaged=False):
+        assert dataset is None
+        assert not allow_unmanaged
+        return PopulationFixture()
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(pe.us, "managed_microsimulation", managed_factory)
+    result = compute_region("state/ca")
+
+    assert result["people"] == 6
+    assert result["rates"]["all"] == pytest.approx(1 / 6)
+    assert result["dataset_path"] == provenance["runtime_dataset_uri"]
+    assert result["policyengine_bundle"] == provenance
+    assert result["region_scope"]["variable_value"] == 6
 
 
 def test_summarize_poverty_uses_weighted_microseries_operations() -> None:

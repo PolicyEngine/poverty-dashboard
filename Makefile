@@ -1,4 +1,4 @@
-.PHONY: install install-python install-frontend format lint test check deploy recompute recompute-upgrade dev
+.PHONY: install install-python install-frontend format lint test check deploy recompute dev
 
 install: install-python install-frontend
 
@@ -31,9 +31,6 @@ deploy:
 
 recompute:
 	uv run python -m poverty_dashboard.precompute_baseline
-
-recompute-upgrade:
-	uv run python -m poverty_dashboard.precompute_baseline --upgrade
 
 dev:
 	cd frontend && npm run dev

@@ -14,11 +14,10 @@ type Props = {
   onYearChange: (year: number) => void;
   onRefreshVersions: () => void;
   onRecompute: () => void;
-  onRecomputeUpgrade: () => void;
   recomputing: boolean;
 };
 
-const KEY_PACKAGES = ["policyengine-us", "policyengine"];
+const KEY_PACKAGES = ["policyengine-us", "policyengine", "spm-calculator"];
 
 function isStale(committed: string | null | undefined, live: string | null | undefined) {
   if (!live || !committed) return false;
@@ -29,7 +28,7 @@ export function VersionBar(props: Props) {
   const {
     committed, generatedAt, selectedYear, availableYears, live, liveLoading,
     liveError, onYearChange, onRefreshVersions, onRecompute,
-    onRecomputeUpgrade, recomputing,
+    recomputing,
   } = props;
 
   return (
@@ -48,13 +47,13 @@ export function VersionBar(props: Props) {
                 <div key={pkg} className="flex items-baseline gap-2">
                   <span className="font-mono text-secondary-700">{pkg}</span>
                   <span className="font-mono font-medium">{c ?? "—"}</span>
-                  {l && stale && (
+                  {l && (stale || !c) && (
                     <span className="rounded bg-warning/10 px-1.5 py-0.5 font-mono text-xs text-warning">
-                      latest {l}
+                      deployed {l}
                     </span>
                   )}
-                  {l && !stale && (
-                    <span className="text-xs text-success">up to date</span>
+                  {l && c && !stale && (
+                    <span className="text-xs text-success">matches deployment</span>
                   )}
                 </div>
               );
@@ -82,7 +81,7 @@ export function VersionBar(props: Props) {
             disabled={liveLoading}
             className="rounded-md border border-secondary-300 bg-white px-3 py-1.5 text-sm font-medium text-secondary-700 hover:bg-secondary-100 disabled:opacity-50"
           >
-            {liveLoading ? "Checking…" : "Check latest"}
+            {liveLoading ? "Checking…" : "Check deployment"}
           </button>
           <button
             onClick={onRecompute}
@@ -90,13 +89,6 @@ export function VersionBar(props: Props) {
             className="rounded-md border border-primary-600 bg-white px-3 py-1.5 text-sm font-medium text-primary-700 hover:bg-primary-50 disabled:opacity-50"
           >
             {recomputing ? "Recomputing…" : `Recompute ${selectedYear}`}
-          </button>
-          <button
-            onClick={onRecomputeUpgrade}
-            disabled={recomputing}
-            className="rounded-md bg-primary-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50"
-          >
-            {recomputing ? "Recomputing…" : "Upgrade & recompute"}
           </button>
         </div>
       </div>

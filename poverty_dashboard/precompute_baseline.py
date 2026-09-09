@@ -18,7 +18,6 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default=os.environ.get("MODAL_BASE_URL"))
     parser.add_argument("--year", type=int, default=YEAR)
-    parser.add_argument("--upgrade", action="store_true")
     parser.add_argument("--out", default=str(DEFAULT_BASELINE))
     args = parser.parse_args()
 
@@ -30,7 +29,6 @@ def main() -> None:
 
     query = urlencode(
         {
-            "upgrade": "true" if args.upgrade else "false",
             "year": str(args.year),
         }
     )

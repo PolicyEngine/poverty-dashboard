@@ -1,14 +1,12 @@
 # PolicyEngine poverty dashboard
 
 Internal dashboard tracking baseline federal and per-state poverty and child
-poverty rates from PolicyEngine-US. Mirrors the dataset selection and poverty
-calculation methodology used by `policyengine-api`'s `economy_service` /
-`compare.py`:
+poverty rates from PolicyEngine-US. Recomputations use the installed wrapper's
+managed population and preserve its returned bundle provenance:
 
-- For each region, resolve the dataset via
-  `policyengine.countries.us.regions.us_region_registry` (national →
-  `enhanced_cps_2024.h5`, state → `states/{XX}.h5`).
-- Run `policyengine_us.Microsimulation` against that dataset.
+- Load the certified national population with
+  `policyengine.us.managed_microsimulation`.
+- For states, apply the registry's `state_fips` filter to person-level results.
 - Map SPM-unit poverty variables to people, then use MicroSeries weighted
   operations for all, child, working-age, and senior poverty rates.
 
@@ -51,7 +49,6 @@ export NEXT_PUBLIC_MODAL_BASE_URL=$MODAL_BASE_URL
 ```bash
 uv run python -m poverty_dashboard.precompute_baseline
 uv run python -m poverty_dashboard.precompute_baseline --year 2024
-uv run python -m poverty_dashboard.precompute_baseline --upgrade
 git add data/baseline.json && git commit -m "Refresh baseline"
 ```
 
@@ -121,11 +118,20 @@ The dashboard:
 4. Compares Census Table B-6 element effects with PolicyEngine arithmetic
    element effects.
 5. Lets you select 2024, 2025, or 2026 before recomputing.
-6. "Check latest" calls `/versions` on the Modal app and flags any package that
-   has a newer version on PyPI than the committed baseline used.
-7. "Recompute" / "Upgrade & recompute" runs `compute_region_remote.starmap` over
+6. "Check deployment" calls `/versions` on the Modal app and compares its
+   installed packages with the versions recorded in the displayed baseline.
+7. "Recompute" runs `compute_region_remote.starmap` over
    the national and 51 state regions; the result is shown in-app and offered as
    a JSON download for you to commit.
+
+Runtime packages are pinned in `pyproject.toml`, which also defines the Modal
+image's dependencies. Package changes require a rebuild and deployment. Current
+pins protect the existing legacy SPM bundle; publication of a new SPM package
+does not update this deployment or the checked-in numbers.
+
+The diagnostic scripts still contain historical raw-CPS comparisons and require
+a separate source/provenance migration before canonical asset regeneration. See
+`ACTIVE-DOWNSTREAM-PROTECTION.md` for the remaining work and deployment gates.
 
 ## Cost notes
 
