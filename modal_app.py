@@ -9,6 +9,7 @@ Endpoints:
 
 from __future__ import annotations
 
+import hmac
 import json
 import os
 import subprocess
@@ -22,6 +23,16 @@ from fastapi import Request
 APP_NAME = os.environ.get("MODAL_APP_NAME", "poverty-dashboard")
 
 app = modal.App(APP_NAME)
+
+# Optional server-only audit secret. Without it the private route is disabled.
+# This declaration references a name; it never creates or exposes a credential.
+audit_secrets = []
+if audit_secret_name := os.environ.get("POVERTY_RUNTIME_AUDIT_SECRET_NAME"):
+    audit_secrets = [
+        modal.Secret.from_name(
+            audit_secret_name, required_keys=["POVERTY_RUNTIME_AUDIT_TOKEN"]
+        )
+    ]
 
 # --locked rejects missing/stale locks; --frozen would skip the staleness check.
 # Local code is copied separately because uv_sync installs only dependencies.
@@ -41,8 +52,15 @@ image = (
 def compute_region_remote(
     region_code: str,
     year: int = 2026,
+    *,
+    runtime_audit_nonce: str | None = None,
 ) -> dict:
     """Run a single-region poverty calc in an isolated subprocess."""
+    if runtime_audit_nonce is not None:
+        # Only authenticated Modal RPC can supply this argument; HTTP cannot.
+        from poverty_dashboard.runtime_audit import serving_witness
+
+        return {"runtime_audit": serving_witness(runtime_audit_nonce)}
     proc = subprocess.run(
         [
             sys.executable,
@@ -65,19 +83,24 @@ def compute_region_remote(
 
 
 @app.function(image=image, cpu=1.0, memory=2048, timeout=60)
-def get_versions_remote() -> dict:
+def get_versions_remote(*, runtime_audit_nonce: str | None = None) -> dict:
+    if runtime_audit_nonce is not None:
+        from poverty_dashboard.runtime_audit import serving_witness
+
+        return {"runtime_audit": serving_witness(runtime_audit_nonce)}
     from poverty_dashboard.versions import installed_versions
 
     return installed_versions()
 
 
-@app.function(image=image, cpu=1.0, memory=2048, timeout=2400)
+@app.function(image=image, cpu=1.0, memory=2048, timeout=2400, secrets=audit_secrets)
 @modal.asgi_app()
 def web_app():
     from datetime import datetime
 
     from fastapi import FastAPI, HTTPException
     from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import JSONResponse
 
     from poverty_dashboard.poverty_calc import SUPPORTED_YEARS, YEAR
     from poverty_dashboard.regions import all_region_codes
@@ -101,6 +124,37 @@ def web_app():
     @api.get("/health")
     def health():
         return {"ok": True}
+
+    @api.get("/runtime-audit", include_in_schema=False)
+    def runtime_audit(request: Request):
+        # Authenticate before parsing or capturing any serving metadata.
+        token = os.environ.get("POVERTY_RUNTIME_AUDIT_TOKEN")
+        if not token:
+            raise HTTPException(404, "Not found", headers={"Cache-Control": "no-store"})
+        authorization = request.headers.get("authorization", "")
+        if not hmac.compare_digest(
+            authorization.encode(), ("Bearer " + token).encode()
+        ):
+            raise HTTPException(404, "Not found", headers={"Cache-Control": "no-store"})
+        require_known_query(request, {"nonce"})
+        nonces = request.query_params.getlist("nonce")
+        if len(nonces) != 1:
+            raise HTTPException(422, "Supply one audit nonce")
+        from poverty_dashboard.runtime_audit import serving_witness, validate_nonce
+
+        try:
+            validate_nonce(nonces[0])
+        except ValueError:
+            raise HTTPException(422, "Invalid audit nonce") from None
+        try:
+            witness = serving_witness(nonces[0])
+        except Exception:
+            raise HTTPException(
+                502, "Runtime audit failed.", headers={"Cache-Control": "no-store"}
+            ) from None
+        return JSONResponse(
+            {"runtime_audit": witness}, headers={"Cache-Control": "no-store"}
+        )
 
     @api.get("/baseline")
     def baseline():

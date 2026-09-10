@@ -107,3 +107,53 @@ uv run python -m poverty_dashboard.compute_local us      # federal only
 uv run python -m poverty_dashboard.compute_local --year 2024 us
 uv run python -m poverty_dashboard.compute_local --all   # all 52 regions (~30 min)
 ```
+
+### Private serving-process audit
+
+Serving closure must be observed separately for `web_app`, `get_versions_remote`
+and `compute_region_remote`. Container exec starts another process and cannot
+establish these functions' actual Python prefixes.
+
+For the existing public `web_app`, `/runtime-audit?nonce=<nonce>` is disabled (404)
+without a server-only `POVERTY_RUNTIME_AUDIT_TOKEN`. During an explicitly approved
+staged deployment, the operator may set the deployment-only
+`POVERTY_RUNTIME_AUDIT_SECRET_NAME` to an existing Modal Secret containing that key.
+Only `web_app` receives this optional Secret. No token belongs in frontend code,
+URLs, source, logs or receipts. Send it in an `Authorization: Bearer ...` header;
+missing or incorrect authentication returns 404 before metadata capture. The
+route is omitted from OpenAPI and successful responses use `Cache-Control: no-store`.
+This route observes the gateway itself and does not call any worker.
+
+Use authenticated native Modal RPC to call the existing worker functions with a
+fresh nonce, for example after resolving the actual deployed app/environment:
+
+```python
+compute = modal.Function.from_name(actual_app, "compute_region_remote",
+                                   environment_name=actual_environment)
+witness = compute.remote("us", runtime_audit_nonce=fresh_nonce)
+versions = modal.Function.from_name(actual_app, "get_versions_remote",
+                                    environment_name=actual_environment)
+version_witness = versions.remote(runtime_audit_nonce=another_fresh_nonce)
+```
+
+The optional argument returns metadata before the calculation subprocess or version
+lookup. Public `/versions` and `/recompute` reject this argument. All audit nonces
+must contain 16–128 letters, digits, `_` or `-`. Normal calls retain the existing
+calculation command, installed-version response and pinned scientific closure.
+
+Bind each actual authenticated witness, PID, call/input IDs and nonce to the public
+Modal call graph and the actual deployed app/function/image/task/source receipts.
+The witness includes the serving interpreter/prefix, sanitized `pyvenv.cfg`
+fields/hash, loaded module origins and a real lightweight child through
+`sys.executable`. The child is not a population calculation. Full Linux wheel,
+RECORD and source closure still require a separately authenticated capture from
+the same container; missing correlation is a failed qualification component.
+These hooks do not waive staged checks, frontend-first/backend-second promotion,
+or backend-first rollback. No credential provisioning or deployment is implied by
+this source change.
+
+The witness reports whether both public Modal context IDs are present; this is
+an observation, not identity approval. Null parent module origins mean the module
+has not been loaded in that process. The lightweight child separately reports
+installed package versions through metadata and its import paths, without
+importing any model. Audit capture failures return generic uncached 502 JSON.
