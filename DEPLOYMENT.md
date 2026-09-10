@@ -35,7 +35,7 @@ Only after the new frontend is serving, deploy from the repo root:
 
 ```bash
 make install-python
-uv run modal deploy modal_app.py
+uv run --locked modal deploy modal_app.py
 ```
 
 The backend exposes:
@@ -45,18 +45,34 @@ The backend exposes:
 - `GET  /versions` — installed wrapper, country, core, and SPM package versions
 - `POST /recompute?year=2024|2025|2026` — fan out across regions, return fresh baseline JSON
 
-Both local and Modal installations take their exact legacy wrapper/model/SPM
-pins from `pyproject.toml`. Updating packages requires an image rebuild; requests
-cannot install or upgrade packages. Unknown query options are rejected.
+Both local and Modal installations use the committed `uv.lock`, preserving
+the exact legacy wrapper/model/SPM pins in `pyproject.toml` and the resolved
+transitive dependencies. The Modal image uses `Image.uv_sync` with uv 0.11.7
+and `--locked --no-dev`; missing or stale locks fail the build. The dashboard
+source is copied separately after dependency installation. Local development
+and CI also install the `dev` extra from that lock. Updating packages requires
+a reviewed lock update and image rebuild; requests cannot install or upgrade
+packages. Unknown query options are rejected.
 Per-region recompute responses retain returned `policyengine_bundle` provenance,
 installed versions, and the applied `region_scope`.
 
 Read back the deployed Modal version and serving URL. Verify `/health` returns
-HTTP 200 and `/versions` reports wrapper 5.3.0, US 1.764.6, Core 3.30.1 and SPM
-0.3.1. Verify `/versions?upgrade=false` now returns HTTP 422 without changing
-the runtime, then verify plain `/versions` still returns the same package tuple.
+HTTP 200 and `/versions` reports the exact, non-null tuple: wrapper 5.3.0,
+US 1.764.6, Core 3.30.1 and SPM 0.3.1. Verify `/versions?upgrade=false` now returns
+HTTP 422 without changing the runtime, then verify plain `/versions` still
+returns the same package tuple.
 Check requests from the newly served frontend succeed. Package or source changes
 require another reviewed image build; requests never upgrade dependencies.
+
+Before production, verify an actual staged Modal image: record its source and
+lock hashes, Python/platform identity, complete installed distribution versions
+and package-file hashes against the lock's applicable Linux artifacts. Record
+Modal's runtime-injected packages separately. Check the serving contract above
+on that staged image, without a population recompute. Record `sys.executable`,
+`sys.prefix` and `/.uv/.venv/pyvenv.cfg` from the serving container and a
+lightweight child launched through `sys.executable`, proving both use the locked
+environment. Local recipe tests and a four-package `/versions` response do not
+prove the full deployed closure.
 
 ## 3. Numeric assets and rollback
 

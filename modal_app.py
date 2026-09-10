@@ -23,11 +23,16 @@ APP_NAME = os.environ.get("MODAL_APP_NAME", "poverty-dashboard")
 
 app = modal.App(APP_NAME)
 
-# Package changes require rebuilding the image from the reviewed runtime pins.
+# --locked rejects missing/stale locks; --frozen would skip the staleness check.
+# Local code is copied separately because uv_sync installs only dependencies.
 image = (
     modal.Image.debian_slim(python_version="3.14")
     .apt_install("git")
-    .pip_install_from_pyproject("pyproject.toml")
+    .uv_sync(
+        frozen=False,
+        extra_options="--locked --no-dev",
+        uv_version="0.11.7",
+    )
     .add_local_python_source("poverty_dashboard", copy=True)
 )
 

@@ -38,7 +38,7 @@ editable mode with development tooling, and installs frontend dependencies.
 
 ```bash
 make install-python
-uv run modal deploy modal_app.py
+uv run --locked modal deploy modal_app.py
 # copy the printed web_app URL into your env
 export MODAL_BASE_URL=https://<...>.modal.run
 export NEXT_PUBLIC_MODAL_BASE_URL=$MODAL_BASE_URL
@@ -124,14 +124,15 @@ The dashboard:
    the national and 51 state regions; the result is shown in-app and offered as
    a JSON download for you to commit.
 
-Runtime packages are pinned in `pyproject.toml`, which also defines the Modal
-image's dependencies. Package changes require a rebuild and deployment. Current
+Runtime packages are pinned in `pyproject.toml`, and `uv.lock` fixes the full
+dependency resolution used by CI and the Modal image. Package changes require
+a reviewed lock update, rebuild and deployment. Current
 pins protect the existing legacy SPM bundle; publication of a new SPM package
 does not update this deployment or the checked-in numbers.
 
 The diagnostic scripts still contain historical raw-CPS comparisons and require
 a separate source/provenance migration before canonical asset regeneration. See
-`ACTIVE-DOWNSTREAM-PROTECTION.md` for the remaining work and deployment gates.
+[DEPLOYMENT.md](DEPLOYMENT.md) for the remaining work and deployment gates.
 
 ## Cost notes
 
