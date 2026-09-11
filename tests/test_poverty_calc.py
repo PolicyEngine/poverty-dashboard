@@ -40,6 +40,10 @@ def test_compute_state_filters_weighted_people_and_preserves_provenance(monkeypa
     class PopulationFixture:
         policyengine_bundle = provenance
 
+        def get_known_periods(self, variable):
+            assert variable == "state_fips"
+            return [2026]
+
         def calculate(self, variable, period, map_to="person"):
             assert period == 2026
             assert map_to == "person"
@@ -65,6 +69,63 @@ def test_compute_state_filters_weighted_people_and_preserves_provenance(monkeypa
     assert result["dataset_path"] == provenance["runtime_dataset_uri"]
     assert result["policyengine_bundle"] == provenance
     assert result["region_scope"]["variable_value"] == 6
+
+
+def test_state_filter_refuses_a_population_missing_the_state_fips_input(monkeypatch):
+    """An absent column defaults every household to FIPS 6, California."""
+    import policyengine as pe
+
+    class PopulationWithoutStateFips:
+        policyengine_bundle = {"runtime_dataset_uri": "test-fixture://no-state-fips"}
+
+        def get_known_periods(self, variable):
+            assert variable == "state_fips"
+            return []
+
+        def calculate(self, variable, period, map_to="person"):
+            raise AssertionError("Filtering must be refused before calculating")
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(
+        pe.us,
+        "managed_microsimulation",
+        lambda **kwargs: PopulationWithoutStateFips(),
+    )
+
+    with pytest.raises(ValueError, match="would read its default value"):
+        compute_region("state/ca")
+
+
+def test_state_filter_refuses_a_population_whose_state_fips_is_constant(monkeypatch):
+    """A defaulted column would hand the whole national population to California."""
+    import policyengine as pe
+
+    class DefaultedStateFipsPopulation:
+        policyengine_bundle = {"runtime_dataset_uri": "test-fixture://defaulted-fips"}
+
+        def get_known_periods(self, variable):
+            return [2026]
+
+        def calculate(self, variable, period, map_to="person"):
+            return MicroSeries(
+                {
+                    "age": [10, 30, 70, 40],
+                    "state_fips": [6, 6, 6, 6],
+                    "spm_unit_is_in_spm_poverty": [True, False, False, True],
+                    "spm_unit_is_in_deep_spm_poverty": [False, False, False, True],
+                }[variable],
+                weights=[1, 2, 3, 100],
+            )
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(
+        pe.us,
+        "managed_microsimulation",
+        lambda **kwargs: DefaultedStateFipsPopulation(),
+    )
+
+    with pytest.raises(ValueError, match="holds a single value"):
+        compute_region("state/ca")
 
 
 def test_summarize_poverty_uses_weighted_microseries_operations() -> None:

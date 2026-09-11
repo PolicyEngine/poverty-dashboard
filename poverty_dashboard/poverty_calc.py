@@ -62,6 +62,32 @@ def build_region_simulation(region_code: str) -> tuple[Any, Any]:
     return sim, region
 
 
+def require_scoping_variable_input(sim: Any, strategy: Any) -> None:
+    """Refuse to filter on a variable this population never supplied.
+
+    ``state_fips`` is a formula-less Household input defaulting to 6
+    (California), policyengine-core drops dataset columns that are not system
+    variables, and a variable with no known period falls back to its default
+    array. A population that dropped or renamed the column would therefore put
+    every household in California and none in the other 50 states. Ask before
+    calculating: calculating the variable caches a period and hides the gap.
+    """
+    if not sim.get_known_periods(strategy.variable_name):
+        raise ValueError(
+            f"{strategy.variable_name} is not an input in this population, so "
+            "region filtering would read its default value"
+        )
+
+
+def require_discriminating_scope(values: Any, strategy: Any) -> None:
+    """Refuse to filter on a column holding one value for the whole country."""
+    if values.nunique() < 2:
+        raise ValueError(
+            f"{strategy.variable_name} holds a single value across this "
+            "population, so region filtering cannot separate regions"
+        )
+
+
 def summarize_poverty(
     age: Any, in_poverty: Any, in_deep_poverty: Any
 ) -> dict[str, Any]:
@@ -97,6 +123,9 @@ def compute_region(region_code: str, year: int = YEAR) -> dict[str, Any]:
         )
 
     sim, region = build_region_simulation(region_code)
+    strategy = region.scoping_strategy
+    if strategy is not None:
+        require_scoping_variable_input(sim, strategy)
     provenance = dict(sim.policyengine_bundle)
 
     age = sim.calculate("age", period=year)
@@ -111,12 +140,10 @@ def compute_region(region_code: str, year: int = YEAR) -> dict[str, Any]:
         map_to="person",
     )
 
-    strategy = region.scoping_strategy
     if strategy is not None:
-        in_region = (
-            sim.calculate(strategy.variable_name, period=year, map_to="person")
-            == strategy.variable_value
-        )
+        scope = sim.calculate(strategy.variable_name, period=year, map_to="person")
+        require_discriminating_scope(scope, strategy)
+        in_region = scope == strategy.variable_value
         if not in_region.any():
             raise ValueError(f"No people in dataset for {region_code}")
         age = age[in_region]
