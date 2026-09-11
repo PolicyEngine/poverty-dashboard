@@ -42,7 +42,24 @@ branch (the assignment forbids unrelated files in the PR).
   pyproject.toml, uv.lock, modal_app.py and the three data/*.json assets are untouched.
 - PR #6 at cb4b8550: Python and Frontend checks pass; MERGEABLE / CLEAN.
 
-## Next
-1. Adversarial verification workflow over the four fixes (running)
-2. Address any surviving defect
-3. Push fix commits only (exclude this file), then `gh pr checks 6 --watch`
+## Lane 2 additions (pushed)
+- `e080dc8` corrected three inaccurate mechanism claims the fixes introduced (Modal
+  scalar cpu/memory are reservations not ceilings; starmap sets no max_containers so
+  downloads are an upper bound of 52; the pinned manifest has metadata_sha256 None so
+  no `.metadata.json` sibling is written) and made the materialization test pin each
+  of the three ignore rules individually.
+- `970e4e4` recorded that a regenerated diagnostics asset would carry the local path,
+  not the registry URI, as its `dataset_path`.
+- Adversarial audit: 29 agents, 20 claimed defects, 18 refuted; the one survivor was
+  the `.metadata.json` overclaim, fixed in `e080dc8`.
+
+## Done — pushed and green
+Pushed `cb4b855..970e4e4` to `max/canonical-spm-runtime-20260909` (fast-forward,
+--force-with-lease held). CI run 34623561335 on headSha 970e4e4: Frontend pass,
+Python pass, `gh pr checks` exit 0; PR MERGEABLE / CLEAN.
+Suite on the pushed tree: ruff format --check 0, ruff check 0, pytest 47 passed 0.
+
+This file is intentionally NOT part of the pushed branch; the push set was built by
+cherry-picking only the six fix commits onto cb4b855.
+
+Report: rollout/fable-continuation-20260911/out/pov-6-fixes-r2.md
