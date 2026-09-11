@@ -58,12 +58,16 @@ installed versions, and the applied `region_scope`.
 
 Every region now runs the full certified national population: a state result is
 the national person-level result masked by `state_fips`, not a per-state
-dataset. One `/recompute` is 52 regions, each a national-size download, sha256
-verification and simulation, fanned out one container per region. The worker
-limits (cpu 2.0, 8192 MiB, 1200 s) and the `web_app` 2400 s request timeout are
-unchanged from before that became true, and have not been measured against the
-certified population. Validate both the limits and the fan-out cost on a staged
-image before the first paid regeneration.
+dataset. One `/recompute` is 52 regions, each a subprocess that sha256-verifies
+and simulates the national file, fanned out by `starmap`. `max_containers` is
+unset, so Modal decides the container count and it is not one per region; a
+container that already holds the file does not download it again. The worker
+asks for cpu 2.0 and 8192 MiB, and Modal turns a scalar `cpu`/`memory` into a
+reservation rather than a ceiling, so the hard limits are the 1200 s worker
+timeout and the `web_app` 2400 s request timeout. All four values are unchanged
+from before that became true, and have not been measured against the certified
+population. Validate both the sizing and the fan-out cost on a staged image
+before the first paid regeneration.
 
 Read back the deployed Modal version and serving URL. Verify `/health` returns
 HTTP 200 and `/versions` reports the exact, non-null tuple: wrapper 5.3.0,
@@ -118,11 +122,14 @@ uv run python -m poverty_dashboard.compute_local --all   # 52 national-size runs
 ```
 
 Run these from the repo root. The wrapper materializes the certified population
-into `./data` relative to the working directory, so `populace_us_2024.h5`, its
-`.metadata.json` sibling and `.policyengine-download-*` temporaries land beside
-the committed numeric assets. `.gitignore` excludes them; never force-add them,
-and keep `data/baseline.json`, `data/census_spm_2024.json` and
-`data/spm_gap_diagnostics.json` the only tracked files in that directory.
+into `./data` relative to the working directory, so `populace_us_2024.h5` and
+`.policyengine-download-*` temporaries land beside the committed numeric assets.
+The bundled manifest carries no `metadata_sha256` for this dataset, so this
+runtime writes no `.metadata.json` sibling; that ignore rule is defensive,
+against a manifest that later publishes one. `.gitignore` excludes all three
+shapes; never force-add them, and keep `data/baseline.json`,
+`data/census_spm_2024.json` and `data/spm_gap_diagnostics.json` the only tracked
+files in that directory.
 
 ### Private serving-process audit
 
