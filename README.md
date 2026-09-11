@@ -140,6 +140,16 @@ a separate source/provenance migration before canonical asset regeneration. See
 
 ## Cost notes
 
-`compute_region_remote` runs 51 containers in parallel via Modal's `starmap`.
-Each container takes a few minutes (cold start + dataset download + sim), so
-expect roughly 51 × a few CPU-minutes per recompute. Don't wire this to a cron.
+`/recompute` fans out all 52 regions — the nation and 51 states — through
+`compute_region_remote.starmap`, one container each. Every one of those
+containers materializes and simulates the full certified national population:
+a state result is the national person-level result masked by `state_fips`, not
+a per-state dataset. One recompute is therefore 52 national-size downloads,
+sha256 verifications and simulations, and `compute_local --all` runs the same
+52 national-size simulations serially in one process. Don't wire either to a
+cron.
+
+The worker limits (cpu 2.0, 8192 MiB, 1200 s) and the `web_app` 2400 s request
+timeout are unchanged from before every region became a national-size run, and
+have not been measured against the certified population. Validate them on a
+staged image before the first paid regeneration.

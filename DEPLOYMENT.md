@@ -56,6 +56,15 @@ packages. Unknown query options are rejected.
 Per-region recompute responses retain returned `policyengine_bundle` provenance,
 installed versions, and the applied `region_scope`.
 
+Every region now runs the full certified national population: a state result is
+the national person-level result masked by `state_fips`, not a per-state
+dataset. One `/recompute` is 52 regions, each a national-size download, sha256
+verification and simulation, fanned out one container per region. The worker
+limits (cpu 2.0, 8192 MiB, 1200 s) and the `web_app` 2400 s request timeout are
+unchanged from before that became true, and have not been measured against the
+certified population. Validate both the limits and the fan-out cost on a staged
+image before the first paid regeneration.
+
 Read back the deployed Modal version and serving URL. Verify `/health` returns
 HTTP 200 and `/versions` reports the exact, non-null tuple: wrapper 5.3.0,
 US 1.764.6, Core 3.30.1 and SPM 0.3.1. Verify `/versions?upgrade=false` now returns
@@ -105,7 +114,7 @@ For local computes without Modal:
 ```bash
 uv run python -m poverty_dashboard.compute_local us      # federal only
 uv run python -m poverty_dashboard.compute_local --year 2024 us
-uv run python -m poverty_dashboard.compute_local --all   # all 52 regions (~30 min)
+uv run python -m poverty_dashboard.compute_local --all   # 52 national-size runs
 ```
 
 Run these from the repo root. The wrapper materializes the certified population

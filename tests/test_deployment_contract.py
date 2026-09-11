@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import importlib.util
 import re
 import shlex
@@ -22,6 +23,24 @@ def _git_ignores(path: Path) -> bool:
         ).returncode
         == 0
     )
+
+
+def _modal_function_limits() -> dict[str, dict[str, float]]:
+    """Read the declared cpu/memory/timeout off each ``@app.function``."""
+    limits: dict[str, dict[str, float]] = {}
+    for node in ast.parse((ROOT / "modal_app.py").read_text()).body:
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        for decorator in node.decorator_list:
+            target = decorator.func if isinstance(decorator, ast.Call) else None
+            if not (isinstance(target, ast.Attribute) and target.attr == "function"):
+                continue
+            limits[node.name] = {
+                keyword.arg: ast.literal_eval(keyword.value)
+                for keyword in decorator.keywords
+                if keyword.arg in {"cpu", "memory", "timeout"}
+            }
+    return limits
 
 
 def _git_tracks(path: Path) -> bool:
@@ -103,6 +122,28 @@ def test_materialized_population_cannot_be_staged_beside_the_numeric_assets():
         protected = Path("data") / asset
         assert not _git_ignores(protected)
         assert _git_tracks(protected)
+
+
+def test_cost_guidance_matches_the_national_population_fan_out():
+    from poverty_dashboard.regions import all_region_codes
+
+    limits = _modal_function_limits()
+    worker = limits["compute_region_remote"]
+    gateway = limits["web_app"]
+    deployment = (ROOT / "DEPLOYMENT.md").read_text()
+    readme = (ROOT / "README.md").read_text()
+
+    # Superseded when every region became a national-size run.
+    assert "(~30 min)" not in deployment
+    assert "51 containers in parallel" not in readme
+
+    for text in (readme.split("## Cost notes", 1)[1], deployment):
+        assert f"{len(all_region_codes())} regions" in text
+        assert "national population" in text
+        assert f"cpu {worker['cpu']}" in text
+        assert f"{worker['memory']} MiB" in text
+        assert f"{worker['timeout']} s" in text
+        assert f"{gateway['timeout']} s" in text
 
 
 def test_protection_document_link_resolves():
