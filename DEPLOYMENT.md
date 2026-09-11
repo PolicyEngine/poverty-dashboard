@@ -108,6 +108,13 @@ uv run python -m poverty_dashboard.compute_local --year 2024 us
 uv run python -m poverty_dashboard.compute_local --all   # all 52 regions (~30 min)
 ```
 
+Run these from the repo root. The wrapper materializes the certified population
+into `./data` relative to the working directory, so `populace_us_2024.h5`, its
+`.metadata.json` sibling and `.policyengine-download-*` temporaries land beside
+the committed numeric assets. `.gitignore` excludes them; never force-add them,
+and keep `data/baseline.json`, `data/census_spm_2024.json` and
+`data/spm_gap_diagnostics.json` the only tracked files in that directory.
+
 ### Private serving-process audit
 
 Serving closure must be observed separately for `web_app`, `get_versions_remote`

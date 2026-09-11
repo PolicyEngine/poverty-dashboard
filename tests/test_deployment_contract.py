@@ -5,11 +5,35 @@ from __future__ import annotations
 import importlib.util
 import re
 import shlex
+import subprocess
 from pathlib import Path
 
 from modal.image import _Image
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _git_ignores(path: Path) -> bool:
+    return (
+        subprocess.run(
+            ["git", "check-ignore", "-q", str(path)],
+            cwd=ROOT,
+            check=False,
+        ).returncode
+        == 0
+    )
+
+
+def _git_tracks(path: Path) -> bool:
+    return (
+        subprocess.run(
+            ["git", "ls-files", "--error-unmatch", str(path)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+        ).returncode
+        == 0
+    )
 
 
 def test_modal_dependency_layer_uses_committed_lock(monkeypatch):
@@ -55,6 +79,30 @@ def test_local_install_preserves_the_lock():
     assert "uv pip install" not in install
     deploy = makefile.split("deploy:\n", 1)[1].split("\n\n", 1)[0]
     assert "uv run --locked modal deploy modal_app.py" in deploy
+
+
+def test_materialized_population_cannot_be_staged_beside_the_numeric_assets():
+    from policyengine.provenance.dataset_materialization import DEFAULT_DATA_DIR
+    from policyengine.provenance.manifest import get_release_manifest
+
+    # Materialization resolves ./data against the working directory, and the
+    # documented CLI invocations run from the repo root.
+    assert DEFAULT_DATA_DIR == Path("./data")
+
+    manifest = get_release_manifest("us")
+    reference = manifest.datasets[manifest.default_dataset]
+    destination = DEFAULT_DATA_DIR / Path(reference.path).name
+    for materialized in (
+        destination,
+        Path(f"{destination}.metadata.json"),
+        DEFAULT_DATA_DIR / ".policyengine-download-fixture.h5",
+    ):
+        assert _git_ignores(materialized), f"`git add data` would stage {materialized}"
+
+    for asset in ("baseline.json", "census_spm_2024.json", "spm_gap_diagnostics.json"):
+        protected = Path("data") / asset
+        assert not _git_ignores(protected)
+        assert _git_tracks(protected)
 
 
 def test_protection_document_link_resolves():

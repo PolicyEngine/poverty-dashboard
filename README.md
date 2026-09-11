@@ -52,6 +52,10 @@ uv run python -m poverty_dashboard.precompute_baseline --year 2024
 git add data/baseline.json && git commit -m "Refresh baseline"
 ```
 
+A recompute materializes the certified population into `data/` beside the
+committed JSON assets. Those files are gitignored, so stage `data/baseline.json`
+by name rather than `git add data`.
+
 To test a locally built national dataset, point the computation at the H5 file:
 
 ```bash

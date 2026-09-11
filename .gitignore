@@ -16,6 +16,13 @@ out/
 .idea/
 .claude/
 
+# Certified populations and their download temporaries are materialized into
+# ./data relative to the working directory, next to the committed numeric
+# assets. Never let `git add data` stage them.
+data/*.h5
+data/*.metadata.json
+data/.policyengine-download-*
+
 frontend/.next
 frontend/node_modules
 frontend/public/baseline.json
