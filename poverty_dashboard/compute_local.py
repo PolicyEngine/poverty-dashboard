@@ -42,6 +42,14 @@ def main() -> None:
 
     if args.merge and DEFAULT_BASELINE.exists():
         existing = json.loads(DEFAULT_BASELINE.read_text())
+        if (
+            existing.get("year") != args.year
+            or existing.get("versions") != payload["versions"]
+        ):
+            raise SystemExit(
+                "Cannot merge baselines from different years or runtime bundles. "
+                "Preserve the existing snapshot and regenerate a separate baseline."
+            )
         payload["regions"] = existing.get("regions", {})
         payload["errors"] = existing.get("errors", [])
 
@@ -57,6 +65,9 @@ def main() -> None:
         payload["regions"][code] = {
             "region_code": code,
             "dataset_path": result["dataset_path"],
+            "policyengine_bundle": result["policyengine_bundle"],
+            "region_scope": result["region_scope"],
+            "versions": result["versions"],
             "people": result["people"],
             "child_count": result["child_count"],
             "rates": result["rates"],

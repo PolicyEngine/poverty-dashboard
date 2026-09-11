@@ -8,6 +8,9 @@ export type Rates = {
 export type RegionResult = {
   region_code: string;
   dataset_path: string;
+  policyengine_bundle?: Record<string, unknown>;
+  region_scope?: Record<string, unknown> | null;
+  versions?: Versions;
   people: number;
   child_count: number;
   rates: Rates;

@@ -1,10 +1,9 @@
-.PHONY: install install-python install-frontend format lint test check deploy recompute recompute-upgrade dev
+.PHONY: install install-python install-frontend format lint test check deploy recompute dev
 
 install: install-python install-frontend
 
 install-python:
-	uv venv --python 3.14
-	uv pip install -e ".[dev]"
+	uv sync --extra dev --locked
 
 install-frontend:
 	cd frontend && npm install
@@ -27,13 +26,10 @@ check:
 	cd frontend && npm run build
 
 deploy:
-	uv run modal deploy modal_app.py
+	uv run --locked modal deploy modal_app.py
 
 recompute:
 	uv run python -m poverty_dashboard.precompute_baseline
-
-recompute-upgrade:
-	uv run python -m poverty_dashboard.precompute_baseline --upgrade
 
 dev:
 	cd frontend && npm run dev

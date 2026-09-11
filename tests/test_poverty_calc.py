@@ -6,7 +6,6 @@ from microdf import MicroSeries
 from poverty_dashboard.poverty_calc import (
     US_DATASET_ENV,
     compute_region,
-    fallback_dataset,
     resolve_dataset,
     summarize_poverty,
 )
@@ -18,30 +17,142 @@ from poverty_dashboard.spm_elements import (
 )
 
 
-def test_fallback_dataset_uses_policyengine_us_data_paths() -> None:
-    assert (
-        fallback_dataset("us")
-        == "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5"
-    )
-    assert (
-        fallback_dataset("state/ca")
-        == "hf://policyengine/policyengine-us-data/states/CA.h5"
-    )
-
-
 def test_us_dataset_env_overrides_national_dataset(monkeypatch) -> None:
     monkeypatch.setenv(US_DATASET_ENV, "/tmp/local-enhanced-cps.h5")
 
-    assert fallback_dataset("us") == "/tmp/local-enhanced-cps.h5"
     assert resolve_dataset("us") == "/tmp/local-enhanced-cps.h5"
 
 
-def test_fallback_dataset_rejects_unknown_regions() -> None:
-    with pytest.raises(ValueError, match="Unknown state region"):
-        fallback_dataset("state/zz")
+def test_path_only_resolution_refuses_states_requiring_filtering() -> None:
+    with pytest.raises(ValueError, match="requires geographic filtering"):
+        resolve_dataset("state/ca")
 
-    with pytest.raises(ValueError, match="Unsupported region"):
-        fallback_dataset("county/001")
+
+def test_national_diagnostics_receive_a_verified_local_population_file(monkeypatch):
+    """The registry URI names a dataset-type repo the country loader cannot fetch."""
+    import inspect
+
+    from policyengine.provenance import dataset_materialization
+    from policyengine.provenance.manifest import get_release_manifest
+    from policyengine_core.tools.hugging_face import download_huggingface_dataset
+
+    manifest = get_release_manifest("us")
+    assert manifest.data_package.repo_type == "dataset"
+    assert 'repo_type="model"' in inspect.getsource(download_huggingface_dataset)
+
+    requested = []
+
+    def materialize(country_id, dataset=None, **kwargs):
+        requested.append((country_id, dataset, kwargs))
+        return dataset_materialization.DatasetSource(
+            source_uri=dataset, path="/verified/populace_us_2024.h5"
+        )
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(dataset_materialization, "materialize_dataset", materialize)
+
+    assert resolve_dataset("us") == "/verified/populace_us_2024.h5"
+    assert requested == [("us", manifest.default_dataset_uri, {})]
+
+
+def test_compute_state_filters_weighted_people_and_preserves_provenance(monkeypatch):
+    import policyengine as pe
+
+    provenance = {
+        "runtime_dataset_uri": "test-fixture://managed-population",
+        "runtime_dataset_sha256": "fixture-digest",
+        "future_provenance_field": {"retained": True},
+    }
+
+    class PopulationFixture:
+        policyengine_bundle = provenance
+
+        def get_known_periods(self, variable):
+            assert variable == "state_fips"
+            return [2026]
+
+        def calculate(self, variable, period, map_to="person"):
+            assert period == 2026
+            assert map_to == "person"
+            values = {
+                "age": [10, 30, 70, 10],
+                "state_fips": [6, 6, 6, 36],
+                "spm_unit_is_in_spm_poverty": [True, False, False, True],
+                "spm_unit_is_in_deep_spm_poverty": [False, False, False, True],
+            }[variable]
+            return MicroSeries(values, weights=[1, 2, 3, 100])
+
+    def managed_factory(*, dataset=None, allow_unmanaged=False):
+        assert dataset is None
+        assert not allow_unmanaged
+        return PopulationFixture()
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(pe.us, "managed_microsimulation", managed_factory)
+    result = compute_region("state/ca")
+
+    assert result["people"] == 6
+    assert result["rates"]["all"] == pytest.approx(1 / 6)
+    assert result["dataset_path"] == provenance["runtime_dataset_uri"]
+    assert result["policyengine_bundle"] == provenance
+    assert result["region_scope"]["variable_value"] == 6
+
+
+def test_state_filter_refuses_a_population_missing_the_state_fips_input(monkeypatch):
+    """An absent column defaults every household to FIPS 6, California."""
+    import policyengine as pe
+
+    class PopulationWithoutStateFips:
+        policyengine_bundle = {"runtime_dataset_uri": "test-fixture://no-state-fips"}
+
+        def get_known_periods(self, variable):
+            assert variable == "state_fips"
+            return []
+
+        def calculate(self, variable, period, map_to="person"):
+            raise AssertionError("Filtering must be refused before calculating")
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(
+        pe.us,
+        "managed_microsimulation",
+        lambda **kwargs: PopulationWithoutStateFips(),
+    )
+
+    with pytest.raises(ValueError, match="would read its default value"):
+        compute_region("state/ca")
+
+
+def test_state_filter_refuses_a_population_whose_state_fips_is_constant(monkeypatch):
+    """A defaulted column would hand the whole national population to California."""
+    import policyengine as pe
+
+    class DefaultedStateFipsPopulation:
+        policyengine_bundle = {"runtime_dataset_uri": "test-fixture://defaulted-fips"}
+
+        def get_known_periods(self, variable):
+            return [2026]
+
+        def calculate(self, variable, period, map_to="person"):
+            return MicroSeries(
+                {
+                    "age": [10, 30, 70, 40],
+                    "state_fips": [6, 6, 6, 6],
+                    "spm_unit_is_in_spm_poverty": [True, False, False, True],
+                    "spm_unit_is_in_deep_spm_poverty": [False, False, False, True],
+                }[variable],
+                weights=[1, 2, 3, 100],
+            )
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(
+        pe.us,
+        "managed_microsimulation",
+        lambda **kwargs: DefaultedStateFipsPopulation(),
+    )
+
+    with pytest.raises(ValueError, match="holds a single value"):
+        compute_region("state/ca")
 
 
 def test_summarize_poverty_uses_weighted_microseries_operations() -> None:

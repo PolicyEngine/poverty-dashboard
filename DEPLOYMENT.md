@@ -3,41 +3,109 @@
 Two pieces: a Modal app (Python backend that runs simulations) and a Vercel app
 (the Next.js dashboard).
 
-## 1. Modal — backend
+## 1. Vercel — frontend first
 
-Deploy from the repo root:
+For this upgrade-removal migration, deploy the frontend before the backend.
+The existing frontend sends `upgrade=false` even for version reads. The new
+backend rejects that obsolete query with HTTP 422, while the new frontend's
+plain `/versions` request works with the existing backend. Keep the existing
+backend serving until the frontend deployment is verified.
+
+Use a Vercel project with **root directory set to `frontend/`**. Confirm its
+existing `NEXT_PUBLIC_MODAL_BASE_URL` resolves to the serving backend, and keep
+that value for the frontend rollout. `NEXT_PUBLIC_BASE_PATH` should remain blank
+for a standalone deployment.
+
+The live source inventory on September 9, 2026 confirmed
+`https://poverty-dashboard.vercel.app` uses
+`https://policyengine--poverty-dashboard-web-app.modal.run`. Reconfirm the actual
+production aliases and compiled frontend backend URL at deployment time.
+
+After deploying the frontend, read back the production deployment identity and
+served JavaScript. Verify version requests contain no `upgrade` query and the
+plain backend `/versions` and `/health` return HTTP 200. Verify the frontend's
+recompute request builder sends only `year`; do not run a population recompute
+as a deployment probe. Refresh existing dashboard tabs onto the new frontend
+before switching the backend, since previously loaded JavaScript retains the
+old query contract.
+
+## 2. Modal — pinned backend
+
+Only after the new frontend is serving, deploy from the repo root:
 
 ```bash
 make install-python
-uv run modal deploy modal_app.py
+uv run --locked modal deploy modal_app.py
 ```
-
-Modal will print a `web_app` URL like `https://policyengine--poverty-dashboard-web-app.modal.run`.
-Save that — Vercel needs it.
 
 The backend exposes:
 
 - `GET  /health`
 - `GET  /baseline` — returns the JSON committed to the repo (only useful as a fallback)
-- `GET  /versions?upgrade=true|false` — installed PolicyEngine package versions
-- `POST /recompute?upgrade=true|false&year=2024|2025|2026` — fan out across regions, return fresh baseline JSON
+- `GET  /versions` — installed wrapper, country, core, and SPM package versions
+- `POST /recompute?year=2024|2025|2026` — fan out across regions, return fresh baseline JSON
 
-## 2. Vercel — frontend
+Both local and Modal installations use the committed `uv.lock`, preserving
+the exact legacy wrapper/model/SPM pins in `pyproject.toml` and the resolved
+transitive dependencies. The Modal image uses `Image.uv_sync` with uv 0.11.7
+and `--locked --no-dev`; missing or stale locks fail the build. The dashboard
+source is copied separately after dependency installation. Local development
+and CI also install the `dev` extra from that lock. Updating packages requires
+a reviewed lock update and image rebuild; requests cannot install or upgrade
+packages. Unknown query options are rejected.
+Per-region recompute responses retain returned `policyengine_bundle` provenance,
+installed versions, and the applied `region_scope`.
 
-Create a Vercel project with **root directory set to `frontend/`**.
+Every region now runs the full certified national population: a state result is
+the national person-level result masked by `state_fips`, not a per-state
+dataset. One `/recompute` is 52 regions, each a subprocess that sha256-verifies
+and simulates the national file, fanned out by `starmap`. `max_containers` is
+unset, so Modal decides the container count and it is not one per region; a
+container that already holds the file does not download it again. The worker
+asks for cpu 2.0 and 8192 MiB, and Modal turns a scalar `cpu`/`memory` into a
+reservation rather than a ceiling, so the hard limits are the 1200 s worker
+timeout and the `web_app` 2400 s request timeout. All four values are unchanged
+from before that became true, and have not been measured against the certified
+population. Validate both the sizing and the fan-out cost on a staged image
+before the first paid regeneration.
 
-Environment variables:
+Read back the deployed Modal version and serving URL. Verify `/health` returns
+HTTP 200 and `/versions` reports the exact, non-null tuple: wrapper 5.3.0,
+US 1.764.6, Core 3.30.1 and SPM 0.3.1. Verify `/versions?upgrade=false` now returns
+HTTP 422 without changing the runtime, then verify plain `/versions` still
+returns the same package tuple.
+Check requests from the newly served frontend succeed. Package or source changes
+require another reviewed image build; requests never upgrade dependencies.
 
-- `NEXT_PUBLIC_MODAL_BASE_URL` — the Modal URL from step 1.
-- `NEXT_PUBLIC_BASE_PATH` — leave blank for a standalone deployment.
+Before production, verify an actual staged Modal image: record its source and
+lock hashes, Python/platform identity, complete installed distribution versions
+and package-file hashes against the lock's applicable Linux artifacts. Record
+Modal's runtime-injected packages separately. Check the serving contract above
+on that staged image, without a population recompute. Record `sys.executable`,
+`sys.prefix` and `/.uv/.venv/pyvenv.cfg` from the serving container and a
+lightweight child launched through `sys.executable`, proving both use the locked
+environment. Local recipe tests and a four-package `/versions` response do not
+prove the full deployed closure.
+
+## 3. Numeric assets and rollback
 
 The `prebuild` step copies `data/baseline.json` from the repo root into
 `frontend/public/baseline.json` so the dashboard ships with the committed
 numbers and loads instantly. To update the deployed numbers, recompute locally
 (or via the Modal `/recompute` endpoint), commit the new `baseline.json`, and
-Vercel will pick it up on the next push.
+Vercel will pick it up on the next push. Preserve the previous files separately
+and verify all returned regions and provenance before replacing any assets.
+Source and image updates alone do not regenerate the checked-in numeric data.
 
-## 3. Local development
+Retain both previous deployment identities before rollout. If only the frontend
+has changed, it can be rolled back while the old backend still serves. Once the
+strict backend is deployed, restore the previous backend first and verify it
+accepts both plain `/versions` and `/versions?upgrade=false`; only then restore
+the old frontend. Never roll the frontend back to its old query contract while
+the strict backend is serving. Keep numeric assets at their reviewed versions
+through either sequence.
+
+## 4. Local development
 
 ```bash
 cd frontend
@@ -50,5 +118,65 @@ For local computes without Modal:
 ```bash
 uv run python -m poverty_dashboard.compute_local us      # federal only
 uv run python -m poverty_dashboard.compute_local --year 2024 us
-uv run python -m poverty_dashboard.compute_local --all   # all 52 regions (~30 min)
+uv run python -m poverty_dashboard.compute_local --all   # 52 national-size runs
 ```
+
+Run these from the repo root. The wrapper materializes the certified population
+into `./data` relative to the working directory, so `populace_us_2024.h5` and
+`.policyengine-download-*` temporaries land beside the committed numeric assets.
+The bundled manifest carries no `metadata_sha256` for this dataset, so this
+runtime writes no `.metadata.json` sibling; that ignore rule is defensive,
+against a manifest that later publishes one. `.gitignore` excludes all three
+shapes; never force-add them, and keep `data/baseline.json`,
+`data/census_spm_2024.json` and `data/spm_gap_diagnostics.json` the only tracked
+files in that directory.
+
+### Private serving-process audit
+
+Serving closure must be observed separately for `web_app`, `get_versions_remote`
+and `compute_region_remote`. Container exec starts another process and cannot
+establish these functions' actual Python prefixes.
+
+For the existing public `web_app`, `/runtime-audit?nonce=<nonce>` is disabled (404)
+without a server-only `POVERTY_RUNTIME_AUDIT_TOKEN`. During an explicitly approved
+staged deployment, the operator may set the deployment-only
+`POVERTY_RUNTIME_AUDIT_SECRET_NAME` to an existing Modal Secret containing that key.
+Only `web_app` receives this optional Secret. No token belongs in frontend code,
+URLs, source, logs or receipts. Send it in an `Authorization: Bearer ...` header;
+missing or incorrect authentication returns 404 before metadata capture. The
+route is omitted from OpenAPI and successful responses use `Cache-Control: no-store`.
+This route observes the gateway itself and does not call any worker.
+
+Use authenticated native Modal RPC to call the existing worker functions with a
+fresh nonce, for example after resolving the actual deployed app/environment:
+
+```python
+compute = modal.Function.from_name(actual_app, "compute_region_remote",
+                                   environment_name=actual_environment)
+witness = compute.remote("us", runtime_audit_nonce=fresh_nonce)
+versions = modal.Function.from_name(actual_app, "get_versions_remote",
+                                    environment_name=actual_environment)
+version_witness = versions.remote(runtime_audit_nonce=another_fresh_nonce)
+```
+
+The optional argument returns metadata before the calculation subprocess or version
+lookup. Public `/versions` and `/recompute` reject this argument. All audit nonces
+must contain 16–128 letters, digits, `_` or `-`. Normal calls retain the existing
+calculation command, installed-version response and pinned scientific closure.
+
+Bind each actual authenticated witness, PID, call/input IDs and nonce to the public
+Modal call graph and the actual deployed app/function/image/task/source receipts.
+The witness includes the serving interpreter/prefix, sanitized `pyvenv.cfg`
+fields/hash, loaded module origins and a real lightweight child through
+`sys.executable`. The child is not a population calculation. Full Linux wheel,
+RECORD and source closure still require a separately authenticated capture from
+the same container; missing correlation is a failed qualification component.
+These hooks do not waive staged checks, frontend-first/backend-second promotion,
+or backend-first rollback. No credential provisioning or deployment is implied by
+this source change.
+
+The witness reports whether both public Modal context IDs are present; this is
+an observation, not identity approval. Null parent module origins mean the module
+has not been loaded in that process. The lightweight child separately reports
+installed package versions through metadata and its import paths, without
+importing any model. Audit capture failures return generic uncached 502 JSON.

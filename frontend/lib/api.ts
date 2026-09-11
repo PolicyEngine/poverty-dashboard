@@ -28,18 +28,17 @@ export async function fetchSpmGapDiagnostics(): Promise<SpmGapDiagnostics> {
   return r.json();
 }
 
-export async function fetchVersions(opts: { upgrade?: boolean } = {}): Promise<Versions> {
+export async function fetchVersions(): Promise<Versions> {
   if (!MODAL_BASE_URL) throw new Error("NEXT_PUBLIC_MODAL_BASE_URL not set");
-  const url = `${MODAL_BASE_URL}/versions?upgrade=${opts.upgrade ? "true" : "false"}`;
+  const url = `${MODAL_BASE_URL}/versions`;
   const r = await fetch(url);
   if (!r.ok) throw new Error(`versions fetch failed: ${r.status}`);
   return r.json();
 }
 
-export async function recompute(opts: { upgrade?: boolean; year?: number } = {}): Promise<Baseline> {
+export async function recompute(opts: { year?: number } = {}): Promise<Baseline> {
   if (!MODAL_BASE_URL) throw new Error("NEXT_PUBLIC_MODAL_BASE_URL not set");
   const qs = new URLSearchParams({
-    upgrade: opts.upgrade ? "true" : "false",
     year: String(opts.year ?? 2026),
   });
   const url = `${MODAL_BASE_URL}/recompute?${qs}`;

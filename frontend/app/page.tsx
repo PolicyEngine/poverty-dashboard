@@ -62,8 +62,7 @@ export default function Page() {
   });
 
   const recomputeMut = useMutation({
-    mutationFn: ({ upgrade, year }: { upgrade: boolean; year: number }) =>
-      recompute({ upgrade, year }),
+    mutationFn: ({ year }: { year: number }) => recompute({ year }),
     onSuccess: (data) => setOverride(data),
   });
 
@@ -85,8 +84,7 @@ export default function Page() {
           setOverride(null);
         }}
         onRefreshVersions={() => versionsQuery.refetch()}
-        onRecompute={() => recomputeMut.mutate({ upgrade: false, year: selectedYear })}
-        onRecomputeUpgrade={() => recomputeMut.mutate({ upgrade: true, year: selectedYear })}
+        onRecompute={() => recomputeMut.mutate({ year: selectedYear })}
         recomputing={recomputeMut.isPending}
       />
 

@@ -1,14 +1,12 @@
 # PolicyEngine poverty dashboard
 
 Internal dashboard tracking baseline federal and per-state poverty and child
-poverty rates from PolicyEngine-US. Mirrors the dataset selection and poverty
-calculation methodology used by `policyengine-api`'s `economy_service` /
-`compare.py`:
+poverty rates from PolicyEngine-US. Recomputations use the installed wrapper's
+managed population and preserve its returned bundle provenance:
 
-- For each region, resolve the dataset via
-  `policyengine.countries.us.regions.us_region_registry` (national →
-  `enhanced_cps_2024.h5`, state → `states/{XX}.h5`).
-- Run `policyengine_us.Microsimulation` against that dataset.
+- Load the certified national population with
+  `policyengine.us.managed_microsimulation`.
+- For states, apply the registry's `state_fips` filter to person-level results.
 - Map SPM-unit poverty variables to people, then use MicroSeries weighted
   operations for all, child, working-age, and senior poverty rates.
 
@@ -40,7 +38,7 @@ editable mode with development tooling, and installs frontend dependencies.
 
 ```bash
 make install-python
-uv run modal deploy modal_app.py
+uv run --locked modal deploy modal_app.py
 # copy the printed web_app URL into your env
 export MODAL_BASE_URL=https://<...>.modal.run
 export NEXT_PUBLIC_MODAL_BASE_URL=$MODAL_BASE_URL
@@ -51,9 +49,12 @@ export NEXT_PUBLIC_MODAL_BASE_URL=$MODAL_BASE_URL
 ```bash
 uv run python -m poverty_dashboard.precompute_baseline
 uv run python -m poverty_dashboard.precompute_baseline --year 2024
-uv run python -m poverty_dashboard.precompute_baseline --upgrade
 git add data/baseline.json && git commit -m "Refresh baseline"
 ```
+
+A recompute materializes the certified population into `data/` beside the
+committed JSON assets. Those files are gitignored, so stage `data/baseline.json`
+by name rather than `git add data`.
 
 To test a locally built national dataset, point the computation at the H5 file:
 
@@ -121,14 +122,47 @@ The dashboard:
 4. Compares Census Table B-6 element effects with PolicyEngine arithmetic
    element effects.
 5. Lets you select 2024, 2025, or 2026 before recomputing.
-6. "Check latest" calls `/versions` on the Modal app and flags any package that
-   has a newer version on PyPI than the committed baseline used.
-7. "Recompute" / "Upgrade & recompute" runs `compute_region_remote.starmap` over
+6. "Check deployment" calls `/versions` on the Modal app and compares its
+   installed packages with the versions recorded in the displayed baseline.
+7. "Recompute" runs `compute_region_remote.starmap` over
    the national and 51 state regions; the result is shown in-app and offered as
    a JSON download for you to commit.
 
+Runtime packages are pinned in `pyproject.toml`, and `uv.lock` fixes the full
+dependency resolution used by CI and the Modal image. Package changes require
+a reviewed lock update, rebuild and deployment. Current
+pins protect the existing legacy SPM bundle; publication of a new SPM package
+does not update this deployment or the checked-in numbers.
+
+The diagnostic scripts still contain historical raw-CPS comparisons and require
+a separate source/provenance migration before canonical asset regeneration. See
+[DEPLOYMENT.md](DEPLOYMENT.md) for the remaining work and deployment gates.
+Their national population is the wrapper's sha256-verified local file, because
+policyengine-core downloads with `repo_type="model"` and so cannot fetch the
+registry's dataset-type Hugging Face repository. That local path, not the
+registry URI, is what a regenerated diagnostics asset would record as its
+`dataset_path`; restoring a pinned, revisioned identifier there is part of the
+migration. The committed `data/spm_gap_diagnostics.json` is unaffected, since
+this change regenerates nothing.
+
 ## Cost notes
 
-`compute_region_remote` runs 51 containers in parallel via Modal's `starmap`.
-Each container takes a few minutes (cold start + dataset download + sim), so
-expect roughly 51 × a few CPU-minutes per recompute. Don't wire this to a cron.
+`/recompute` fans out all 52 regions — the nation and 51 states — through
+`compute_region_remote.starmap`. Every region runs its own subprocess that
+materializes and simulates the full certified national population: a state
+result is the national person-level result masked by `state_fips`, not a
+per-state dataset. One recompute is therefore 52 national-size simulations and
+52 sha256 verifications of the national file. `max_containers` is unset, so
+Modal decides the container count and it is not one per region; a container
+that already holds the file does not download it again, which makes 52 the
+upper bound on downloads rather than the count. `compute_local --all` runs the
+same 52 national-size simulations serially in one process. Don't wire either to
+a cron.
+
+`compute_region_remote` asks for cpu 2.0 and 8192 MiB, `web_app` for cpu 1.0 and
+2048 MiB. Modal turns a scalar `cpu`/`memory` into a reservation rather than a
+ceiling, so neither number caps what a container may consume; the hard limits
+are the 1200 s worker timeout and the 2400 s `web_app` request timeout. All four
+values are unchanged from before every region became a national-size run, and
+have not been measured against the certified population. Validate them on a
+staged image before the first paid regeneration.
