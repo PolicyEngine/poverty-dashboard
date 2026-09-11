@@ -14,15 +14,29 @@ from modal.image import _Image
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _git_ignores(path: Path) -> bool:
-    return (
-        subprocess.run(
-            ["git", "check-ignore", "-q", str(path)],
-            cwd=ROOT,
-            check=False,
-        ).returncode
-        == 0
+def _prose(text: str) -> str:
+    """Collapse the hard wrapping so a phrase assertion can span a line break."""
+    return " ".join(text.split())
+
+
+def _git_ignore_rule(path: Path) -> str | None:
+    """Return the .gitignore pattern that excludes ``path``, or None.
+
+    Naming the matching pattern, rather than only asking whether the path is
+    ignored, keeps each rule individually pinned: a broader rule that happens to
+    cover the same fixture can no longer stand in for a deleted one.
+    """
+    result = subprocess.run(
+        ["git", "check-ignore", "-v", str(path)],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
     )
+    if result.returncode != 0:
+        return None
+    source, _, _ = result.stdout.partition("\t")
+    return source.rsplit(":", 1)[-1]
 
 
 def _modal_function_limits() -> dict[str, dict[str, float]]:
@@ -111,17 +125,64 @@ def test_materialized_population_cannot_be_staged_beside_the_numeric_assets():
     manifest = get_release_manifest("us")
     reference = manifest.datasets[manifest.default_dataset]
     destination = DEFAULT_DATA_DIR / Path(reference.path).name
-    for materialized in (
-        destination,
-        Path(f"{destination}.metadata.json"),
-        DEFAULT_DATA_DIR / ".policyengine-download-fixture.h5",
-    ):
-        assert _git_ignores(materialized), f"`git add data` would stage {materialized}"
+
+    # mkstemp uses the destination's suffix, or ".download" when it has none, so
+    # the temporaries are only covered by the prefix rule.
+    expected_rules = {
+        destination: "data/*.h5",
+        Path(f"{destination}.metadata.json"): "data/*.metadata.json",
+        DEFAULT_DATA_DIR
+        / ".policyengine-download-fixture.download": "data/.policyengine-download-*",
+        DEFAULT_DATA_DIR
+        / ".policyengine-download-fixture.json": "data/.policyengine-download-*",
+    }
+    for materialized, rule in expected_rules.items():
+        matched = _git_ignore_rule(materialized)
+        assert matched is not None, f"`git add data` would stage {materialized}"
+        assert matched == rule, f"{materialized} is ignored by {matched}, not {rule}"
 
     for asset in ("baseline.json", "census_spm_2024.json", "spm_gap_diagnostics.json"):
         protected = Path("data") / asset
-        assert not _git_ignores(protected)
+        assert _git_ignore_rule(protected) is None
         assert _git_tracks(protected)
+
+
+def test_this_runtime_writes_no_dataset_metadata_sibling():
+    """The ignore rule for it is defensive, and DEPLOYMENT.md must not overclaim."""
+    from policyengine.provenance.manifest import get_release_manifest
+
+    manifest = get_release_manifest("us")
+    reference = manifest.datasets[manifest.default_dataset]
+
+    # _reuse_or_download_bundle_files only fetches the sibling when the manifest
+    # certifies its digest.
+    assert reference.metadata_sha256 is None
+
+    deployment = _prose((ROOT / "DEPLOYMENT.md").read_text())
+    assert "writes no `.metadata.json` sibling" in deployment
+
+
+def test_worker_cpu_and_memory_are_documented_as_reservations():
+    """Modal treats scalar cpu/memory as a request, so the docs must not say limit."""
+    from modal._resources import convert_fn_config_to_resources_config
+
+    worker = _modal_function_limits()["compute_region_remote"]
+    resources = convert_fn_config_to_resources_config(
+        cpu=worker["cpu"],
+        memory=worker["memory"],
+        gpu=None,
+        ephemeral_disk=None,
+    )
+    assert resources.milli_cpu == int(worker["cpu"] * 1000)
+    assert resources.memory_mb == worker["memory"]
+    # 0 / unset are Modal's "no ceiling" encodings for a scalar request.
+    assert resources.memory_mb_max == 0
+    assert not resources.milli_cpu_max
+
+    readme = (ROOT / "README.md").read_text().split("## Cost notes", 1)[1]
+    for text in (readme, (ROOT / "DEPLOYMENT.md").read_text()):
+        assert "reservation rather than a ceiling" in _prose(text)
+        assert "worker limits" not in _prose(text)
 
 
 def test_cost_guidance_matches_the_national_population_fan_out():

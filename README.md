@@ -144,15 +144,21 @@ registry's dataset-type Hugging Face repository.
 ## Cost notes
 
 `/recompute` fans out all 52 regions — the nation and 51 states — through
-`compute_region_remote.starmap`, one container each. Every one of those
-containers materializes and simulates the full certified national population:
-a state result is the national person-level result masked by `state_fips`, not
-a per-state dataset. One recompute is therefore 52 national-size downloads,
-sha256 verifications and simulations, and `compute_local --all` runs the same
-52 national-size simulations serially in one process. Don't wire either to a
-cron.
+`compute_region_remote.starmap`. Every region runs its own subprocess that
+materializes and simulates the full certified national population: a state
+result is the national person-level result masked by `state_fips`, not a
+per-state dataset. One recompute is therefore 52 national-size simulations and
+52 sha256 verifications of the national file. `max_containers` is unset, so
+Modal decides the container count and it is not one per region; a container
+that already holds the file does not download it again, which makes 52 the
+upper bound on downloads rather than the count. `compute_local --all` runs the
+same 52 national-size simulations serially in one process. Don't wire either to
+a cron.
 
-The worker limits (cpu 2.0, 8192 MiB, 1200 s) and the `web_app` 2400 s request
-timeout are unchanged from before every region became a national-size run, and
+`compute_region_remote` asks for cpu 2.0 and 8192 MiB, `web_app` for cpu 1.0 and
+2048 MiB. Modal turns a scalar `cpu`/`memory` into a reservation rather than a
+ceiling, so neither number caps what a container may consume; the hard limits
+are the 1200 s worker timeout and the 2400 s `web_app` request timeout. All four
+values are unchanged from before every region became a national-size run, and
 have not been measured against the certified population. Validate them on a
 staged image before the first paid regeneration.
