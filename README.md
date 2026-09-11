@@ -137,6 +137,9 @@ does not update this deployment or the checked-in numbers.
 The diagnostic scripts still contain historical raw-CPS comparisons and require
 a separate source/provenance migration before canonical asset regeneration. See
 [DEPLOYMENT.md](DEPLOYMENT.md) for the remaining work and deployment gates.
+Their national population is the wrapper's sha256-verified local file, because
+policyengine-core downloads with `repo_type="model"` and so cannot fetch the
+registry's dataset-type Hugging Face repository.
 
 ## Cost notes
 

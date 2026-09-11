@@ -16,22 +16,29 @@ US_DATASET_ENV = "POVERTY_DASHBOARD_US_DATASET"
 
 
 def resolve_dataset(region_code: str) -> str:
-    """Resolve a dedicated dataset for the legacy diagnostic scripts.
+    """Materialize a loadable dataset file for the legacy diagnostic scripts.
 
     A path cannot express state scoping. Those callers must migrate to the
     managed simulation and geographic filtering before supporting states.
+
+    The registry's national entry is an ``hf://`` URI in a Hugging Face
+    repository of type ``dataset``, while ``policyengine_us.Microsimulation``
+    downloads through policyengine-core, which always requests
+    ``repo_type="model"``. Hand these callers the wrapper's sha256-verified
+    local file rather than a URI their loader cannot fetch.
     """
     if region_code == "us" and (configured := os.environ.get(US_DATASET_ENV)):
         return configured
 
     from policyengine.countries.us.regions import us_region_registry
+    from policyengine.provenance.dataset_materialization import materialize_dataset
 
     region = us_region_registry.get(region_code)
     if region is None:
         raise ValueError(f"Unknown region: {region_code}")
     if region.requires_filter or region.dataset_path is None:
         raise ValueError(f"Region {region_code} requires geographic filtering")
-    return region.dataset_path
+    return materialize_dataset("us", region.dataset_path).path
 
 
 def build_region_simulation(region_code: str) -> tuple[Any, Any]:

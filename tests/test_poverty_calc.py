@@ -28,6 +28,33 @@ def test_path_only_resolution_refuses_states_requiring_filtering() -> None:
         resolve_dataset("state/ca")
 
 
+def test_national_diagnostics_receive_a_verified_local_population_file(monkeypatch):
+    """The registry URI names a dataset-type repo the country loader cannot fetch."""
+    import inspect
+
+    from policyengine.provenance import dataset_materialization
+    from policyengine.provenance.manifest import get_release_manifest
+    from policyengine_core.tools.hugging_face import download_huggingface_dataset
+
+    manifest = get_release_manifest("us")
+    assert manifest.data_package.repo_type == "dataset"
+    assert 'repo_type="model"' in inspect.getsource(download_huggingface_dataset)
+
+    requested = []
+
+    def materialize(country_id, dataset=None, **kwargs):
+        requested.append((country_id, dataset, kwargs))
+        return dataset_materialization.DatasetSource(
+            source_uri=dataset, path="/verified/populace_us_2024.h5"
+        )
+
+    monkeypatch.delenv(US_DATASET_ENV, raising=False)
+    monkeypatch.setattr(dataset_materialization, "materialize_dataset", materialize)
+
+    assert resolve_dataset("us") == "/verified/populace_us_2024.h5"
+    assert requested == [("us", manifest.default_dataset_uri, {})]
+
+
 def test_compute_state_filters_weighted_people_and_preserves_provenance(monkeypatch):
     import policyengine as pe
 
