@@ -28,7 +28,18 @@ branch (the assignment forbids unrelated files in the PR).
 - Modal limits cpu 2.0 / 8192 MiB / 1200 s and gateway 2400 s are unchanged since the
   initial scaffold `955f509`, i.e. predate `8692b92` (2026-09-09) which made every
   region a national-size masked run — the new doc claim is accurate.
-- `all_region_codes()` == 52.
+- `all_region_codes()` == 52; `/recompute` fans out via `compute_region_remote.starmap`
+  one container per region (modal_app.py:172-174) and `compute_local --all` loops the 52
+  codes serially in one process (compute_local.py:56-63) — both doc claims are true.
+- END TO END on the real population with the new guards in place: `compute_region("us")`
+  345,685,947 people @ 13.173%; `compute_region("state/ca")` 40,077,002 @ 18.379%;
+  `compute_region("state/wy")` 597,907 @ 6.889%. The state mask discriminates (CA is not
+  the national total) and neither guard blocks a real region.
+- Every materializable filename under data/ is ignored and the three numeric assets are
+  not (`git check-ignore -v` on 8 paths).
+- Scope: cb4b855..e5b8d26 touches only .gitignore, DEPLOYMENT.md, README.md,
+  poverty_dashboard/poverty_calc.py and the two test files. frontend/, .github/,
+  pyproject.toml, uv.lock, modal_app.py and the three data/*.json assets are untouched.
 - PR #6 at cb4b8550: Python and Frontend checks pass; MERGEABLE / CLEAN.
 
 ## Next
