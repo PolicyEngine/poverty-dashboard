@@ -213,3 +213,10 @@ def test_protection_document_link_resolves():
     links = re.findall(r"\[[^\]]+\]\(([^)]+)\)", paragraph)
     assert links, "Protection guidance must link to a checked-in document"
     assert all((ROOT / link).is_file() for link in links)
+
+
+def test_diagnostics_provenance_caveat_is_recorded():
+    """resolve_dataset hands the callers a local path, so the URI is not recorded."""
+    readme = _prose((ROOT / "README.md").read_text())
+    assert "not the registry URI, is what a regenerated diagnostics asset" in readme
+    assert _git_tracks(Path("data") / "spm_gap_diagnostics.json")
