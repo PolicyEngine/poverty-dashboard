@@ -139,7 +139,11 @@ a separate source/provenance migration before canonical asset regeneration. See
 [DEPLOYMENT.md](DEPLOYMENT.md) for the remaining work and deployment gates.
 Their national population is the wrapper's sha256-verified local file, because
 policyengine-core downloads with `repo_type="model"` and so cannot fetch the
-registry's dataset-type Hugging Face repository.
+registry's dataset-type Hugging Face repository. That local path, not the
+registry URI, is what a regenerated diagnostics asset would record as its
+`dataset_path`; restoring a pinned, revisioned identifier there is part of the
+migration. The committed `data/spm_gap_diagnostics.json` is unaffected, since
+this change regenerates nothing.
 
 ## Cost notes
 
