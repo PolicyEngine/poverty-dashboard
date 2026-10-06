@@ -10,7 +10,8 @@ from typing import Any, Literal
 
 from microdf import MicroSeries
 
-from poverty_dashboard.poverty_calc import YEAR, resolve_dataset
+from poverty_dashboard.poverty_calc import YEAR, resolve_dataset_source
+from poverty_dashboard.simulation import calc
 
 AgeGroup = Literal["all", "child", "working_age", "senior"]
 ElementSection = Literal["addition", "subtraction"]
@@ -206,7 +207,7 @@ def spm_unit_component_as_person(
 
     component = None
     for variable in variables:
-        spm_unit_values = sim.calculate(variable, period=year, map_to="spm_unit")
+        spm_unit_values = calc(sim, variable, period=year, map_to="spm_unit")
         component = (
             spm_unit_values if component is None else component + spm_unit_values
         )
@@ -228,10 +229,10 @@ def compute_spm_element_effects(
     """Compute PolicyEngine SPM element effects without rerunning microsimulation."""
     from policyengine_us import Microsimulation
 
-    sim = Microsimulation(dataset=resolve_dataset(region_code))
-    age = sim.calculate("age", period=year)
-    net_income = sim.calculate("spm_unit_net_income", period=year, map_to="person")
-    threshold = sim.calculate("spm_unit_spm_threshold", period=year, map_to="person")
+    sim = Microsimulation(dataset=resolve_dataset_source(region_code))
+    age = calc(sim, "age", period=year)
+    net_income = calc(sim, "spm_unit_net_income", period=year, map_to="person")
+    threshold = calc(sim, "spm_unit_spm_threshold", period=year, map_to="person")
 
     effects: list[dict[str, Any]] = []
     for element in SPM_ELEMENTS:

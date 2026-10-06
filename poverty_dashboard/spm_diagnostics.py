@@ -18,7 +18,12 @@ import pandas as pd
 from microdf import MicroSeries
 
 from poverty_dashboard.paths import DATA_DIR
-from poverty_dashboard.poverty_calc import US_DATA_ROOT, resolve_dataset
+from poverty_dashboard.poverty_calc import (
+    US_DATA_ROOT,
+    resolve_dataset,
+    resolve_dataset_source,
+)
+from poverty_dashboard.simulation import calc
 from poverty_dashboard.spm_elements import (
     AGE_GROUPS,
     compute_spm_element_effects,
@@ -505,7 +510,7 @@ def _resource_means(sim: Any, year: int) -> dict[str, float | str]:
     means: dict[str, float | str] = {}
     for variable in RESOURCE_MEAN_VARIABLES:
         try:
-            value = sim.calculate(variable, period=year, map_to="person")
+            value = calc(sim, variable, period=year, map_to="person")
         except Exception as error:
             means[variable] = f"{type(error).__name__}: {error}"
             continue
@@ -560,8 +565,8 @@ def _first_available_income_series(
     errors: list[str] = []
     for variable in candidates:
         try:
-            spm_unit_income = sim.calculate(variable, period=year, map_to="spm_unit")
-            person_income = sim.calculate(variable, period=year, map_to="person")
+            spm_unit_income = calc(sim, variable, period=year, map_to="spm_unit")
+            person_income = calc(sim, variable, period=year, map_to="person")
             return variable, spm_unit_income, person_income
         except Exception as error:
             errors.append(f"{variable}: {type(error).__name__}: {error}")
@@ -771,9 +776,10 @@ def _source_replication_summary(
     note: str,
 ) -> dict[str, Any]:
     try:
-        age = sim.calculate("age", period=year)
-        resource = sim.calculate(resource_variable, period=year, map_to="person")
-        threshold = sim.calculate(
+        age = calc(sim, "age", period=year)
+        resource = calc(sim, resource_variable, period=year, map_to="person")
+        threshold = calc(
+            sim,
             "spm_unit_spm_threshold",
             period=year,
             map_to="person",
@@ -813,6 +819,69 @@ def _source_replication_summary(
     }
 
 
+def _raw_asec_source_replication_summary(
+    *,
+    year: int,
+    raw_asec_zip_path: str | Path | None = None,
+) -> dict[str, Any]:
+    if year != 2024:
+        return _missing_source_replication(
+            key="raw_cps_asec",
+            label="Raw public CPS ASEC",
+            dataset_path=CENSUS_ASEC_2024_ZIP,
+            resource_variable="SPM_RESOURCES",
+            note="Raw public ASEC reported-resource control is pinned to 2024.",
+        )
+
+    try:
+        person = _raw_asec_person_frame(raw_asec_zip_path)
+        age = MicroSeries(person["A_AGE"], weights=person["SPM_WEIGHT"])
+        resource = MicroSeries(person["SPM_RESOURCES"], weights=person["SPM_WEIGHT"])
+        threshold = MicroSeries(
+            person["SPM_POVTHRESHOLD"],
+            weights=person["SPM_WEIGHT"],
+        )
+    except Exception as error:
+        return _missing_source_replication(
+            key="raw_cps_asec",
+            label="Raw public CPS ASEC",
+            dataset_path=CENSUS_ASEC_2024_ZIP,
+            resource_variable="SPM_RESOURCES",
+            note=(
+                "Raw public CPS ASEC could not be loaded for the "
+                "validation-only reported-resource replication."
+            ),
+            error=f"{type(error).__name__}: {error}",
+        )
+
+    return {
+        "key": "raw_cps_asec",
+        "label": "Raw public CPS ASEC",
+        "dataset_path": CENSUS_ASEC_2024_ZIP,
+        "available": True,
+        "resource_variable": "SPM_RESOURCES",
+        "threshold_variable": "SPM_POVTHRESHOLD",
+        "rates": _round_rate_set(poverty_rates(resource < threshold, age)),
+        "population": float((age >= 0).sum()),
+        "mean_resource": round(float(resource.mean())),
+        "median_resource": round(float(resource.quantile(0.5))),
+        "mean_threshold": round(float(threshold.mean())),
+        "threshold_ratio_distribution": threshold_ratio_distribution(
+            resource,
+            threshold,
+            age,
+        ),
+        "resource_distribution": _resource_distribution_summary(
+            resource,
+            threshold,
+        ),
+        "note": (
+            "Uses public ASEC SPM_RESOURCES and SPM_POVTHRESHOLD directly as "
+            "a validation-only control, not as an ECPS pipeline input."
+        ),
+    }
+
+
 def _component_mean_gaps(
     *,
     enhanced_sim: Any,
@@ -823,22 +892,26 @@ def _component_mean_gaps(
     enhanced_below_threshold = None
     raw_below_threshold = None
     try:
-        enhanced_resource = enhanced_sim.calculate(
+        enhanced_resource = calc(
+            enhanced_sim,
             "spm_unit_net_income",
             period=year,
             map_to="person",
         )
-        enhanced_threshold = enhanced_sim.calculate(
+        enhanced_threshold = calc(
+            enhanced_sim,
             "spm_unit_spm_threshold",
             period=year,
             map_to="person",
         )
-        raw_resource = raw_sim.calculate(
+        raw_resource = calc(
+            raw_sim,
             "spm_unit_net_income_reported",
             period=year,
             map_to="person",
         )
-        raw_threshold = raw_sim.calculate(
+        raw_threshold = calc(
+            raw_sim,
             "spm_unit_spm_threshold",
             period=year,
             map_to="person",
@@ -850,8 +923,8 @@ def _component_mean_gaps(
 
     for variable, label in SOURCE_REPLICATION_COMPONENTS:
         try:
-            enhanced = enhanced_sim.calculate(variable, period=year, map_to="person")
-            raw = raw_sim.calculate(variable, period=year, map_to="person")
+            enhanced = calc(enhanced_sim, variable, period=year, map_to="person")
+            raw = calc(raw_sim, variable, period=year, map_to="person")
         except Exception as error:
             gaps.append(
                 {
@@ -928,8 +1001,11 @@ def _raw_asec_person_frame(zip_path: str | Path | None = None) -> pd.DataFrame:
     }
     usecols = [
         "SPM_ID",
+        "A_AGE",
         "A_FNLWGT",
         "PTOTVAL",
+        "SPM_POOR",
+        "SPM_POVTHRESHOLD",
         "SPM_TOTVAL",
         "SPM_RESOURCES",
         "SPM_WEIGHT",
@@ -978,7 +1054,7 @@ def _enhanced_total_income_leaf_mean(
     total = None
     try:
         for variable in variables:
-            values = sim.calculate(variable, period=year, map_to="person")
+            values = calc(sim, variable, period=year, map_to="person")
             total = values if total is None else total + values
     except Exception as error:
         return None, f"{type(error).__name__}: {error}"
@@ -1188,33 +1264,36 @@ def compute_source_replication_diagnostics(
     )
 
     raw_sim = None
-    try:
-        raw_sim = simulation_factory(raw_dataset_path)
-    except Exception as error:
-        raw = _missing_source_replication(
-            key="raw_cps_asec",
-            label="Raw CPS ASEC",
-            dataset_path=raw_dataset_path,
-            resource_variable="spm_unit_net_income_reported",
-            note=(
-                "Raw CPS ASEC could not be loaded for the validation-only "
-                "reported-resource replication."
-            ),
-            error=f"{type(error).__name__}: {error}",
-        )
+    if simulation_factory is _default_microsimulation_factory:
+        raw = _raw_asec_source_replication_summary(year=year)
     else:
-        raw = _source_replication_summary(
-            key="raw_cps_asec",
-            label="Raw CPS ASEC",
-            dataset_path=raw_dataset_path,
-            sim=raw_sim,
-            year=year,
-            resource_variable="spm_unit_net_income_reported",
-            note=(
-                "Uses Census-reported SPM resources as a validation-only "
-                "control, not as an ECPS pipeline input."
-            ),
-        )
+        try:
+            raw_sim = simulation_factory(raw_dataset_path)
+        except Exception as error:
+            raw = _missing_source_replication(
+                key="raw_cps_asec",
+                label="Raw CPS ASEC",
+                dataset_path=raw_dataset_path,
+                resource_variable="spm_unit_net_income_reported",
+                note=(
+                    "Raw CPS ASEC could not be loaded for the validation-only "
+                    "reported-resource replication."
+                ),
+                error=f"{type(error).__name__}: {error}",
+            )
+        else:
+            raw = _source_replication_summary(
+                key="raw_cps_asec",
+                label="Raw CPS ASEC",
+                dataset_path=raw_dataset_path,
+                sim=raw_sim,
+                year=year,
+                resource_variable="spm_unit_net_income_reported",
+                note=(
+                    "Uses Census-reported SPM resources as a validation-only "
+                    "control, not as an ECPS pipeline input."
+                ),
+            )
 
     return {
         "title": "Raw CPS replication control",
@@ -1292,10 +1371,10 @@ def compute_spm_gap_diagnostics(
 
     census = _census_2024_report(census_report_path)
     dataset_path = resolve_dataset(region_code)
-    sim = Microsimulation(dataset=dataset_path)
-    age = sim.calculate("age", period=year)
-    net_income = sim.calculate("spm_unit_net_income", period=year, map_to="person")
-    threshold = sim.calculate("spm_unit_spm_threshold", period=year, map_to="person")
+    sim = Microsimulation(dataset=resolve_dataset_source(region_code))
+    age = calc(sim, "age", period=year)
+    net_income = calc(sim, "spm_unit_net_income", period=year, map_to="person")
+    threshold = calc(sim, "spm_unit_spm_threshold", period=year, map_to="person")
     omitted_additions = spm_unit_component_as_person(
         sim=sim,
         variables=("child_support_received", "workers_compensation"),
@@ -1306,9 +1385,10 @@ def compute_spm_gap_diagnostics(
         raise RuntimeError("Expected omitted SPM additions were not available.")
     corrected_net_income = net_income + omitted_additions
 
-    person_in_poverty = sim.calculate("person_in_poverty", period=year)
-    in_poverty = sim.calculate("in_poverty", period=year, map_to="person")
-    spm_unit_poverty = sim.calculate(
+    person_in_poverty = calc(sim, "person_in_poverty", period=year)
+    in_poverty = calc(sim, "in_poverty", period=year, map_to="person")
+    spm_unit_poverty = calc(
+        sim,
         "spm_unit_is_in_spm_poverty",
         period=year,
         map_to="person",
@@ -1395,13 +1475,13 @@ def compute_spm_gap_diagnostics(
                 "source": "Census Table B-5, SPM, Less than 0.50 threshold ratio",
             },
             "policyengine_2026_committed": {
-                "all": 0.21903239157830484,
-                "child": 0.21751115956910017,
-                "working_age": 0.2388378199508652,
-                "senior": 0.1543611070024721,
-                "deep_all": 0.07862131650456361,
-                "deep_child": 0.05454291800770483,
-                "people": 341815362.3148309,
+                "all": 0.20195863891208138,
+                "child": 0.25298306584001984,
+                "working_age": 0.20818635431036905,
+                "senior": 0.1157449243289059,
+                "deep_all": 0.07368986530795645,
+                "deep_child": 0.06376841512421287,
+                "people": 338309447.0456525,
             },
         },
         "gap_accounting": _gap_accounting(

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T12:33:34.292145+00:00",
+  "generated_at": "2026-06-14T11:35:13.586326+00:00",
   "title": "Why is PolicyEngine higher than Census SPM?",
   "summary": [
     "PolicyEngine's 2024 SPM-like rate is much higher than Census's 2024 SPM rate.",
@@ -43,58 +43,58 @@
       "source": "Census Table B-5, SPM, Less than 0.50 threshold ratio"
     },
     "policyengine_2026_committed": {
-      "all": 0.21903239157830484,
-      "child": 0.21751115956910017,
-      "working_age": 0.2388378199508652,
-      "senior": 0.1543611070024721,
-      "deep_all": 0.07862131650456361,
-      "deep_child": 0.05454291800770483,
-      "people": 341815362.3148309
+      "all": 0.20195863891208138,
+      "child": 0.25298306584001984,
+      "working_age": 0.20818635431036905,
+      "senior": 0.1157449243289059,
+      "deep_all": 0.07368986530795645,
+      "deep_child": 0.06376841512421287,
+      "people": 338309447.0456525
     }
   },
   "gap_accounting": {
     "census_rate": 0.129,
-    "policyengine_modeled_rate": 0.2441,
-    "policyengine_modeled_gap": 0.11510000000000001,
-    "modeled_plus_omitted_rate": 0.2432,
-    "remaining_gap_after_omitted_resources": 0.1142,
-    "omitted_resources_gap_closure": 0.0009000000000000119,
-    "omitted_resources_share_of_gap": 0.007819287576020954,
-    "raw_cps_reported_rate": 0.125,
-    "raw_cps_reported_gap": -0.0040000000000000036,
+    "policyengine_modeled_rate": 0.2078,
+    "policyengine_modeled_gap": 0.07880000000000001,
+    "modeled_plus_omitted_rate": 0.2046,
+    "remaining_gap_after_omitted_resources": 0.0756,
+    "omitted_resources_gap_closure": 0.0032000000000000084,
+    "omitted_resources_share_of_gap": 0.040609137055837664,
+    "raw_cps_reported_rate": 0.1291,
+    "raw_cps_reported_gap": 9.999999999998899e-05,
     "note": "Rates are national all-person SPM rates. Omitted-resource closure adds child support received and workers' compensation arithmetically, without rerunning a microsimulation."
   },
   "policyengine_2024_checks": [
     {
       "label": "person_in_poverty",
-      "all": 0.2441,
-      "child": 0.2368,
-      "working_age": 0.2632,
-      "senior": 0.1887,
+      "all": 0.2078,
+      "child": 0.2505,
+      "working_age": 0.2125,
+      "senior": 0.1373,
       "note": "Person-level wrapper around the SPM-unit poverty variable."
     },
     {
       "label": "in_poverty mapped to person",
-      "all": 0.2441,
-      "child": 0.2368,
-      "working_age": 0.2632,
-      "senior": 0.1887,
+      "all": 0.2078,
+      "child": 0.2505,
+      "working_age": 0.2125,
+      "senior": 0.1373,
       "note": "SPM-unit poverty variable projected to people."
     },
     {
       "label": "spm_unit_is_in_spm_poverty mapped to person",
-      "all": 0.2441,
-      "child": 0.2368,
-      "working_age": 0.2632,
-      "senior": 0.1887,
+      "all": 0.2078,
+      "child": 0.2505,
+      "working_age": 0.2125,
+      "senior": 0.1373,
       "note": "Explicit test of spm_unit_net_income < spm_unit_spm_threshold."
     },
     {
       "label": "modeled net income plus omitted SPM additions",
-      "all": 0.2432,
-      "child": 0.2349,
-      "working_age": 0.2624,
-      "senior": 0.1887,
+      "all": 0.2046,
+      "child": 0.2417,
+      "working_age": 0.2105,
+      "senior": 0.1373,
       "note": "Adds child support received and workers' compensation without rerunning the microsimulation."
     }
   ],
@@ -108,11 +108,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.09992986436304421,
-      "child": -0.01799840097429764,
-      "working_age": -0.05151321391969105,
-      "senior": -0.3601846787300509,
-      "mean_amount": 7949.138208389014
+      "all": -0.11660922971349993,
+      "child": -0.029755122557369174,
+      "working_age": -0.054435479798017355,
+      "senior": -0.44490331128608585,
+      "mean_amount": 8409.061490177353
     },
     {
       "element": "Refundable tax credits",
@@ -124,11 +124,11 @@
       "supported": true,
       "note": "Census combines the federal EITC and refundable CTC in this Table B-6 row.",
       "included_in_policyengine_net_income": true,
-      "all": -0.04151540582479282,
-      "child": -0.09580434720963724,
-      "working_age": -0.03442815630780216,
-      "senior": -0.0005543876690604355,
-      "mean_amount": 1191.3727203421765
+      "all": -0.024467282586480177,
+      "child": -0.0635118235816628,
+      "working_age": -0.016262692120655148,
+      "senior": -0.004151260436638743,
+      "mean_amount": 1278.8721478890513
     },
     {
       "element": "SNAP",
@@ -139,11 +139,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.01763274264608214,
-      "child": -0.0455265912179291,
-      "working_age": -0.012521997649727057,
-      "senior": -0.0015191567038101983,
-      "mean_amount": 754.4658608547992
+      "all": -0.016346430415252772,
+      "child": -0.040119593522391084,
+      "working_age": -0.012389179341780632,
+      "senior": -0.0003216530642365656,
+      "mean_amount": 929.5871023141566
     },
     {
       "element": "SSI",
@@ -154,11 +154,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.010691144223177601,
-      "child": -0.014326177775877885,
-      "working_age": -0.01175185861998923,
-      "senior": -0.0027947402167233792,
-      "mean_amount": 406.4680690711813
+      "all": -0.0020396395459473526,
+      "child": -0.0016863308947532296,
+      "working_age": -0.0023094066499483035,
+      "senior": -0.0015352137594714377,
+      "mean_amount": 490.7283160959188
     },
     {
       "element": "Refundable Child Tax Credit",
@@ -169,11 +169,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.017669698875388856,
-      "child": -0.039806838826328655,
-      "working_age": -0.014930164298240844,
-      "senior": -0.0004623409054381189,
-      "mean_amount": 423.85708322711474
+      "all": -0.01121083772541731,
+      "child": -0.02929998209394835,
+      "working_age": -0.007344914532821628,
+      "senior": -0.002026543128570618,
+      "mean_amount": 467.3218368062872
     },
     {
       "element": "Housing subsidies",
@@ -184,11 +184,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": 0.0,
-      "child": 0.0,
-      "working_age": 0.0,
-      "senior": 0.0,
-      "mean_amount": 0.0
+      "all": -0.003278256049242617,
+      "child": -0.00468343179739128,
+      "working_age": -0.003691456775548385,
+      "senior": -5.3211525640972646e-05,
+      "mean_amount": 158.1507645225007
     },
     {
       "element": "School lunch",
@@ -200,11 +200,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.006245992301855768,
-      "child": -0.01811172714411788,
-      "working_age": -0.0037529304984386114,
-      "senior": -0.0004623409054381189,
-      "mean_amount": 386.69000746181536
+      "all": -0.006603330202739205,
+      "child": -0.019076161014417115,
+      "working_age": -0.0040139992131461855,
+      "senior": -1.9872069979276485e-06,
+      "mean_amount": 399.3641085766898
     },
     {
       "element": "Child support received",
@@ -215,11 +215,11 @@
       "supported": true,
       "note": "PolicyEngine input exists but is not yet included in PE SPM net income.",
       "included_in_policyengine_net_income": false,
-      "all": -0.0005092881452739839,
-      "child": -0.0012979513098189122,
-      "working_age": -0.0003807841016231217,
-      "senior": 0.0,
-      "mean_amount": 112.97463337658932
+      "all": -0.0023369504145383524,
+      "child": -0.006939092823587761,
+      "working_age": -0.0013529591959337839,
+      "senior": -1.8944215239014017e-06,
+      "mean_amount": 278.96149254580837
     },
     {
       "element": "Unemployment insurance",
@@ -230,11 +230,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.0009048643697716907,
-      "child": -0.0009729229389048855,
-      "working_age": -0.001150232850531674,
-      "senior": 0.0,
-      "mean_amount": 275.67039842014697
+      "all": -0.002196720677789421,
+      "child": -0.003970536228760813,
+      "working_age": -0.002101596054523397,
+      "senior": -0.0002965277621884699,
+      "mean_amount": 213.26446754306917
     },
     {
       "element": "TANF/general assistance",
@@ -245,11 +245,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.00478381593617852,
-      "child": -0.012931672217583956,
-      "working_age": -0.0031761668718193192,
-      "senior": -0.0004623409054381189,
-      "mean_amount": 64.43236472107078
+      "all": -0.001423579748525805,
+      "child": -0.003609718129873596,
+      "working_age": -0.0010454555567216695,
+      "senior": -3.300357900859474e-08,
+      "mean_amount": 87.99890668874669
     },
     {
       "element": "WIC",
@@ -260,11 +260,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": -0.01107286284155748,
-      "child": -0.025379185138772714,
-      "working_age": -0.00928825144699863,
-      "senior": 0.0,
-      "mean_amount": 154.36325474619204
+      "all": -0.0017735684416053388,
+      "child": -0.005145771922810072,
+      "working_age": -0.0010627333597720556,
+      "senior": -2.672662365851841e-05,
+      "mean_amount": 142.12604926752832
     },
     {
       "element": "Utility assistance",
@@ -277,11 +277,11 @@
       "supported": true,
       "note": "Census Table B-6 defines utility assistance as ACP plus other noncash energy benefits; PolicyEngine currently has zero ACP/EBB in the 2024 data.",
       "included_in_policyengine_net_income": true,
-      "all": 0.0,
-      "child": 0.0,
-      "working_age": 0.0,
-      "senior": 0.0,
-      "mean_amount": 0.0
+      "all": -0.0001653744777279087,
+      "child": -2.8333794611923313e-05,
+      "working_age": -0.00025754293733670774,
+      "senior": -1.3608101238016257e-05,
+      "mean_amount": 21.812443154753897
     },
     {
       "element": "Energy assistance",
@@ -292,11 +292,11 @@
       "supported": true,
       "note": "PolicyEngine's 2024 energy subsidy input is very small relative to the Census Table B-6 effect.",
       "included_in_policyengine_net_income": true,
-      "all": 0.0,
-      "child": 0.0,
-      "working_age": 0.0,
-      "senior": 0.0,
-      "mean_amount": 0.0
+      "all": -0.0001653744777279087,
+      "child": -2.8333794611923313e-05,
+      "working_age": -0.00025754293733670774,
+      "senior": -1.3608101238016257e-05,
+      "mean_amount": 21.812443154753897
     },
     {
       "element": "Workers' compensation",
@@ -307,11 +307,11 @@
       "supported": true,
       "note": "PolicyEngine input exists but is not yet included in PE SPM net income.",
       "included_in_policyengine_net_income": false,
-      "all": -0.00038361329098743346,
-      "child": -0.0005853452008893478,
-      "working_age": -0.00042621151076210895,
-      "senior": 0.0,
-      "mean_amount": 57.29587415854047
+      "all": -0.0008144427046054559,
+      "child": -0.0018612918258204547,
+      "working_age": -0.0006706314001893865,
+      "senior": -1.6211744232053071e-06,
+      "mean_amount": 73.33243868142354
     },
     {
       "element": "Broadband Assistance",
@@ -338,11 +338,11 @@
       "supported": true,
       "note": "PolicyEngine-only diagnostic; Census Table B-6 does not publish a state refundable tax credit effect.",
       "included_in_policyengine_net_income": true,
-      "all": -0.004091935745141079,
-      "child": -0.01245048649337649,
-      "working_age": -0.0020473044290975073,
-      "senior": -0.0009860822886141318,
-      "mean_amount": 181.93298678439
+      "all": -0.001640338424470228,
+      "child": -0.00370412139999321,
+      "working_age": -0.0013547023752097376,
+      "senior": -4.539628603908441e-05,
+      "mean_amount": 191.69870382841648
     },
     {
       "element": "Child support paid",
@@ -353,11 +353,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": 0.00015297699898442207,
-      "child": 7.146682789366254e-06,
-      "working_age": 0.00019759625451049034,
-      "senior": 0.00017713010571082655,
-      "mean_amount": 96.88036195278869
+      "all": 0.000826765166399096,
+      "child": 0.0010313989921863775,
+      "working_age": 0.0009841919950366318,
+      "senior": 1.4768409564464013e-05,
+      "mean_amount": 147.5067487361244
     },
     {
       "element": "Federal income tax",
@@ -368,11 +368,11 @@
       "supported": true,
       "note": "Uses pre-refundable-credit tax because Census reports refundable credits separately.",
       "included_in_policyengine_net_income": true,
-      "all": 0.003624304579204013,
-      "child": 0.0016180355269394542,
-      "working_age": 0.005416785769809085,
-      "senior": 0.0,
-      "mean_amount": 14951.159303053797
+      "all": 0.01313232714572099,
+      "child": 0.009355394119963722,
+      "working_age": 0.015844129325022882,
+      "senior": 0.008345577495729062,
+      "mean_amount": 15354.502481098107
     },
     {
       "element": "State income tax before refundable credits",
@@ -383,11 +383,11 @@
       "supported": true,
       "note": "PolicyEngine-only diagnostic; Census Table B-6 does not publish a state income tax effect.",
       "included_in_policyengine_net_income": true,
-      "all": 0.0028779923060918144,
-      "child": 0.0016245415179441947,
-      "working_age": 0.004180674546270746,
-      "senior": 0.0,
-      "mean_amount": 3688.608409023771
+      "all": 0.005825478251524657,
+      "child": 0.005152100723404551,
+      "working_age": 0.007693705886825192,
+      "senior": 9.76410830884622e-05,
+      "mean_amount": 3912.912584318031
     },
     {
       "element": "Work expenses",
@@ -398,11 +398,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": 0.009204006136374843,
-      "child": 0.006378321023941702,
-      "working_age": 0.012683370745319444,
-      "senior": 0.0008942773601344767,
-      "mean_amount": 2367.262906436704
+      "all": 0.029704471259047432,
+      "child": 0.04352731569450535,
+      "working_age": 0.029832072030809148,
+      "senior": 0.01183827884477276,
+      "mean_amount": 3147.2990898076832
     },
     {
       "element": "FICA",
@@ -413,11 +413,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": 0.020461593404316802,
-      "child": 0.024560336161789043,
-      "working_age": 0.02466955636652457,
-      "senior": 0.0014469678764667815,
-      "mean_amount": 5912.39546812419
+      "all": 0.017228684517639703,
+      "child": 0.01791991285670852,
+      "working_age": 0.019338612443296516,
+      "senior": 0.008930616295406452,
+      "mean_amount": 5492.5169686159115
     },
     {
       "element": "Medical expenses",
@@ -428,11 +428,11 @@
       "supported": true,
       "note": "",
       "included_in_policyengine_net_income": true,
-      "all": 0.035180647815272525,
-      "child": 0.02163109179267017,
-      "working_age": 0.033793199351758396,
-      "senior": 0.05599931402090974,
-      "mean_amount": 7656.253424454146
+      "all": 0.056429460260894154,
+      "child": 0.06179457124517357,
+      "working_age": 0.05275452182734092,
+      "senior": 0.0626053912324073,
+      "mean_amount": 7598.183743105245
     }
   ],
   "admin_calibration_targets": [
@@ -540,70 +540,70 @@
     },
     "policyengine_2024_modeled": {
       "all": {
-        "less_than_0_50": 0.09264383783125314,
-        "from_0_50_to_0_99": 0.15143071486887993,
-        "from_1_00_to_1_49": 0.15141608287767583,
-        "from_1_50_to_1_99": 0.12577984401553288,
-        "from_2_00_to_3_99": 0.28943572127289335,
-        "from_4_00_or_more": 0.18929379913376482
+        "less_than_0_50": 0.07236394376675764,
+        "from_0_50_to_0_99": 0.1354262063456246,
+        "from_1_00_to_1_49": 0.17117617631774712,
+        "from_1_50_to_1_99": 0.13563896827167937,
+        "from_2_00_to_3_99": 0.28290351059780333,
+        "from_4_00_or_more": 0.20249119470038776
       },
       "child": {
-        "less_than_0_50": 0.06918252406483798,
-        "from_0_50_to_0_99": 0.16760604357779166,
-        "from_1_00_to_1_49": 0.21418201853293306,
-        "from_1_50_to_1_99": 0.11711575025551235,
-        "from_2_00_to_3_99": 0.2759540680027202,
-        "from_4_00_or_more": 0.15595959556620487
+        "less_than_0_50": 0.06321909420596282,
+        "from_0_50_to_0_99": 0.18732450366667242,
+        "from_1_00_to_1_49": 0.2274490823678885,
+        "from_1_50_to_1_99": 0.10960599643672286,
+        "from_2_00_to_3_99": 0.21102554938704904,
+        "from_4_00_or_more": 0.20137577393570436
       },
       "working_age": {
-        "less_than_0_50": 0.10792066030573907,
-        "from_0_50_to_0_99": 0.15523906460741216,
-        "from_1_00_to_1_49": 0.13284753381558373,
-        "from_1_50_to_1_99": 0.12581535149720652,
-        "from_2_00_to_3_99": 0.2918014929602832,
-        "from_4_00_or_more": 0.1863758968137754
+        "less_than_0_50": 0.08196770725075324,
+        "from_0_50_to_0_99": 0.13054226028794294,
+        "from_1_00_to_1_49": 0.14662883950042926,
+        "from_1_50_to_1_99": 0.13391187835379156,
+        "from_2_00_to_3_99": 0.2965630204426441,
+        "from_4_00_or_more": 0.21038629416443896
       },
       "senior": {
-        "less_than_0_50": 0.0693436139583095,
-        "from_0_50_to_0_99": 0.11935335773438496,
-        "from_1_00_to_1_49": 0.1388863072101821,
-        "from_1_50_to_1_99": 0.13599464691494875,
-        "from_2_00_to_3_99": 0.297574046849525,
-        "from_4_00_or_more": 0.2388480273326496
+        "less_than_0_50": 0.05008063064973858,
+        "from_0_50_to_0_99": 0.08722530110833633,
+        "from_1_00_to_1_49": 0.18667983229940216,
+        "from_1_50_to_1_99": 0.17452046128063356,
+        "from_2_00_to_3_99": 0.3253884864875755,
+        "from_4_00_or_more": 0.17610528817431384
       }
     },
     "policyengine_2024_modeled_plus_omitted_resources": {
       "all": {
-        "less_than_0_50": 0.09260669697984247,
-        "from_0_50_to_0_99": 0.15057495428402923,
-        "from_1_00_to_1_49": 0.15162185806284278,
-        "from_1_50_to_1_99": 0.1253614280655139,
-        "from_2_00_to_3_99": 0.2892770420414397,
-        "from_4_00_or_more": 0.19055802056633184
+        "less_than_0_50": 0.07088997173766391,
+        "from_0_50_to_0_99": 0.13374878525557451,
+        "from_1_00_to_1_49": 0.17185082056620696,
+        "from_1_50_to_1_99": 0.1376722600910633,
+        "from_2_00_to_3_99": 0.2816594832018585,
+        "from_4_00_or_more": 0.20417867914763269
       },
       "child": {
-        "less_than_0_50": 0.06912417453583328,
-        "from_0_50_to_0_99": 0.1657810965960881,
-        "from_1_00_to_1_49": 0.2141141172479325,
-        "from_1_50_to_1_99": 0.11698266267444525,
-        "from_2_00_to_3_99": 0.27538750051965183,
-        "from_4_00_or_more": 0.15861044842604913
+        "less_than_0_50": 0.06031769063764595,
+        "from_0_50_to_0_99": 0.18142552258558106,
+        "from_1_00_to_1_49": 0.22996256728961445,
+        "from_1_50_to_1_99": 0.11493994567773043,
+        "from_2_00_to_3_99": 0.2099674280144638,
+        "from_4_00_or_more": 0.2033868457949643
       },
       "working_age": {
-        "less_than_0_50": 0.10787999111386629,
-        "from_0_50_to_0_99": 0.15447273818689966,
-        "from_1_00_to_1_49": 0.13326847860219057,
-        "from_1_50_to_1_99": 0.12541750916027458,
-        "from_2_00_to_3_99": 0.29143967798867026,
-        "from_4_00_or_more": 0.18752160494809866
+        "less_than_0_50": 0.08058645368161856,
+        "from_0_50_to_0_99": 0.12989992326095445,
+        "from_1_00_to_1_49": 0.14683825946064463,
+        "from_1_50_to_1_99": 0.135340144605163,
+        "from_2_00_to_3_99": 0.29513066882319394,
+        "from_4_00_or_more": 0.21220455016842546
       },
       "senior": {
-        "less_than_0_50": 0.0693436139583095,
-        "from_0_50_to_0_99": 0.11935335773438496,
-        "from_1_00_to_1_49": 0.1386961945674417,
-        "from_1_50_to_1_99": 0.1351668443202264,
-        "from_2_00_to_3_99": 0.2985837870349402,
-        "from_4_00_or_more": 0.2388562023846972
+        "less_than_0_50": 0.05007887144894088,
+        "from_0_50_to_0_99": 0.08722354471318691,
+        "from_1_00_to_1_49": 0.18667513007114578,
+        "from_1_50_to_1_99": 0.17452460296593145,
+        "from_2_00_to_3_99": 0.3245731299497998,
+        "from_4_00_or_more": 0.17692472085099512
       }
     }
   },
@@ -614,406 +614,163 @@
       "enhanced_cps": {
         "key": "enhanced_cps",
         "label": "Enhanced CPS (ECPS)",
-        "dataset_path": "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5",
+        "dataset_path": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-5da5a95-20260611",
         "available": true,
         "resource_variable": "spm_unit_net_income",
         "threshold_variable": "spm_unit_spm_threshold",
         "rates": {
-          "all": 0.2441,
-          "child": 0.2368,
-          "working_age": 0.2632,
-          "senior": 0.1887
+          "all": 0.2078,
+          "child": 0.2505,
+          "working_age": 0.2125,
+          "senior": 0.1373
         },
-        "population": 336269521.5608147,
-        "mean_resource": 86745,
-        "median_resource": 55563,
-        "mean_threshold": 31942,
+        "population": 332820503.2837753,
+        "mean_resource": 100405,
+        "median_resource": 57556,
+        "mean_threshold": 32225,
         "threshold_ratio_distribution": {
           "all": {
-            "less_than_0_50": 0.09264383783125314,
-            "from_0_50_to_0_99": 0.15143071486887993,
-            "from_1_00_to_1_49": 0.15141608287767583,
-            "from_1_50_to_1_99": 0.12577984401553288,
-            "from_2_00_to_3_99": 0.28943572127289335,
-            "from_4_00_or_more": 0.18929379913376482
+            "less_than_0_50": 0.07236394376675764,
+            "from_0_50_to_0_99": 0.1354262063456246,
+            "from_1_00_to_1_49": 0.17117617631774712,
+            "from_1_50_to_1_99": 0.13563896827167937,
+            "from_2_00_to_3_99": 0.28290351059780333,
+            "from_4_00_or_more": 0.20249119470038776
           },
           "child": {
-            "less_than_0_50": 0.06918252406483798,
-            "from_0_50_to_0_99": 0.16760604357779166,
-            "from_1_00_to_1_49": 0.21418201853293306,
-            "from_1_50_to_1_99": 0.11711575025551235,
-            "from_2_00_to_3_99": 0.2759540680027202,
-            "from_4_00_or_more": 0.15595959556620487
+            "less_than_0_50": 0.06321909420596282,
+            "from_0_50_to_0_99": 0.18732450366667242,
+            "from_1_00_to_1_49": 0.2274490823678885,
+            "from_1_50_to_1_99": 0.10960599643672286,
+            "from_2_00_to_3_99": 0.21102554938704904,
+            "from_4_00_or_more": 0.20137577393570436
           },
           "working_age": {
-            "less_than_0_50": 0.10792066030573907,
-            "from_0_50_to_0_99": 0.15523906460741216,
-            "from_1_00_to_1_49": 0.13284753381558373,
-            "from_1_50_to_1_99": 0.12581535149720652,
-            "from_2_00_to_3_99": 0.2918014929602832,
-            "from_4_00_or_more": 0.1863758968137754
+            "less_than_0_50": 0.08196770725075324,
+            "from_0_50_to_0_99": 0.13054226028794294,
+            "from_1_00_to_1_49": 0.14662883950042926,
+            "from_1_50_to_1_99": 0.13391187835379156,
+            "from_2_00_to_3_99": 0.2965630204426441,
+            "from_4_00_or_more": 0.21038629416443896
           },
           "senior": {
-            "less_than_0_50": 0.0693436139583095,
-            "from_0_50_to_0_99": 0.11935335773438496,
-            "from_1_00_to_1_49": 0.1388863072101821,
-            "from_1_50_to_1_99": 0.13599464691494875,
-            "from_2_00_to_3_99": 0.297574046849525,
-            "from_4_00_or_more": 0.2388480273326496
+            "less_than_0_50": 0.05008063064973858,
+            "from_0_50_to_0_99": 0.08722530110833633,
+            "from_1_00_to_1_49": 0.18667983229940216,
+            "from_1_50_to_1_99": 0.17452046128063356,
+            "from_2_00_to_3_99": 0.3253884864875755,
+            "from_4_00_or_more": 0.17610528817431384
           }
         },
         "resource_distribution": {
           "resource_quantiles": {
-            "p01": -20128.0,
-            "p05": 5363.0,
-            "p10": 14464.0,
-            "p25": 30546.0,
-            "p50": 55563.0,
-            "p75": 102471.0,
-            "p90": 174159.0
+            "p01": -15838.0,
+            "p05": 7632.0,
+            "p10": 18293.0,
+            "p25": 33741.0,
+            "p50": 57556.0,
+            "p75": 105919.0,
+            "p90": 209724.0
           },
           "threshold_ratio_quantiles": {
-            "p01": -0.869,
-            "p05": 0.227,
-            "p10": 0.555,
-            "p25": 1.01,
-            "p50": 1.926,
-            "p75": 3.288,
-            "p90": 5.698
+            "p01": -0.555,
+            "p05": 0.315,
+            "p10": 0.642,
+            "p25": 1.136,
+            "p50": 1.934,
+            "p75": 3.436,
+            "p90": 6.594
           },
-          "share_below_zero": 0.024749568615401007,
-          "share_zero_or_below": 0.025236131301534383,
-          "share_below_half_threshold": 0.09264383783125314,
-          "share_below_threshold": 0.2440745527001331,
-          "share_from_one_to_two_threshold": 0.2771959268932087,
-          "share_above_four_threshold": 0.18929379913376482
+          "share_below_zero": 0.02660890604537502,
+          "share_zero_or_below": 0.02660890604537502,
+          "share_below_half_threshold": 0.07236394376675764,
+          "share_below_threshold": 0.20779015011238225,
+          "share_from_one_to_two_threshold": 0.3068151445894265,
+          "share_above_four_threshold": 0.20249119470038776
         },
         "note": "Uses PolicyEngine-modeled SPM resources on the enhanced CPS."
       },
       "raw_cps_asec": {
         "key": "raw_cps_asec",
-        "label": "Raw CPS ASEC",
-        "dataset_path": "hf://policyengine/policyengine-us-data/cps_2024.h5",
+        "label": "Raw public CPS ASEC",
+        "dataset_path": "https://www2.census.gov/programs-surveys/cps/datasets/2025/march/asecpub25csv.zip",
         "available": true,
-        "resource_variable": "spm_unit_net_income_reported",
-        "threshold_variable": "spm_unit_spm_threshold",
+        "resource_variable": "SPM_RESOURCES",
+        "threshold_variable": "SPM_POVTHRESHOLD",
         "rates": {
-          "all": 0.125,
-          "child": 0.1289,
-          "working_age": 0.1166,
-          "senior": 0.1473
+          "all": 0.1291,
+          "child": 0.1327,
+          "working_age": 0.1213,
+          "senior": 0.1496
         },
-        "population": 325952356.65966797,
-        "mean_resource": 101012,
-        "median_resource": 75582,
-        "mean_threshold": 33069,
+        "population": 32669837434.0,
+        "mean_resource": 101418,
+        "median_resource": 76473,
+        "mean_threshold": 33902,
         "threshold_ratio_distribution": {
           "all": {
-            "less_than_0_50": 0.0409986154708882,
-            "from_0_50_to_0_99": 0.0840218540211289,
-            "from_1_00_to_1_49": 0.1548241107796585,
-            "from_1_50_to_1_99": 0.1340717252918696,
-            "from_2_00_to_3_99": 0.35311806835096105,
-            "from_4_00_or_more": 0.23293585221791344
+            "less_than_0_50": 0.04180450404012868,
+            "from_0_50_to_0_99": 0.08729361619142975,
+            "from_1_00_to_1_49": 0.14985372948029957,
+            "from_1_50_to_1_99": 0.13366204113570185,
+            "from_2_00_to_3_99": 0.3578441579520472,
+            "from_4_00_or_more": 0.22954195120039297
           },
           "child": {
-            "less_than_0_50": 0.03255088289862355,
-            "from_0_50_to_0_99": 0.09630522656574865,
-            "from_1_00_to_1_49": 0.20998510713849744,
-            "from_1_50_to_1_99": 0.1599177364697909,
-            "from_2_00_to_3_99": 0.3390539678790385,
-            "from_4_00_or_more": 0.16204524513536003
+            "less_than_0_50": 0.03260213791020088,
+            "from_0_50_to_0_99": 0.10014639960910804,
+            "from_1_00_to_1_49": 0.19604461308472115,
+            "from_1_50_to_1_99": 0.16042961724944732,
+            "from_2_00_to_3_99": 0.3411798920516581,
+            "from_4_00_or_more": 0.1695973400948645
           },
           "working_age": {
-            "less_than_0_50": 0.04025528951131349,
-            "from_0_50_to_0_99": 0.07633853183145815,
-            "from_1_00_to_1_49": 0.13698221908832756,
-            "from_1_50_to_1_99": 0.12836495484243324,
-            "from_2_00_to_3_99": 0.36468163313938307,
-            "from_4_00_or_more": 0.2533773715870845
+            "less_than_0_50": 0.04182739092806949,
+            "from_0_50_to_0_99": 0.07950128422286563,
+            "from_1_00_to_1_49": 0.13445147977571625,
+            "from_1_50_to_1_99": 0.128138274794791,
+            "from_2_00_to_3_99": 0.36976947855434256,
+            "from_4_00_or_more": 0.24631209172421512
           },
           "senior": {
-            "less_than_0_50": 0.05263980000087567,
-            "from_0_50_to_0_99": 0.09465791943203575,
-            "from_1_00_to_1_49": 0.15018744134891512,
-            "from_1_50_to_1_99": 0.12355513896930279,
-            "from_2_00_to_3_99": 0.33223992512214223,
-            "from_4_00_or_more": 0.24671977512672846
+            "less_than_0_50": 0.05194077128980051,
+            "from_0_50_to_0_99": 0.09764552522050575,
+            "from_1_00_to_1_49": 0.14725626697543437,
+            "from_1_50_to_1_99": 0.12141305719529073,
+            "from_2_00_to_3_99": 0.3386675305423589,
+            "from_4_00_or_more": 0.24307684877660976
           }
         },
         "resource_distribution": {
           "resource_quantiles": {
-            "p01": 0.0,
-            "p05": 14631.0,
-            "p10": 23090.0,
-            "p25": 43651.0,
-            "p50": 75582.0,
-            "p75": 125552.0,
-            "p90": 197688.0
+            "p01": -31.0,
+            "p05": 14429.0,
+            "p10": 23114.0,
+            "p25": 43816.0,
+            "p50": 76473.0,
+            "p75": 127330.0,
+            "p90": 198957.0
           },
           "threshold_ratio_quantiles": {
-            "p01": 0.0,
-            "p05": 0.594,
-            "p10": 0.902,
-            "p25": 1.392,
-            "p50": 2.368,
-            "p75": 3.839,
-            "p90": 6.098
+            "p01": -0.001,
+            "p05": 0.582,
+            "p10": 0.882,
+            "p25": 1.401,
+            "p50": 2.371,
+            "p75": 3.82,
+            "p90": 5.929
           },
-          "share_below_zero": 0.009959358653196098,
-          "share_zero_or_below": 0.013100501666444716,
-          "share_below_half_threshold": 0.0409986154708882,
-          "share_below_threshold": 0.1250204694920171,
-          "share_from_one_to_two_threshold": 0.2888958360715281,
-          "share_above_four_threshold": 0.23293585221791344
+          "share_below_zero": 0.01043274897490878,
+          "share_zero_or_below": 0.013407580582085856,
+          "share_below_half_threshold": 0.04180450404012868,
+          "share_below_threshold": 0.12909812023155842,
+          "share_from_one_to_two_threshold": 0.2835157706160014,
+          "share_above_four_threshold": 0.22954195120039297
         },
-        "note": "Uses Census-reported SPM resources as a validation-only control, not as an ECPS pipeline input."
+        "note": "Uses public ASEC SPM_RESOURCES and SPM_POVTHRESHOLD directly as a validation-only control, not as an ECPS pipeline input."
       }
     },
-    "component_mean_gaps": [
-      {
-        "variable": "spm_unit_market_income",
-        "label": "Market income",
-        "available": true,
-        "enhanced_mean": 110953,
-        "raw_mean": 128106,
-        "difference": -17153,
-        "enhanced_below_threshold_mean": 12326,
-        "raw_below_threshold_mean": 16874,
-        "below_threshold_difference": -4548
-      },
-      {
-        "variable": "spm_unit_net_income",
-        "label": "Modeled SPM resources",
-        "available": true,
-        "enhanced_mean": 86745,
-        "raw_mean": 100750,
-        "difference": -14005,
-        "enhanced_below_threshold_mean": 16205,
-        "raw_below_threshold_mean": 20237,
-        "below_threshold_difference": -4032
-      },
-      {
-        "variable": "employment_income",
-        "label": "Employment income",
-        "available": true,
-        "enhanced_mean": 31242,
-        "raw_mean": 36532,
-        "difference": -5290,
-        "enhanced_below_threshold_mean": 5670,
-        "raw_below_threshold_mean": 4134,
-        "below_threshold_difference": 1536
-      },
-      {
-        "variable": "spm_unit_taxes",
-        "label": "Taxes",
-        "available": true,
-        "enhanced_mean": 24294,
-        "raw_mean": 26906,
-        "difference": -2612,
-        "enhanced_below_threshold_mean": -835,
-        "raw_below_threshold_mean": 551,
-        "below_threshold_difference": -1386
-      },
-      {
-        "variable": "pension_income",
-        "label": "Pension income",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 1817,
-        "difference": -1817,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 169,
-        "below_threshold_difference": -169
-      },
-      {
-        "variable": "capital_gains",
-        "label": "Capital gains",
-        "available": true,
-        "enhanced_mean": 2334,
-        "raw_mean": 717,
-        "difference": 1617,
-        "enhanced_below_threshold_mean": 29,
-        "raw_below_threshold_mean": 492,
-        "below_threshold_difference": -463
-      },
-      {
-        "variable": "farm_operations_income",
-        "label": "Farm operations income",
-        "available": true,
-        "enhanced_mean": 1554,
-        "raw_mean": 118,
-        "difference": 1436,
-        "enhanced_below_threshold_mean": -2477,
-        "raw_below_threshold_mean": 30,
-        "below_threshold_difference": -2507
-      },
-      {
-        "variable": "interest_income",
-        "label": "Interest income",
-        "available": true,
-        "enhanced_mean": 1092,
-        "raw_mean": 2409,
-        "difference": -1317,
-        "enhanced_below_threshold_mean": 166,
-        "raw_below_threshold_mean": 190,
-        "below_threshold_difference": -24
-      },
-      {
-        "variable": "spm_unit_medical_out_of_pocket_expenses",
-        "label": "Medical expenses",
-        "available": true,
-        "enhanced_mean": 7656,
-        "raw_mean": 6468,
-        "difference": 1188,
-        "enhanced_below_threshold_mean": 4084,
-        "raw_below_threshold_mean": 3891,
-        "below_threshold_difference": 193
-      },
-      {
-        "variable": "spm_unit_capped_work_childcare_expenses",
-        "label": "Work and childcare expenses",
-        "available": true,
-        "enhanced_mean": 2367,
-        "raw_mean": 3300,
-        "difference": -933,
-        "enhanced_below_threshold_mean": 776,
-        "raw_below_threshold_mean": 1342,
-        "below_threshold_difference": -566
-      },
-      {
-        "variable": "retirement_distributions",
-        "label": "Retirement distributions",
-        "available": true,
-        "enhanced_mean": 1949,
-        "raw_mean": 1071,
-        "difference": 878,
-        "enhanced_below_threshold_mean": 61,
-        "raw_below_threshold_mean": 117,
-        "below_threshold_difference": -56
-      },
-      {
-        "variable": "spm_unit_spm_expenses",
-        "label": "SPM expenses",
-        "available": true,
-        "enhanced_mean": 10120,
-        "raw_mean": 9898,
-        "difference": 222,
-        "enhanced_below_threshold_mean": 4920,
-        "raw_below_threshold_mean": 5321,
-        "below_threshold_difference": -401
-      },
-      {
-        "variable": "miscellaneous_income",
-        "label": "Other catch-all income",
-        "available": true,
-        "enhanced_mean": 77,
-        "raw_mean": 0,
-        "difference": 77,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      },
-      {
-        "variable": "child_support_received",
-        "label": "Child support received",
-        "available": true,
-        "enhanced_mean": 30,
-        "raw_mean": 72,
-        "difference": -42,
-        "enhanced_below_threshold_mean": 13,
-        "raw_below_threshold_mean": 49,
-        "below_threshold_difference": -36
-      },
-      {
-        "variable": "alimony_income",
-        "label": "Alimony income",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 18,
-        "difference": -18,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 6,
-        "below_threshold_difference": -6
-      },
-      {
-        "variable": "workers_compensation",
-        "label": "Workers' compensation",
-        "available": true,
-        "enhanced_mean": 21,
-        "raw_mean": 30,
-        "difference": -9,
-        "enhanced_below_threshold_mean": 3,
-        "raw_below_threshold_mean": 6,
-        "below_threshold_difference": -3
-      },
-      {
-        "variable": "strike_benefits",
-        "label": "Strike benefits",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 0,
-        "difference": 0,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      },
-      {
-        "variable": "educational_assistance",
-        "label": "Educational assistance",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 0,
-        "difference": 0,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      },
-      {
-        "variable": "financial_assistance",
-        "label": "Financial assistance",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 0,
-        "difference": 0,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      },
-      {
-        "variable": "survivor_benefits",
-        "label": "Survivor benefits",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 0,
-        "difference": 0,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      },
-      {
-        "variable": "spm_unit_energy_subsidy",
-        "label": "Energy assistance",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 0,
-        "difference": 0,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      },
-      {
-        "variable": "spm_unit_capped_housing_subsidy",
-        "label": "Housing subsidy",
-        "available": true,
-        "enhanced_mean": 0,
-        "raw_mean": 0,
-        "difference": 0,
-        "enhanced_below_threshold_mean": 0,
-        "raw_below_threshold_mean": 0,
-        "below_threshold_difference": 0
-      }
-    ],
+    "component_mean_gaps": [],
     "note": "If raw CPS ASEC with reported SPM resources is close to Census but ECPS modeled resources are not, the gap is more likely in the enhanced CPS income distribution, calibration, or imputation than in individual SPM program rows."
   },
   "total_income_leaf_diagnostics": {
@@ -1076,22 +833,6 @@
       },
       "components": [
         {
-          "key": "federal_income_tax_before_refundable_credits",
-          "label": "Federal income tax before refundable credits",
-          "section": "subtraction",
-          "raw_columns": [
-            "SPM_FEDTAXBC"
-          ],
-          "enhanced_variables": [
-            "income_tax_before_refundable_credits"
-          ],
-          "raw_mean": 16223,
-          "enhanced_mean": 13592,
-          "difference": -2631,
-          "enhanced_available": true,
-          "note": "Equivalent to Census SPM_FEDTAX if refundable credits are not added separately."
-        },
-        {
           "key": "fica",
           "label": "FICA",
           "section": "subtraction",
@@ -1102,10 +843,26 @@
             "spm_unit_payroll_tax"
           ],
           "raw_mean": 7952,
-          "enhanced_mean": 5912,
-          "difference": -2040,
+          "enhanced_mean": 5493,
+          "difference": -2459,
           "enhanced_available": true,
           "note": null
+        },
+        {
+          "key": "federal_income_tax_before_refundable_credits",
+          "label": "Federal income tax before refundable credits",
+          "section": "subtraction",
+          "raw_columns": [
+            "SPM_FEDTAXBC"
+          ],
+          "enhanced_variables": [
+            "income_tax_before_refundable_credits"
+          ],
+          "raw_mean": 16223,
+          "enhanced_mean": 13937,
+          "difference": -2286,
+          "enhanced_available": true,
+          "note": "Equivalent to Census SPM_FEDTAX if refundable credits are not added separately."
         },
         {
           "key": "medical_expenses",
@@ -1118,24 +875,8 @@
             "spm_unit_medical_out_of_pocket_expenses"
           ],
           "raw_mean": 6530,
-          "enhanced_mean": 7656,
-          "difference": 1126,
-          "enhanced_available": true,
-          "note": null
-        },
-        {
-          "key": "work_childcare_expenses",
-          "label": "Capped work and childcare expenses",
-          "section": "subtraction",
-          "raw_columns": [
-            "SPM_CAPWKCCXPNS"
-          ],
-          "enhanced_variables": [
-            "spm_unit_capped_work_childcare_expenses"
-          ],
-          "raw_mean": 3299,
-          "enhanced_mean": 2367,
-          "difference": -932,
+          "enhanced_mean": 7598,
+          "difference": 1068,
           "enhanced_available": true,
           "note": null
         },
@@ -1150,8 +891,8 @@
             "state_income_tax_before_refundable_credits"
           ],
           "raw_mean": 4085,
-          "enhanced_mean": 3345,
-          "difference": -740,
+          "enhanced_mean": 3506,
+          "difference": -579,
           "enhanced_available": true,
           "note": "Census public ASEC does not separately publish state refundable credits."
         },
@@ -1166,24 +907,8 @@
             "snap"
           ],
           "raw_mean": 439,
-          "enhanced_mean": 754,
-          "difference": 315,
-          "enhanced_available": true,
-          "note": null
-        },
-        {
-          "key": "housing_subsidy",
-          "label": "Housing subsidy",
-          "section": "addition",
-          "raw_columns": [
-            "SPM_CAPHOUSESUB"
-          ],
-          "enhanced_variables": [
-            "spm_unit_capped_housing_subsidy"
-          ],
-          "raw_mean": 250,
-          "enhanced_mean": 0,
-          "difference": -250,
+          "enhanced_mean": 930,
+          "difference": 491,
           "enhanced_available": true,
           "note": null
         },
@@ -1200,24 +925,40 @@
             "refundable_ctc"
           ],
           "raw_mean": 860,
-          "enhanced_mean": 1063,
-          "difference": 203,
+          "enhanced_mean": 1174,
+          "difference": 314,
           "enhanced_available": true,
           "note": "Census formula uses refundable credits with federal tax before credits."
         },
         {
-          "key": "child_support_paid",
-          "label": "Child support paid",
+          "key": "work_childcare_expenses",
+          "label": "Capped work and childcare expenses",
           "section": "subtraction",
           "raw_columns": [
-            "SPM_CHILDSUPPD"
+            "SPM_CAPWKCCXPNS"
           ],
           "enhanced_variables": [
-            "child_support_expense"
+            "spm_unit_capped_work_childcare_expenses"
           ],
-          "raw_mean": 128,
-          "enhanced_mean": 30,
-          "difference": -98,
+          "raw_mean": 3299,
+          "enhanced_mean": 3147,
+          "difference": -152,
+          "enhanced_available": true,
+          "note": null
+        },
+        {
+          "key": "housing_subsidy",
+          "label": "Housing subsidy",
+          "section": "addition",
+          "raw_columns": [
+            "SPM_CAPHOUSESUB"
+          ],
+          "enhanced_variables": [
+            "spm_unit_capped_housing_subsidy"
+          ],
+          "raw_mean": 250,
+          "enhanced_mean": 158,
+          "difference": -92,
           "enhanced_available": true,
           "note": null
         },
@@ -1233,24 +974,24 @@
             "reduced_price_school_meals"
           ],
           "raw_mean": 325,
-          "enhanced_mean": 387,
-          "difference": 62,
+          "enhanced_mean": 399,
+          "difference": 74,
           "enhanced_available": true,
           "note": null
         },
         {
-          "key": "energy_assistance",
-          "label": "Energy assistance",
-          "section": "addition",
+          "key": "child_support_paid",
+          "label": "Child support paid",
+          "section": "subtraction",
           "raw_columns": [
-            "SPM_ENGVAL"
+            "SPM_CHILDSUPPD"
           ],
           "enhanced_variables": [
-            "spm_unit_energy_subsidy"
+            "child_support_expense"
           ],
-          "raw_mean": 19,
-          "enhanced_mean": 0,
-          "difference": -19,
+          "raw_mean": 128,
+          "enhanced_mean": 65,
+          "difference": -63,
           "enhanced_available": true,
           "note": null
         },
@@ -1265,8 +1006,8 @@
             "wic"
           ],
           "raw_mean": 45,
-          "enhanced_mean": 37,
-          "difference": -8,
+          "enhanced_mean": 36,
+          "difference": -9,
           "enhanced_available": true,
           "note": null
         },
@@ -1286,26 +1027,27 @@
           "difference": -4,
           "enhanced_available": true,
           "note": null
+        },
+        {
+          "key": "energy_assistance",
+          "label": "Energy assistance",
+          "section": "addition",
+          "raw_columns": [
+            "SPM_ENGVAL"
+          ],
+          "enhanced_variables": [
+            "spm_unit_energy_subsidy"
+          ],
+          "raw_mean": 19,
+          "enhanced_mean": 22,
+          "difference": 3,
+          "enhanced_available": true,
+          "note": null
         }
       ],
       "note": "Public ASEC SPM_RESOURCES is exactly reconstructed as SPM_TOTVAL plus refundable federal tax credits and noncash benefits, minus federal income tax before refundable credits, state tax, FICA, capped work/childcare expenses, medical expenses, and child support paid."
     },
     "component_mean_gaps": [
-      {
-        "key": "employment_income",
-        "label": "Wage and salary income",
-        "raw_columns": [
-          "WSAL_VAL"
-        ],
-        "enhanced_variables": [
-          "employment_income"
-        ],
-        "raw_mean": 36383,
-        "enhanced_mean": 31242,
-        "difference": -5141,
-        "enhanced_available": true,
-        "note": null
-      },
       {
         "key": "pension_income",
         "label": "Pensions and annuities",
@@ -1320,23 +1062,23 @@
           "tax_exempt_public_pension_income"
         ],
         "raw_mean": 1738,
-        "enhanced_mean": 0.2,
-        "difference": -1737.8,
+        "enhanced_mean": 5682,
+        "difference": 3944,
         "enhanced_available": true,
         "note": null
       },
       {
-        "key": "farm_operations_income",
-        "label": "Farm self-employment income",
+        "key": "employment_income",
+        "label": "Wage and salary income",
         "raw_columns": [
-          "FRSE_VAL"
+          "WSAL_VAL"
         ],
         "enhanced_variables": [
-          "farm_operations_income"
+          "employment_income"
         ],
-        "raw_mean": 90,
-        "enhanced_mean": 1554,
-        "difference": 1464,
+        "raw_mean": 36383,
+        "enhanced_mean": 33795,
+        "difference": -2588,
         "enhanced_available": true,
         "note": null
       },
@@ -1350,38 +1092,8 @@
           "interest_income"
         ],
         "raw_mean": 2456,
-        "enhanced_mean": 1092,
-        "difference": -1364,
-        "enhanced_available": true,
-        "note": null
-      },
-      {
-        "key": "retirement_distributions",
-        "label": "Retirement distributions",
-        "raw_columns": [
-          "DBTN_VAL"
-        ],
-        "enhanced_variables": [
-          "retirement_distributions"
-        ],
-        "raw_mean": 887,
-        "enhanced_mean": 1949,
-        "difference": 1062,
-        "enhanced_available": true,
-        "note": null
-      },
-      {
-        "key": "dividend_income",
-        "label": "Dividend income",
-        "raw_columns": [
-          "DIV_VAL"
-        ],
-        "enhanced_variables": [
-          "dividend_income"
-        ],
-        "raw_mean": 662,
-        "enhanced_mean": 1706,
-        "difference": 1044,
+        "enhanced_mean": 1244,
+        "difference": -1212,
         "enhanced_available": true,
         "note": null
       },
@@ -1395,53 +1107,23 @@
           "social_security"
         ],
         "raw_mean": 3651,
-        "enhanced_mean": 4635,
-        "difference": 984,
+        "enhanced_mean": 4632,
+        "difference": 981,
         "enhanced_available": true,
         "note": null
       },
       {
-        "key": "rental_income",
-        "label": "Rental income",
+        "key": "retirement_distributions",
+        "label": "Retirement distributions",
         "raw_columns": [
-          "RNT_VAL"
+          "DBTN_VAL"
         ],
         "enhanced_variables": [
-          "rental_income"
+          "retirement_distributions"
         ],
-        "raw_mean": 707,
-        "enhanced_mean": 412,
-        "difference": -295,
-        "enhanced_available": true,
-        "note": null
-      },
-      {
-        "key": "education_assistance",
-        "label": "Educational assistance",
-        "raw_columns": [
-          "ED_VAL"
-        ],
-        "enhanced_variables": [
-          "educational_assistance"
-        ],
-        "raw_mean": 247,
-        "enhanced_mean": 0,
-        "difference": -247,
-        "enhanced_available": true,
-        "note": null
-      },
-      {
-        "key": "survivor_benefits",
-        "label": "Survivor benefits",
-        "raw_columns": [
-          "SRVS_VAL"
-        ],
-        "enhanced_variables": [
-          "survivor_benefits"
-        ],
-        "raw_mean": 197,
-        "enhanced_mean": 0,
-        "difference": -197,
+        "raw_mean": 887,
+        "enhanced_mean": 1678,
+        "difference": 791,
         "enhanced_available": true,
         "note": null
       },
@@ -1455,8 +1137,38 @@
           "self_employment_income"
         ],
         "raw_mean": 1646,
-        "enhanced_mean": 1489,
-        "difference": -157,
+        "enhanced_mean": 1312,
+        "difference": -334,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "farm_operations_income",
+        "label": "Farm self-employment income",
+        "raw_columns": [
+          "FRSE_VAL"
+        ],
+        "enhanced_variables": [
+          "farm_operations_income"
+        ],
+        "raw_mean": 90,
+        "enhanced_mean": -219,
+        "difference": -309,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "dividend_income",
+        "label": "Dividend income",
+        "raw_columns": [
+          "DIV_VAL"
+        ],
+        "enhanced_variables": [
+          "dividend_income"
+        ],
+        "raw_mean": 662,
+        "enhanced_mean": 355,
+        "difference": -307,
         "enhanced_available": true,
         "note": null
       },
@@ -1470,53 +1182,68 @@
           "financial_assistance"
         ],
         "raw_mean": 121,
-        "enhanced_mean": 0,
-        "difference": -121,
+        "enhanced_mean": 345,
+        "difference": 224,
         "enhanced_available": true,
         "note": null
       },
       {
-        "key": "child_support_received",
-        "label": "Child support received",
+        "key": "rental_income",
+        "label": "Rental income",
         "raw_columns": [
-          "CSP_VAL"
+          "RNT_VAL"
         ],
         "enhanced_variables": [
-          "child_support_received"
+          "rental_income"
         ],
-        "raw_mean": 74,
-        "enhanced_mean": 30,
-        "difference": -44,
+        "raw_mean": 707,
+        "enhanced_mean": 499,
+        "difference": -208,
         "enhanced_available": true,
         "note": null
       },
       {
-        "key": "public_assistance",
-        "label": "Public assistance/welfare",
+        "key": "survivor_benefits",
+        "label": "Survivor benefits",
         "raw_columns": [
-          "PAW_VAL"
+          "SRVS_VAL"
         ],
         "enhanced_variables": [
-          "tanf"
+          "survivor_benefits"
         ],
-        "raw_mean": 23,
-        "enhanced_mean": 64,
-        "difference": 41,
+        "raw_mean": 197,
+        "enhanced_mean": 358,
+        "difference": 161,
         "enhanced_available": true,
         "note": null
       },
       {
-        "key": "unemployment_compensation",
-        "label": "Unemployment compensation",
+        "key": "education_assistance",
+        "label": "Educational assistance",
         "raw_columns": [
-          "UC_VAL"
+          "ED_VAL"
         ],
         "enhanced_variables": [
-          "unemployment_compensation"
+          "educational_assistance"
         ],
-        "raw_mean": 74,
-        "enhanced_mean": 108,
-        "difference": 34,
+        "raw_mean": 247,
+        "enhanced_mean": 406,
+        "difference": 159,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "veterans_benefits",
+        "label": "Veterans benefits",
+        "raw_columns": [
+          "VET_VAL"
+        ],
+        "enhanced_variables": [
+          "veterans_benefits"
+        ],
+        "raw_mean": 389,
+        "enhanced_mean": 548,
+        "difference": 159,
         "enhanced_available": true,
         "note": null
       },
@@ -1532,38 +1259,23 @@
           "strike_benefits"
         ],
         "raw_mean": 69,
-        "enhanced_mean": 77,
-        "difference": 8,
+        "enhanced_mean": 209,
+        "difference": 140,
         "enhanced_available": true,
         "note": null
       },
       {
-        "key": "workers_compensation",
-        "label": "Workers' compensation",
+        "key": "public_assistance",
+        "label": "Public assistance/welfare",
         "raw_columns": [
-          "WC_VAL"
+          "PAW_VAL"
         ],
         "enhanced_variables": [
-          "workers_compensation"
+          "tanf"
         ],
-        "raw_mean": 27,
-        "enhanced_mean": 21,
-        "difference": -6,
-        "enhanced_available": true,
-        "note": null
-      },
-      {
-        "key": "veterans_benefits",
-        "label": "Veterans benefits",
-        "raw_columns": [
-          "VET_VAL"
-        ],
-        "enhanced_variables": [
-          "veterans_benefits"
-        ],
-        "raw_mean": 389,
-        "enhanced_mean": 384,
-        "difference": -5,
+        "raw_mean": 23,
+        "enhanced_mean": 88,
+        "difference": 65,
         "enhanced_available": true,
         "note": null
       },
@@ -1577,8 +1289,8 @@
           "ssi"
         ],
         "raw_mean": 167,
-        "enhanced_mean": 171,
-        "difference": 4,
+        "enhanced_mean": 223,
+        "difference": 56,
         "enhanced_available": true,
         "note": null
       },
@@ -1592,8 +1304,53 @@
           "disability_benefits"
         ],
         "raw_mean": 130,
-        "enhanced_mean": 126,
-        "difference": -4,
+        "enhanced_mean": 173,
+        "difference": 43,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "unemployment_compensation",
+        "label": "Unemployment compensation",
+        "raw_columns": [
+          "UC_VAL"
+        ],
+        "enhanced_variables": [
+          "unemployment_compensation"
+        ],
+        "raw_mean": 74,
+        "enhanced_mean": 100,
+        "difference": 26,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "child_support_received",
+        "label": "Child support received",
+        "raw_columns": [
+          "CSP_VAL"
+        ],
+        "enhanced_variables": [
+          "child_support_received"
+        ],
+        "raw_mean": 74,
+        "enhanced_mean": 94,
+        "difference": 20,
+        "enhanced_available": true,
+        "note": null
+      },
+      {
+        "key": "workers_compensation",
+        "label": "Workers' compensation",
+        "raw_columns": [
+          "WC_VAL"
+        ],
+        "enhanced_variables": [
+          "workers_compensation"
+        ],
+        "raw_mean": 27,
+        "enhanced_mean": 33,
+        "difference": 6,
         "enhanced_available": true,
         "note": null
       }
@@ -1616,20 +1373,20 @@
       "enhanced_cps": {
         "key": "enhanced_cps",
         "label": "Enhanced CPS (ECPS)",
-        "dataset_path": "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5",
+        "dataset_path": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-5da5a95-20260611",
         "available": true,
         "income_variable": "spm_unit_net_income",
-        "person_count": 336269521.5608147,
-        "negative_person_count": 8322525.597137451,
-        "negative_person_share": 0.024749568615401007,
-        "spm_unit_count": 159308076.53237435,
-        "negative_spm_unit_count": 4873032.202791214,
-        "negative_spm_unit_share": 0.03058873290583559,
-        "negative_income_mass": -125512730854.20984,
-        "negative_income_abs_mass": 125512730854.20984,
-        "mean_spm_unit_income": 71681.5156957478,
-        "mean_negative_spm_unit_income": -25756.597869867895,
-        "minimum_spm_unit_income": -39089208.0,
+        "person_count": 332820503.2837753,
+        "negative_person_count": 8855989.501852406,
+        "negative_person_share": 0.02660890604537502,
+        "spm_unit_count": 163521438.15455064,
+        "negative_spm_unit_count": 4904522.41090626,
+        "negative_spm_unit_share": 0.02999314625811204,
+        "negative_income_mass": -273263080040.85226,
+        "negative_income_abs_mass": 273263080040.85226,
+        "mean_spm_unit_income": 83203.01696318042,
+        "mean_negative_spm_unit_income": -55716.55242785578,
+        "minimum_spm_unit_income": -104765640.0,
         "note": "Prevalence is weighted after mapping the SPM-unit resource measure to people; mass is the weighted SPM-unit sum of negative income/resources."
       },
       "raw_cps_asec": {
@@ -1639,49 +1396,49 @@
         "available": true,
         "income_variable": "spm_unit_net_income_reported",
         "person_count": 325952356.65966797,
-        "negative_person_count": 3246276.423828125,
-        "negative_person_share": 0.009959358653196098,
+        "negative_person_count": 0.0,
+        "negative_person_share": 0.0,
         "spm_unit_count": 141482334.57763672,
-        "negative_spm_unit_count": 2275790.1958007812,
-        "negative_spm_unit_share": 0.01608533109518326,
-        "negative_income_mass": -11289661419.325684,
-        "negative_income_abs_mass": 11289661419.325684,
-        "mean_spm_unit_income": 84877.59353889628,
-        "mean_negative_spm_unit_income": -4960.76546957493,
-        "minimum_spm_unit_income": -126134.0,
+        "negative_spm_unit_count": 0.0,
+        "negative_spm_unit_share": 0.0,
+        "negative_income_mass": 0.0,
+        "negative_income_abs_mass": -0.0,
+        "mean_spm_unit_income": 0.0,
+        "mean_negative_spm_unit_income": null,
+        "minimum_spm_unit_income": 0.0,
         "note": "Prevalence is weighted after mapping the SPM-unit resource measure to people; mass is the weighted SPM-unit sum of negative income/resources."
       }
     },
     "comparison": {
       "available": true,
       "note": "Differences are ECPS minus raw CPS ASEC.",
-      "negative_person_share_difference": 0.01479020996220491,
-      "negative_person_count_difference": 5076249.173309326,
-      "negative_income_abs_mass_difference": 114223069434.88416,
-      "negative_income_abs_mass_ratio": 11.11749291607246
+      "negative_person_share_difference": 0.02660890604537502,
+      "negative_person_count_difference": 8855989.501852406,
+      "negative_income_abs_mass_difference": 273263080040.85226,
+      "negative_income_abs_mass_ratio": null
     },
     "note": "This is a data-source diagnostic for whether negative SPM income/resource tail behavior may contribute to the Census/PE SPM rate gap."
   },
   "policyengine_2024_resource_means": {
-    "spm_unit_net_income": 86745,
-    "spm_unit_market_income": 110953,
-    "spm_unit_spm_threshold": 31942,
-    "spm_unit_benefits": 10206,
-    "spm_unit_taxes": 24294,
-    "spm_unit_spm_expenses": 10120,
-    "spm_unit_medical_out_of_pocket_expenses": 7656,
-    "pension_income": 0.2,
-    "child_support_received": 30,
-    "workers_compensation": 21,
-    "miscellaneous_income": 77,
-    "alimony_income": 0.01,
+    "spm_unit_net_income": 100405,
+    "spm_unit_market_income": 122103,
+    "spm_unit_spm_threshold": 32225,
+    "spm_unit_benefits": 13099,
+    "spm_unit_taxes": 23904,
+    "spm_unit_spm_expenses": 10893,
+    "spm_unit_medical_out_of_pocket_expenses": 7598,
+    "pension_income": 5682,
+    "child_support_received": 94,
+    "workers_compensation": 33,
+    "miscellaneous_income": 22,
+    "alimony_income": 187,
     "strike_benefits": 0,
-    "educational_assistance": 0,
-    "financial_assistance": 0,
-    "survivor_benefits": 0,
-    "spm_unit_capped_housing_subsidy": 0,
-    "housing_assistance": 0,
-    "spm_unit_energy_subsidy": 0,
+    "educational_assistance": 406,
+    "financial_assistance": 345,
+    "survivor_benefits": 358,
+    "spm_unit_capped_housing_subsidy": 158,
+    "housing_assistance": 233,
+    "spm_unit_energy_subsidy": 22,
     "note": "Weighted person-average values after mapping variables to people."
   },
   "bls_2024_reference_thresholds": {

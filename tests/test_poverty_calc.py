@@ -18,14 +18,13 @@ from poverty_dashboard.spm_elements import (
 )
 
 
-def test_fallback_dataset_uses_policyengine_us_data_paths() -> None:
-    assert (
-        fallback_dataset("us")
-        == "hf://policyengine/policyengine-us-data/enhanced_cps_2024.h5"
+def test_fallback_dataset_uses_policyengine_py_bundle_paths() -> None:
+    assert fallback_dataset("us").startswith(
+        "hf://policyengine/populace-us/populace_us_2024.h5@"
     )
     assert (
         fallback_dataset("state/ca")
-        == "hf://policyengine/policyengine-us-data/states/CA.h5"
+        == "hf://policyengine/policyengine-us-data/states/CA.h5@1.115.5"
     )
 
 

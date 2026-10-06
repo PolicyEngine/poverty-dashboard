@@ -22,9 +22,9 @@ APP_NAME = os.environ.get("MODAL_APP_NAME", "poverty-dashboard")
 
 app = modal.App(APP_NAME)
 
-# Unpinned policyengine[us] so a fresh deploy bakes in the current latest, and
-# the in-function ``pip install -U`` (when upgrade=true) tops it off without
-# rebuilding the image.
+# Pin the verified policyengine.py bundle. The in-function upgrade path keeps
+# the "latest" button useful without forcing independently incompatible package
+# versions such as a newer policyengine-us than policyengine[us] allows.
 image = (
     modal.Image.debian_slim(python_version="3.14")
     .apt_install("git")
@@ -32,7 +32,7 @@ image = (
         "fastapi>=0.115.0",
         "pydantic>=2.0",
         "tables>=3.10.2",
-        "policyengine[us]",
+        "policyengine[us]==4.16.2",
     )
     .add_local_python_source("poverty_dashboard", copy=True)
 )
@@ -49,9 +49,7 @@ def _maybe_upgrade(upgrade: bool) -> None:
             "install",
             "--upgrade",
             "--quiet",
-            "policyengine",
-            "policyengine-us",
-            "policyengine-us-data",
+            "policyengine[us]",
         ],
         check=True,
     )

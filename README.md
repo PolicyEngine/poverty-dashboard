@@ -1,13 +1,13 @@
 # PolicyEngine poverty dashboard
 
 Internal dashboard tracking baseline federal and per-state poverty and child
-poverty rates from PolicyEngine-US. Mirrors the dataset selection and poverty
-calculation methodology used by `policyengine-api`'s `economy_service` /
-`compare.py`:
+poverty rates from PolicyEngine-US. Mirrors the policyengine.py bundle selected
+by the installed `policyengine[us]` package:
 
-- For each region, resolve the dataset via
-  `policyengine.countries.us.regions.us_region_registry` (national →
-  `enhanced_cps_2024.h5`, state → `states/{XX}.h5`).
+- For each region, resolve the dataset from the bundled
+  `policyengine/data/release_manifests/us.json` without importing top-level
+  `policyengine` (national → certified `populace_us_2024.h5`, state →
+  bundle-pinned `states/{XX}.h5`).
 - Run `policyengine_us.Microsimulation` against that dataset.
 - Map SPM-unit poverty variables to people, then use MicroSeries weighted
   operations for all, child, working-age, and senior poverty rates.
@@ -58,7 +58,7 @@ git add data/baseline.json && git commit -m "Refresh baseline"
 To test a locally built national dataset, point the computation at the H5 file:
 
 ```bash
-POVERTY_DASHBOARD_US_DATASET=/tmp/enhanced_cps_2024_post_989_cps_half_only.h5 \
+POVERTY_DASHBOARD_US_DATASET=/tmp/populace_us_2024.h5 \
   uv run python -m poverty_dashboard.compute_local --year 2024 us
 ```
 

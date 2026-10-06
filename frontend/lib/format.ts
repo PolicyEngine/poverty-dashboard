@@ -16,7 +16,7 @@ export function dollars(x: number | string | null | undefined): string {
 
 export function shortDataset(path: string | null | undefined): string {
   if (!path) return "—";
-  return path.replace("hf://policyengine/policyengine-us-data/", "");
+  return path.replace(/^hf:\/\/policyengine\//, "");
 }
 
 export function formatTimestamp(iso: string | null): string {

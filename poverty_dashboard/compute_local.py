@@ -42,8 +42,18 @@ def main() -> None:
 
     if args.merge and DEFAULT_BASELINE.exists():
         existing = json.loads(DEFAULT_BASELINE.read_text())
-        payload["regions"] = existing.get("regions", {})
-        payload["errors"] = existing.get("errors", [])
+        if existing.get("year") == args.year:
+            payload["regions"] = existing.get("regions", {})
+            payload["errors"] = [
+                error
+                for error in existing.get("errors", [])
+                if error.get("region_code") not in codes
+            ]
+        else:
+            print(
+                "Existing baseline year differs; starting a fresh baseline.",
+                flush=True,
+            )
 
     for index, code in enumerate(codes, 1):
         print(f"[{index}/{len(codes)}] {code} ...", flush=True)
